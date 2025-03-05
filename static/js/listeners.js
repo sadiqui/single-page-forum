@@ -28,21 +28,21 @@ function NavBarListener() {
 *      Authentification Modals      *
 *************************************/
 function AuthListener() {
-    // Close Modals (when we click on closeModalBtn)
-    const authModal = document.getElementById("authModal");
-    const closeModalBtn = document.getElementById("closeModalBtn");
-    closeModalBtn?.addEventListener("click", () => {
-        authModal.classList.add("hidden");
-        ResetModal();
-    });
+    // // Close Modals (when we click on closeModalBtn)
+    // const authModal = document.getElementById("authModal");
+    // const closeModalBtn = document.getElementById("closeModalBtn");
+    // closeModalBtn?.addEventListener("click", () => {
+    //     authModal.classList.add("hidden");
+    //     ResetModal();
+    // });
 
-    // Close when we click outside (inside authModal).
-    window.addEventListener("click", (e) => {
-        if (e.target === authModal) {
-            authModal.classList.add("hidden");
-            ResetModal();
-        }
-    });
+    // // Close when we click outside (inside authModal).
+    // window.addEventListener("click", (e) => {
+    //     if (e.target === authModal) {
+    //         authModal.classList.add("hidden");
+    //         ResetModal();
+    //     }
+    // });
 
     // Switch between forms.
     const login = document.getElementById("loginContainer");

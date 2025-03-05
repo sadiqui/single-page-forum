@@ -18,10 +18,10 @@
 
     /*** Whites-Greys ***/
     --white: #ffffff;
-    --modal-input-bg: #f4f4f4;
+    --modal-input-bg: #fff;
     --theme-toggle: #fefefe;
     --suggestion-list: #eee;
-    --border-white: #ddd;
+    --border-white: #bbb;
     --submit-grey: #ccc;
     --border-grey: #c4c4c4;
 
@@ -57,7 +57,7 @@
 /* ===== Theme Toggle Button Styles ===== */
 .theme-toggle {
     position: fixed;
-    top: 120px;
+    top: 30px;
     left: 30px;
     z-index: 1000;
     background-color: var(--theme-toggle);
@@ -90,7 +90,7 @@
 /* ===== Dark Mode Overrides ===== */
 :root.dark-mode {
     /*** Blues ***/
-    --body-bg: #303030;
+    --body-bg: #102030;
     --body-bg2: #228bec;
     --light-blue: rgb(76, 165, 248);
     --title-color: #77b5ee;
@@ -105,8 +105,8 @@
     --profile-bg: rgb(56, 56, 56);
 
     /*** Whites-Greys ***/
-    --white: #3f3f3f;
-    --modal-input-bg: #5e5e5e;
+    --white: #1f2f3f;
+    --modal-input-bg: #1f2a3a;
     --theme-toggle: #444b58;
     --suggestion-list: #646464;
     --border-white: #a8a6a6;
@@ -246,13 +246,13 @@
 }
 
 :root.dark-mode .comment-item {
-    border-bottom: 1px solid #7a7a7a
+    border-bottom: 1px solid #7a7a7a;
 }
 
 /* OAuth Buttons */
 :root.dark-mode .google-btn,
 :root.dark-mode .github-btn {
-    background-color: #444;
+    background-color: var(--white);
     border: 1px solid #5a5c60;
     color: #cfd1d4;
 }

@@ -5,7 +5,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: var(--trans-modal);
+    /* background-color: var(--trans-modal); */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,17 +20,8 @@
     text-align: center;
     position: relative;
     max-height: 80vh;
-    overflow-y: auto; 
-    margin-top: 60px;
-}
-
-.close-button {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--grey-mr);
+    overflow-y: auto;
+    margin-top: -60px;
 }
 
 /* ------------- Auth Form ------------- */
@@ -74,7 +65,7 @@
 
 .input-field:focus {
     border-color: var(--title-color-hvr);
-    outline: none; 
+    outline: none;
 }
 
 .password-container {
@@ -85,7 +76,8 @@
 
 .password-container .input-field {
     flex: 1;
-    padding-right: 40px; /* Space for the toggle icon */
+    padding-right: 40px;
+    /* Space for the toggle icon */
 }
 
 .toggle-password {
@@ -101,7 +93,7 @@
     display: block;
     width: 100%;
     padding: 0.6rem;
-    border-radius: 999px;
+    border-radius: 9px;
     border: none;
     font-weight: 600;
     color: var(--white);
@@ -134,12 +126,12 @@
 }
 
 /****************** 0Auth signUp Modal ******************/
-#socialSignupModal h2{
+#socialSignupModal h2 {
     color: var(--content-grey);
     margin-bottom: 10px;
 }
 
-#socialSignupModal p{
+#socialSignupModal p {
     color: var(--content-grey);
     line-height: 1.2;
 }

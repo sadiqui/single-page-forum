@@ -8,7 +8,10 @@ async function CheckSession() {
                 ShowLoggedInNav(data.username, data.profilePic);
             }
         } else {
-            ShowLoggedOutNav()
+            // ShowLoggedOutNav()
+            document.getElementById("authModal").classList.remove("hidden");
+            document.getElementById("loginContainer").classList.remove("hidden");
+            document.getElementById("signUpContainer").classList.add("hidden");
         }
     } catch (err) {
         console.log(err);
@@ -24,17 +27,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         SocialSignUp()
     }
     try {
-        await CheckSession();
         // Load html inside body.
         document.body.insertAdjacentHTML("beforeend", LoginForm)
         document.body.insertAdjacentHTML("beforeend", NewPostForm)
-
+        
+        await CheckSession();
         AuthListener();
         NavBarListener();
         LoginFormListener();
         SignUpFormListener();
-        NewPostListener();
-        imageUploaded();
+        // NewPostListener();
+        // imageUploaded();
         CheckOAuth()
 
     } catch (err) {

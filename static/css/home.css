@@ -10,8 +10,6 @@
 body {
     font-family: Arial, sans-serif;
     background-color: var(--body-bg);
-    /* background-image: linear-gradient(#def1fa, #2da1e4); */
-    /* background-attachment: fixed; */
 }
 
 /* Utility class to hide and show elements */
@@ -512,7 +510,7 @@ body {
 .google-btn,
 .github-btn {
     background-color: #ffffff;
-    border: 1px solid #dadce0;
+    border: 1px solid #bbb;
     color: #5f6368;
 }
 

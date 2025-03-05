@@ -16,9 +16,6 @@ const Nav = `
 const LoginForm = `
 <div id="authModal" class="modal hidden">
     <div class="modal-dialog">
-        <!-- Close button -->
-        <span id="closeModalBtn" class="close-button">&times;</span>
-
         <!--- LOGIN --->
         <div id="loginContainer" class="form-container">
             <h2 class="modal-title">Log In&nbsp;</h2>
@@ -35,7 +32,6 @@ const LoginForm = `
                     Continue with GitHub
                 </button>
             </div>
-
 
             <div class="separator">
                 <span>or</span>
