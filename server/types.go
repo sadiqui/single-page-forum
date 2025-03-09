@@ -3,10 +3,14 @@ package server
 import "time"
 
 type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+    ID        int    `json:"id"`
+    Email     string `json:"email"`
+    Username  string `json:"username"`
+    Password  string `json:"password"`
+    FirstName string `json:"first_name"`
+    LastName  string `json:"last_name"`
+    Age       int    `json:"age"`
+    Gender    string `json:"gender"`
 }
 
 // Post represents a forum post

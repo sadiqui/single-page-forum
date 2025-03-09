@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
 
 * {
     margin: 0;
@@ -344,7 +345,6 @@ body {
 /**********************************
            Comment counts             
 ***********************************/
-
 #comment-icon {
     width: 30px;
     height: 30px;
@@ -538,4 +538,75 @@ body {
     flex: 1;
     height: 1px;
     background: #ddd;
+}
+
+/********************************** Tab Bar ********************************/
+/* ======= Tab Bar ======= */
+.tab-bar {
+    position: fixed;
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: var(--white);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    border-radius: 30px;
+    box-shadow: 0 4px 10px var(--navBar-shadow);
+    z-index: 1000; 
+}
+
+/* ======= Tab Buttons ======= */
+.tab-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--content-grey);
+    transition: all 0.3s ease;
+}
+
+.tab-txt {
+    font-family: "Zain";
+    font-size: 18px;
+}
+
+.tab-btn img {
+    width: 25px;
+    margin-bottom: 5px;
+    filter: grayscale(100%);
+    transition: filter 0.3s ease;
+}
+
+/* Active Button */
+.tab-btn.active {
+    background: rgb(238, 238, 238);
+    border-radius: 12px;
+    padding: 5px 20px;
+    color: var(--title-color);
+}
+
+.tab-btn.active img {
+    filter: invert(53%) sepia(50%) saturate(1500%) hue-rotate(175deg) brightness(105%) contrast(95%);
+}
+
+
+/* ======= Dark Mode Support ======= */
+:root.dark-mode .tab-bar {
+    background: var(--dark-grey);
+    box-shadow: 0 4px 10px var(--notif-shadow);
+}
+
+:root.dark-mode .tab-btn {
+    color: var(--light-grey);
+}
+
+:root.dark-mode .tab-btn.active {
+    background: var(--action-btn);
+    color: var(--white);
 }

@@ -104,7 +104,7 @@ const LoginForm = `
                 <input type="text" id="lastName" class="input-field" placeholder="Last Name" maxlength="100" required />
 
                 <label for="age">Age <span>*</span></label>
-                <input type="number" id="age" class="input-field" placeholder="Your Age" min="10" max="120" required />
+                <input type="number" id="age" class="input-field" placeholder="Your Age" min="10" max="130" required />
 
                 <label>Gender <span>*</span></label>
                 <div class="gender-selection">
@@ -246,6 +246,27 @@ const NewPostForm = `
     </div>
 </div>
 `
+
+const tabBarHTML = `
+    <nav class="tab-bar">
+        <button class="tab-btn active" data-tab="home">
+            <img src="../img/home.svg" alt="Home">
+            <span class="tab-txt">Home</span>
+        </button>
+        <button class="tab-btn" data-tab="filter">
+            <img src="../img/filter.svg" alt="Filter">
+            <span class="tab-txt">Filter</span>
+        </button>
+        <button class="tab-btn" data-tab="messages">
+            <img src="../img/message.svg" alt="Messages">
+            <span class="tab-txt">Messages</span>
+        </button>
+        <button class="tab-btn" data-tab="profile">
+            <img src="../img/profile.svg" alt="Profile">
+            <span class="tab-txt">Profile</span>
+        </button>
+    </nav>
+`;
 
 // Num of posts on each scroll load.
 let HomeLimit = 10

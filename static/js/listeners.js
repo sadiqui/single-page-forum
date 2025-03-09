@@ -28,22 +28,6 @@ function NavBarListener() {
 *      Authentification Modals      *
 *************************************/
 function AuthListener() {
-    // // Close Modals (when we click on closeModalBtn)
-    // const authModal = document.getElementById("authModal");
-    // const closeModalBtn = document.getElementById("closeModalBtn");
-    // closeModalBtn?.addEventListener("click", () => {
-    //     authModal.classList.add("hidden");
-    //     ResetModal();
-    // });
-
-    // // Close when we click outside (inside authModal).
-    // window.addEventListener("click", (e) => {
-    //     if (e.target === authModal) {
-    //         authModal.classList.add("hidden");
-    //         ResetModal();
-    //     }
-    // });
-
     // Switch between forms.
     const login = document.getElementById("loginContainer");
     const signUp = document.getElementById("signUpContainer");
@@ -94,6 +78,30 @@ function LoginFormListener() {
         loginSubmit.disabled = !valid; // JS
         loginSubmit.classList.toggle("disabled", !valid); // CSS
     }
+}
+
+// Show signup/login form on load of page when no session.
+function ShowloginSignup() {
+    document.getElementById("authModal").classList.remove("hidden");
+    document.getElementById("loginContainer").classList.remove("hidden");
+    document.getElementById("signUpContainer").classList.add("hidden");
+    const maleBtn = document.getElementById("maleBtn");
+    const femaleBtn = document.getElementById("femaleBtn");
+    const genderInput = document.getElementById("genderInput");
+
+    function selectGender(gender) {
+        if (gender === "male") {
+            maleBtn.classList.add("active");
+            femaleBtn.classList.remove("active");
+        } else {
+            femaleBtn.classList.add("active");
+            maleBtn.classList.remove("active");
+        }
+        genderInput.value = gender; // Set hidden input value
+    }
+
+    maleBtn.addEventListener("click", () => selectGender("male"));
+    femaleBtn.addEventListener("click", () => selectGender("female"));
 }
 
 // Listen for inputs in Sign Up form and trigger sign-up operation.

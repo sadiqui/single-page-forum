@@ -4,6 +4,10 @@ CREATE TABLE
         email TEXT NOT NULL UNIQUE,
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
+        first_name TEXT NOT NULL,
+        last_name TEXT NOT NULL,
+        age INTEGER NOT NULL,
+        gender TEXT NOT NULL CHECK (gender IN ('male', 'female')),
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 

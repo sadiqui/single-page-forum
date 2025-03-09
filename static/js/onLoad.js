@@ -6,29 +6,11 @@ async function CheckSession() {
             const data = await res.json();
             if (data.loggedIn) {
                 ShowLoggedInNav(data.username, data.profilePic);
+                document.getElementById("tabBar").innerHTML = tabBarHTML;
+                SetupTabListeners();
             }
         } else {
-            // ShowLoggedOutNav()
-            document.getElementById("authModal").classList.remove("hidden");
-            document.getElementById("loginContainer").classList.remove("hidden");
-            document.getElementById("signUpContainer").classList.add("hidden");
-            const maleBtn = document.getElementById("maleBtn");
-            const femaleBtn = document.getElementById("femaleBtn");
-            const genderInput = document.getElementById("genderInput");
-
-            function selectGender(gender) {
-                if (gender === "male") {
-                    maleBtn.classList.add("active");
-                    femaleBtn.classList.remove("active");
-                } else {
-                    femaleBtn.classList.add("active");
-                    maleBtn.classList.remove("active");
-                }
-                genderInput.value = gender; // Set hidden input value
-            }
-
-            maleBtn.addEventListener("click", () => selectGender("male"));
-            femaleBtn.addEventListener("click", () => selectGender("female"));
+            ShowloginSignup()
         }
     } catch (err) {
         console.log(err);
@@ -53,11 +35,51 @@ document.addEventListener("DOMContentLoaded", async () => {
         NavBarListener();
         LoginFormListener();
         SignUpFormListener();
-        // NewPostListener();
-        // imageUploaded();
+        NewPostListener();
+        imageUploaded();
         CheckOAuth()
 
     } catch (err) {
         console.log(err);
     }
 })
+
+function SetupTabListeners() {
+    const tabButtons = document.querySelectorAll(".tab-btn");
+
+    // Set "Home" as the default active tab on page load
+    const defaultTab = document.querySelector('.tab-btn[data-tab="home"]');
+    if (defaultTab) {
+        defaultTab.classList.add("active");
+        LoadTabContent("home"); // Load home content on start
+    }
+
+    tabButtons.forEach(button => {
+        button.addEventListener("click", function () {
+            // Remove active class from all buttons
+            tabButtons.forEach(btn => btn.classList.remove("active"));
+
+            // Add active class to clicked button
+            this.classList.add("active");
+
+            // Get the tab name
+            const tabName = this.getAttribute("data-tab");
+
+            // Call function to change content
+            LoadTabContent(tabName);
+        });
+    });
+}
+
+function LoadTabContent(tab) {
+    const contentArea = document.getElementById("content"); // Ensure this exists in your HTML
+    if (tab === "home") {
+        contentArea.innerHTML = `<h2>Home Content</h2>`;
+    } else if (tab === "filter") {
+        contentArea.innerHTML = `<h2>Filter Content</h2>`;
+    } else if (tab === "messages") {
+        contentArea.innerHTML = `<h2>Messages Content</h2>`;
+    } else if (tab === "profile") {
+        contentArea.innerHTML = `<h2>Profile Content</h2>`;
+    }
+}
