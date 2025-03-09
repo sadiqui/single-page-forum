@@ -82,6 +82,7 @@ function LoginFormListener() {
 
 // Show signup/login form on load of page when no session.
 function ShowloginSignup() {
+    document.querySelector(".theme-toggle").style.top = "30px";
     document.getElementById("authModal").classList.remove("hidden");
     document.getElementById("loginContainer").classList.remove("hidden");
     document.getElementById("signUpContainer").classList.add("hidden");

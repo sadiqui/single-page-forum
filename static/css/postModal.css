@@ -9,7 +9,17 @@
     position: relative;
     max-height: 80vh;
     overflow-y: auto;
-    margin-top: 130px;
+    margin-top: 20px;
+    z-index: 1000;
+}
+
+.close-button {
+    margin-left: 500px;
+    cursor: pointer;
+    font-weight: bold;
+    color: var(--tagclose-btn);
+    padding: 0;
+    font-size: 1.2rem;
 }
 
 .post-form {

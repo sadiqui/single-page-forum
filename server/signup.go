@@ -24,7 +24,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		JsonError(w, "Invalid request payload or size exceeded", http.StatusBadRequest, err)
 		return
 	}
-	
+
 	if err := ValidateSignUp(user); err != nil {
 		JsonError(w, err.Error(), http.StatusNotAcceptable, err)
 		return
@@ -79,9 +79,6 @@ func ValidateSignUp(user User) error {
 	nameRegex := `^[a-zA-Z]+$`
 	if !regexp.MustCompile(nameRegex).MatchString(user.FirstName) {
 		return fmt.Errorf("invalid first name")
-	}
-	if len(user.FirstName) < 3 {
-		return fmt.Errorf("first name is too short")
 	}
 	if len(user.FirstName) < 3 {
 		return fmt.Errorf("first name is too short")

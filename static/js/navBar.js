@@ -2,6 +2,7 @@
 *      Switch to logged in navBar       *
 *****************************************/
 function ShowLoggedInNav(username, profilePicture) {
+    document.querySelector(".theme-toggle").style.top = "150px";
     document.getElementById('navBar').innerHTML = Nav
     const navbar = document.querySelector(".navbar")
     if (!navbar) return
