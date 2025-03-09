@@ -97,6 +97,22 @@ const LoginForm = `
             </div>
 
             <form id="signUpForm" class="auth-form">
+                <label for="firstName">First Name <span>*</span></label>
+                <input type="text" id="firstName" class="input-field" placeholder="First Name" maxlength="100" required />
+
+                <label for="lastName">Last Name <span>*</span></label>
+                <input type="text" id="lastName" class="input-field" placeholder="Last Name" maxlength="100" required />
+
+                <label for="age">Age <span>*</span></label>
+                <input type="number" id="age" class="input-field" placeholder="Your Age" min="10" max="120" required />
+
+                <label>Gender <span>*</span></label>
+                <div class="gender-selection">
+                    <button type="button" class="gender-btn" id="maleBtn" data-gender="male">Male</button>
+                    <button type="button" class="gender-btn" id="femaleBtn" data-gender="female">Female</button>
+                    <input type="hidden" id="genderInput" name="gender" required />
+                </div>
+
                 <label for="signUpEmail">Email <span>*</span></label>
                 <input
                     type="email"

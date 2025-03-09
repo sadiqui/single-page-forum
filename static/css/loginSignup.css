@@ -14,7 +14,7 @@
 
 .modal-dialog {
     background-color: var(--white);
-    width: 350px;
+    width: 400px;
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
@@ -138,4 +138,49 @@
 
 #socialSignupErrorMsg {
     color: red !important;
+}
+
+/* Gender Selection */
+.gender-selection {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.gender-btn {
+    flex: 1;
+    padding: 0.7rem;
+    border: 1px solid var(--border-white);
+    background: var(--modal-input-bg);
+    color: var(--title-color);
+    font-weight: 600;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    margin-right: 5px;
+}
+
+.gender-btn:last-child {
+    margin-right: 0;
+}
+
+/* Active gender selection */
+.gender-btn.active {
+    background: var(--submit-btn);
+    color: var(--white);
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari) */
+.modal-dialog::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.modal-dialog {
+    scrollbar-width: none;
+}
+
+/* Hide scrollbar for Edge & IE */
+.modal-dialog {
+    -ms-overflow-style: none;
 }

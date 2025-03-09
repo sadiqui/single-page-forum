@@ -96,26 +96,47 @@ function LoginFormListener() {
     }
 }
 
-// Listen for inputs in Sign Up form and trigger login operation.
+// Listen for inputs in Sign Up form and trigger sign-up operation.
 function SignUpFormListener() {
     const signUpForm = document.getElementById("signUpForm");
     const signUpEmail = document.getElementById("signUpEmail");
     const signUpUsername = document.getElementById("signUpUsername");
     const signUpPassword = document.getElementById("signUpPassword");
+    const firstName = document.getElementById("firstName");
+    const lastName = document.getElementById("lastName");
+    const age = document.getElementById("age");
+    const genderInput = document.getElementById("genderInput");
     const signUpSubmit = document.getElementById("signUpSubmit");
 
     passwordIconListener(); // Update password icon on click
 
-    signUpEmail?.addEventListener("input", validateSignUp)
-    signUpUsername?.addEventListener("input", validateSignUp)
-    signUpPassword?.addEventListener("input", validateSignUp)
-    signUpForm?.addEventListener("submit", HandleSignUp)
+    // Validate form inputs on user interaction
+    signUpEmail?.addEventListener("input", validateSignUp);
+    signUpUsername?.addEventListener("input", validateSignUp);
+    signUpPassword?.addEventListener("input", validateSignUp);
+    firstName?.addEventListener("input", validateSignUp);
+    lastName?.addEventListener("input", validateSignUp);
+    age?.addEventListener("input", validateSignUp);
+
+    // Listen for gender selection
+    document.querySelectorAll(".gender-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            validateSignUp();
+        });
+    });
+
+    signUpForm?.addEventListener("submit", HandleSignUp);
 
     function validateSignUp() {
         const valid =
-            signUpEmail.value &&
-            signUpUsername.value &&
-            signUpPassword.value;
+            signUpEmail.value.trim() &&
+            signUpUsername.value.trim() &&
+            signUpPassword.value.trim() &&
+            firstName.value.trim() &&
+            lastName.value.trim() &&
+            age.value &&
+            genderInput.value; // Ensure gender is selected
+
         signUpSubmit.disabled = !valid;
         signUpSubmit.classList.toggle("disabled", !valid);
     }
