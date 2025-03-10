@@ -1,5 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Zain:ital,wght@0,200;0,300;0,400;0,700;0,800;0,900;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
 
 * {
     margin: 0;
@@ -543,16 +544,18 @@ body {
 /********************************** Tab Bar ********************************/
 /* ======= Tab Bar ======= */
 .tab-bar {
-    position: fixed;
+    position: absolute;
     top: 150px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
-    max-width: 440px;
+    max-width: 500px;
     background: var(--white);
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
+    padding-left: 10px;
+    padding-right: 10px;
     border-radius: 30px;
     box-shadow: 0 4px 10px var(--navBar-shadow);
     z-index: 999;
@@ -566,8 +569,8 @@ body {
     flex-direction: column;
     align-items: center;
     cursor: pointer;
-    padding: 7px;
-    color: var(--title-color);
+    padding: 5px;
+    color: var(--content-grey);
     transition: all 0.3s ease;
 }
 
@@ -578,7 +581,6 @@ body {
 
 .tab-btn img {
     width: 20px;
-    height: 20px;
     margin-bottom: 5px;
     filter: invert(53%) sepia(50%) saturate(1500%) hue-rotate(175deg);
     transition: filter 0.3s ease;
@@ -587,8 +589,8 @@ body {
 /* Active Button */
 .tab-btn.active {
     background: var(--action-btn);
-    border-radius: 20px;
-    padding: 5px 10px;
+    border-radius: 12px;
+    padding: 5px 20px;
     color: var(--content-grey);
 }
 

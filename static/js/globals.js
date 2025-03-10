@@ -279,4 +279,5 @@ const tabBarHTML = `
 // Num of posts on each scroll load.
 let HomeLimit = 10;
 let ProfileLimit = 6;
-let USRNAME = "";   
+let Username = "";
+let tabName = "home"

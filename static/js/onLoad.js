@@ -5,7 +5,7 @@ async function CheckSession() {
         if (res.ok) {
             const data = await res.json();
             if (data.loggedIn) {
-                USRNAME = data.username;
+                Username = data.username;
                 ShowLoggedInNav(data.username, data.profilePic);
                 document.getElementById("tabBar").innerHTML = tabBarHTML;
                 SetupTabListeners();
@@ -24,7 +24,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.body.insertAdjacentHTML("beforeend", socialForm)
     LoadTheme();
     if (sessionStorage.getItem("socialModalShown") === null || sessionStorage.getItem("socialModalShown") === "false") {
-        SocialSignUp()
+        SocialSignUp();
     }
     try {
         // Load html inside body.
@@ -64,7 +64,7 @@ function SetupTabListeners() {
             this.classList.add("active");
 
             // Get the tab name
-            const tabName = this.getAttribute("data-tab");
+            tabName = this.getAttribute("data-tab");
 
             // Call function to change content
             LoadTabContent(tabName);
@@ -79,7 +79,7 @@ function LoadTabContent(tab) {
     } else if (tab === "filter") {
         // filterRenderer(offset);
     } else if (tab === "profile") {
-        profileRenderer(USRNAME);
+        profileRenderer(Username);
     } else if (tab === "notifs") {
         // notifsRenderer(offset);
     } else if (tab === "messages") {
