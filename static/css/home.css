@@ -612,3 +612,12 @@ body {
     background: var(--action-btn);
     color: var(--white);
 }
+
+/* ======= Height divs ======= */
+.home-div {
+    height: 100px;
+}
+
+.profile-div {
+    height: 400px;
+}

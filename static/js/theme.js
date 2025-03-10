@@ -78,3 +78,16 @@ function LoadTheme() {
         }
     });
 }
+
+// Used in ShowLoggedInNav()
+function togglePosition() {
+    const toggle = document.querySelector(".theme-toggle");
+    if (!toggle) return;
+    if (window.innerWidth < 768) {
+        toggle.style.top = "100px";
+        toggle.style.left = "5px";
+    } else {
+        toggle.style.top = "150px";
+        toggle.style.left = "30px";
+    }
+}

@@ -75,7 +75,7 @@ function SetupTabListeners() {
 function LoadTabContent(tab) {
     const contentArea = document.getElementById("content"); // Ensure this exists in your HTML
     if (tab === "home") {
-        // homeRenderer(offset);
+        homeRenderer(offset);
     } else if (tab === "filter") {
         // filterRenderer(offset);
     } else if (tab === "profile") {
