@@ -10,6 +10,7 @@
     justify-content: center;
     align-items: center;
     transition: opacity 0.3s;
+    z-index: 1000;
 }
 
 .modal-dialog {
@@ -171,16 +172,16 @@
 }
 
 /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
-.modal-dialog::-webkit-scrollbar {
+.modal-dialog::-webkit-scrollbar, .post-dialog::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for Firefox */
-.modal-dialog {
+.modal-dialog, .post-dialog {
     scrollbar-width: none;
 }
 
 /* Hide scrollbar for Edge & IE */
-.modal-dialog {
+.modal-dialog, .post-dialog {
     -ms-overflow-style: none;
 }
