@@ -10,33 +10,6 @@ import (
 // Num of posts on each scroll load in profile.
 var ProfileLimit = 6
 
-// Handle the profile tab
-func ServeProfile(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed", "You can only use GET method", nil)
-		return
-	}
-
-	user, err := GetUser(r)
-	if err != nil {
-		ErrorHandler(w, http.StatusUnauthorized, "Login or signup to view profile", "", nil)
-		return
-	}
-
-	username := r.URL.Query().Get("user")
-	if username == "" {
-		ErrorHandler(w, http.StatusUnauthorized, "", "Invalid username", nil)
-		return
-	}
-
-	if user.Username != username {
-		ErrorHandler(w, http.StatusUnauthorized, "You can only view your profile", "Are you a stalker", nil)
-		return
-	}
-
-	ParseAndExecute(w, "", "static/templates/home.html")
-}
-
 // Handle fetching user data
 func ProfileInfoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -115,7 +88,7 @@ func UserPosts(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(posts)
 }
 
-// Handler to Get the User's *Liked* Posts
+// Handler to Get the User's *Liked/disliked* Posts
 func LikedPosts(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
@@ -130,6 +103,11 @@ func LikedPosts(w http.ResponseWriter, r *http.Request) {
 
 	// Read "offset" query param (default 0 if missing)
 	offsetParam := r.URL.Query().Get("offset")
+	reaction := r.URL.Query().Get("reaction")
+	if reaction != "like" && reaction != "dislike" {
+		JsonError(w, "Invalid reaction type", http.StatusBadRequest, nil)
+		return
+	}
 	offset, err := strconv.Atoi(offsetParam)
 	if err != nil {
 		JsonError(w, "Bad request", http.StatusBadRequest, err)
@@ -141,13 +119,13 @@ func LikedPosts(w http.ResponseWriter, r *http.Request) {
       	FROM post_reactions pr
       	JOIN posts p ON pr.post_id = p.id
       	JOIN users u ON p.user_id = u.id
-      	WHERE pr.user_id = ? AND pr.reaction_type = 'like'
+      	WHERE pr.user_id = ? AND pr.reaction_type = ?
       	ORDER BY p.id DESC
       	LIMIT ?
       	OFFSET ?
-    `, user.ID, ProfileLimit, offset)
+    `, user.ID, reaction, ProfileLimit, offset)
 	if err != nil {
-		JsonError(w, "Failed to get liked posts", http.StatusInternalServerError, err)
+		JsonError(w, "Failed to get posts", http.StatusInternalServerError, err)
 		return
 	}
 

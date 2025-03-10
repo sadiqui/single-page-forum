@@ -61,11 +61,11 @@ async function AddReaction(ID, reactionType, postOrComm, type) {
 
         // Re-fetch the new counts + userReaction
         FetchReactions(ID, postOrComm, type)
-        if (window.location.href.includes("profile") && currentTab == "liked") {
-            offset = 0;
-            fetchLikedPosts(offset)
+        if (currentProfileTab == "liked") {
+            profileOffset = 0;
+            fetchLikedPosts(profileOffset, "like")
                 .then(() => {
-                    offset += ProfileLimit;
+                    profileOffset += ProfileLimit;
                 })
         }
         // Set to refresh when back to profile/liked tab if there is a reaction

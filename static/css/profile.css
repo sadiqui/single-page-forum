@@ -70,7 +70,7 @@
     margin-bottom: 1.5rem;
 }
 
-@media (max-width: 400px) { 
+@media (max-width: 400px) {
     .buttons-container button {
         font-size: 14px;
         padding: 24px 12px;
@@ -100,7 +100,7 @@
 .action-btn.active {
     background: var(--action-btn);
     color: #1a1a1a;
-    box-shadow: 3px 3px 3px var(--post-card-shadow); 
+    box-shadow: 3px 3px 3px var(--post-card-shadow);
 }
 
 
@@ -145,6 +145,77 @@
 
 /****** Align post content to left 
 (remove center behaviour of container) ******/
-#dynamicContent {
+#profileDynamicContent {
     text-align: left;
+}
+
+
+/******************** Profile Tabs **************************/
+/* ======= Profile Tab Bar ======= */
+.profile-tab-bar {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: var(--white);
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    padding-left: 5px;
+    padding-right: 5px;
+    box-shadow: 0 4px 10px var(--navBar-shadow);
+    z-index: 999;
+}
+
+/* ======= Profile Tab Buttons ======= */
+.profile-tab-btn {
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px;
+    color: var(--content-grey);
+    transition: all 0.3s ease;
+}
+
+.profile-tab-txt {
+    font-family: "Zain";
+    font-size: 18px;
+}
+
+.profile-tab-btn img {
+    width: 20px;
+    margin-bottom: 5px;
+    filter: invert(53%) sepia(50%) saturate(1500%) hue-rotate(175deg);
+    transition: filter 0.3s ease;
+}
+
+/* Active Button */
+.profile-tab-btn.active {
+    background: var(--action-btn);
+    border-radius: 6px;
+    padding: 5px 20px;
+    color: var(--content-grey);
+}
+
+.profile-tab-btn.active img {
+    filter: invert(50%) brightness(50%);
+}
+
+/* ======= Dark Mode Support ======= */
+:root.dark-mode .profile-tab-bar {
+    background: #3a3f4b;
+    box-shadow: 0 4px 10px var(--notif-shadow);
+}
+
+:root.dark-mode .profile-tab-btn {
+    color: var(--light-grey);
+}
+
+:root.dark-mode .profile-tab-btn.active {
+    background: var(--action-btn);
+    color: var(--white);
 }

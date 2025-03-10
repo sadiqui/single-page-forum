@@ -27,7 +27,7 @@ async function LoadPosts(offset = 0, tagsStr = "") {
         const posts = await res.json();
 
         // If offset == 0, we assume we're refreshing from start
-        RenderPosts(posts, offset);
+        // RenderPosts(posts, offset);
 
     } catch (err) {
         console.error(err);

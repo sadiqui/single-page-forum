@@ -1,10 +1,11 @@
 // Renders a list of post objects into #postsContainer.
 // if clearFirst we first remove content inside it.
 function RenderPosts(posts, offset, truncate = 300) {
-    let postsContainer = document.getElementById("postsContainer");
-    if (!postsContainer) {
-        postsContainer = document.getElementById('dynamicContent');
-        if (!postsContainer) return
+    let postsContainer = ""
+    if (tabName === "profile") {
+        postsContainer = document.getElementById("profileDynamicContent");
+    } else {
+        return
     }
 
     // If offset = 0 clear the container

@@ -1,24 +1,3 @@
-// Fetch the logged in user from session cookie.
-async function CheckSession() {
-    try {
-        const res = await fetch("/api/check-session");
-        if (res.ok) {
-            const data = await res.json();
-            if (data.loggedIn) {
-                Username = data.username;
-                ShowLoggedInNav(data.username, data.profilePic);
-                document.getElementById("tabBar").innerHTML = tabBarHTML;
-                SetupTabListeners();
-            }
-        } else {
-            ShowloginSignup()
-        }
-    } catch (err) {
-        console.log(err);
-        PopError("Something went wrong.")
-    }
-}
-
 // Launch once the DOM is loaded to dynamically insert elements
 document.addEventListener("DOMContentLoaded", async () => {
     document.body.insertAdjacentHTML("beforeend", socialForm)
@@ -45,10 +24,33 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 })
 
+// Fetch the logged in user from session cookie.
+async function CheckSession() {
+    try {
+        const res = await fetch("/api/check-session");
+        if (res.ok) {
+            const data = await res.json();
+            if (data.loggedIn) {
+                Username = data.username;
+                ShowLoggedInNav(data.username, data.profilePic);
+                document.getElementById("tabBar").innerHTML = tabBarHTML;
+                SetupTabListeners();
+            }
+        } else {
+            ShowloginSignup()
+        }
+    } catch (err) {
+        console.log(err);
+        PopError("Something went wrong.")
+    }
+}
+
 function SetupTabListeners() {
     const tabButtons = document.querySelectorAll(".tab-btn");
 
     // Set "Home" as the default active tab on page load
+    //RECHECK
+    //LOadRoutes()
     const defaultTab = document.querySelector('.tab-btn[data-tab="home"]');
     if (defaultTab) {
         defaultTab.classList.add("active");
@@ -73,9 +75,10 @@ function SetupTabListeners() {
 }
 
 function LoadTabContent(tab) {
-    const contentArea = document.getElementById("content"); // Ensure this exists in your HTML
     if (tab === "home") {
-        homeRenderer(offset);
+        // homeRenderer(offset);
+        const dynamicContent = document.getElementById("content");
+    dynamicContent.innerHTML = "hello";
     } else if (tab === "filter") {
         // filterRenderer(offset);
     } else if (tab === "profile") {
@@ -90,21 +93,21 @@ function LoadTabContent(tab) {
 }
 
 // Handle Refresh: Check URL and Load Correct Content
-window.addEventListener("DOMContentLoaded", () => {
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get("user");
-    if (username) {
-        profileRenderer(username);
-    }
-});
+// window.addEventListener("DOMContentLoaded", () => {
+//     const params = new URLSearchParams(window.location.search);
+//     const username = params.get("user");
+//     if (username) {
+//         profileRenderer(username);
+//     }
+// });
 
-// Handle browser back/forward navigation
-window.addEventListener("popstate", () => {
-    const params = new URLSearchParams(window.location.search);
-    const username = params.get("user");
-    if (username) {
-        profileRenderer(username);
-    } else {
-        homeRenderer();
-    }
-});
+// // Handle browser back/forward navigation
+// window.addEventListener("popstate", () => {
+//     const params = new URLSearchParams(window.location.search);
+//     const username = params.get("user");
+//     if (username) {
+//         profileRenderer(username);
+//     } else {
+//         homeRenderer();
+//     }
+// });
