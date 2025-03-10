@@ -254,16 +254,24 @@ const tabBarHTML = `
             <span class="tab-txt">Home</span>
         </button>
         <button class="tab-btn" data-tab="filter">
-            <img src="../img/filter.svg" alt="Filter">
+            <img src="../img/filter.png" alt="Filter">
             <span class="tab-txt">Filter</span>
         </button>
+        <button class="tab-btn" data-tab="profile">
+            <img src="../img/profile.png" alt="Profile">
+            <span class="tab-txt">Profile</span>
+        </button>
+        <button class="tab-btn" data-tab="notifications">
+            <img src="../img/notifs.png" alt="Notifications">
+            <span class="tab-txt">Notifs</span>
+        </button>
         <button class="tab-btn" data-tab="messages">
-            <img src="../img/message.svg" alt="Messages">
+            <img src="../img/messages.png" alt="Messages">
             <span class="tab-txt">Messages</span>
         </button>
-        <button class="tab-btn" data-tab="profile">
-            <img src="../img/profile.svg" alt="Profile">
-            <span class="tab-txt">Profile</span>
+        <button class="tab-btn" data-tab="settings">
+            <img src="../img/settings.svg" alt="Settings">
+            <span class="tab-txt">Settings</span>
         </button>
     </nav>
 `;

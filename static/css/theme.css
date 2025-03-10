@@ -11,7 +11,7 @@
     --nav-btn-hvr: #3eacf5;
     --nav-menu-hvr: #61c8f8;
     --tag-pill: #adceff;
-    --action-btn: #98d3ff;
+    --action-btn: rgb(210, 229, 247);;
 
     --profile-bg: url('https://i.postimg.cc/1XCwNjhF/cover.png');
 
@@ -85,7 +85,6 @@
     height: 1.5em;
 }
 
-
 /* ===== Dark Mode Overrides ===== */
 :root.dark-mode {
     /*** Blues ***/
@@ -99,11 +98,10 @@
     --nav-btn-hvr: #56b3ff;
     --nav-menu-hvr: #2a79c2;
     --tag-pill: #3895ec;
-    --action-btn: #0084ff;
-
-    --profile-bg: rgb(56, 56, 56);
+    --action-btn: #66b3ff;
 
     /*** Whites-Greys ***/
+    --profile-bg: rgb(56, 56, 56);
     --white: #1f2f3f;
     --modal-input-bg: #1f2a3a;
     --theme-toggle: #444b58;
