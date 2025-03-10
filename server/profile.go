@@ -10,7 +10,7 @@ import (
 // Num of posts on each scroll load in profile.
 var ProfileLimit = 6
 
-// Serve the profile html
+// Handle the profile tab
 func ServeProfile(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		ErrorHandler(w, http.StatusMethodNotAllowed, "Method not allowed", "You can only use GET method", nil)
@@ -33,13 +33,8 @@ func ServeProfile(w http.ResponseWriter, r *http.Request) {
 		ErrorHandler(w, http.StatusUnauthorized, "You can only view your profile", "Are you a stalker", nil)
 		return
 	}
-	usr := struct {
-		Username string
-	}{
-		Username: username,
-	}
 
-	ParseAndExecute(w, usr, "./static/templates/profile.html")
+	ParseAndExecute(w, "", "static/templates/home.html")
 }
 
 // Handle fetching user data
@@ -117,9 +112,8 @@ func UserPosts(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(posts)
+	json.NewEncoder(w).Encode(posts)
 }
-
 
 // Handler to Get the User's *Liked* Posts
 func LikedPosts(w http.ResponseWriter, r *http.Request) {
@@ -152,25 +146,25 @@ func LikedPosts(w http.ResponseWriter, r *http.Request) {
       	LIMIT ?
       	OFFSET ?
     `, user.ID, ProfileLimit, offset)
-    if err != nil {
-        JsonError(w, "Failed to get liked posts", http.StatusInternalServerError, err)
-        return
-    }
+	if err != nil {
+		JsonError(w, "Failed to get liked posts", http.StatusInternalServerError, err)
+		return
+	}
 
 	defer rows.Close()
 
 	var posts []Post
-    for rows.Next() {
-        var p Post
-        if err := rows.Scan(&p.ID, &p.UserID, &p.Title, &p.Content, &p.Image, &p.CreatedAt, &p.Username); err != nil {
-            JsonError(w, "Failed to scan liked posts", http.StatusInternalServerError, err)
-            return
-        }
+	for rows.Next() {
+		var p Post
+		if err := rows.Scan(&p.ID, &p.UserID, &p.Title, &p.Content, &p.Image, &p.CreatedAt, &p.Username); err != nil {
+			JsonError(w, "Failed to scan liked posts", http.StatusInternalServerError, err)
+			return
+		}
 		cats, _ := FetchPostCategories(p.ID)
 		p.Categories = cats
-        posts = append(posts, p)
-    }
+		posts = append(posts, p)
+	}
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(posts)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(posts)
 }

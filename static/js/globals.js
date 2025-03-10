@@ -261,8 +261,8 @@ const tabBarHTML = `
             <img src="../img/profile.png" alt="Profile">
             <span class="tab-txt">Profile</span>
         </button>
-        <button class="tab-btn" data-tab="notifications">
-            <img src="../img/notifs.png" alt="Notifications">
+        <button class="tab-btn" data-tab="notifs">
+            <img src="../img/notifs.png" alt="Notifs">
             <span class="tab-txt">Notifs</span>
         </button>
         <button class="tab-btn" data-tab="messages">
@@ -277,5 +277,6 @@ const tabBarHTML = `
 `;
 
 // Num of posts on each scroll load.
-let HomeLimit = 10
-let ProfileLimit = 6
+let HomeLimit = 10;
+let ProfileLimit = 6;
+let USRNAME = "";   

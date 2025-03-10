@@ -201,7 +201,6 @@ async function fetchLikedPosts(offset) {
     }
 }
 
-
 /* -----------------------
 New Post Form listeners 
 -------------------------*/
@@ -210,7 +209,6 @@ document.getElementById("createPost")?.addEventListener("click", (e) => {
     e.preventDefault() // to prevent going to # (default)
     document.getElementById("newPostModal")?.classList.remove("hidden");
 });
-
 
 /* -----------------------
     Logout listeners 

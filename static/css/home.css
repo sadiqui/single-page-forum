@@ -555,6 +555,7 @@ body {
     padding: 10px 0;
     border-radius: 30px;
     box-shadow: 0 4px 10px var(--navBar-shadow);
+    z-index: 999;
 }
 
 /* ======= Tab Buttons ======= */

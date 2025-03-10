@@ -5,6 +5,7 @@ async function CheckSession() {
         if (res.ok) {
             const data = await res.json();
             if (data.loggedIn) {
+                USRNAME = data.username;
                 ShowLoggedInNav(data.username, data.profilePic);
                 document.getElementById("tabBar").innerHTML = tabBarHTML;
                 SetupTabListeners();
@@ -74,12 +75,36 @@ function SetupTabListeners() {
 function LoadTabContent(tab) {
     const contentArea = document.getElementById("content"); // Ensure this exists in your HTML
     if (tab === "home") {
-        contentArea.innerHTML = `<h2>Home Content</h2>`;
+        // homeRenderer(offset);
     } else if (tab === "filter") {
-        contentArea.innerHTML = `<h2>Filter Content</h2>`;
-    } else if (tab === "messages") {
-        contentArea.innerHTML = `<h2>Messages Content</h2>`;
+        // filterRenderer(offset);
     } else if (tab === "profile") {
-        contentArea.innerHTML = `<h2>Profile Content</h2>`;
+        profileRenderer(USRNAME);
+    } else if (tab === "notifs") {
+        // notifsRenderer(offset);
+    } else if (tab === "messages") {
+        // messagesRenderer(offset);
+    } else if (tab === "settings") {
+        // settingsRenderer();
     }
 }
+
+// Handle Refresh: Check URL and Load Correct Content
+window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("user");
+    if (username) {
+        profileRenderer(username);
+    }
+});
+
+// Handle browser back/forward navigation
+window.addEventListener("popstate", () => {
+    const params = new URLSearchParams(window.location.search);
+    const username = params.get("user");
+    if (username) {
+        profileRenderer(username);
+    } else {
+        homeRenderer();
+    }
+});
