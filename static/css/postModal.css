@@ -214,7 +214,7 @@
 
 .upload-text {
     font-weight: 500;
-    color: var(--dark-grey) !important;
+    color: var(--title-color) !important;
 }
 
 .drag-over {
