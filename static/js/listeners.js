@@ -216,11 +216,11 @@ function NewPostListener() {
 }
 
 // Listen for image upload in post form to display the filename.
-function imageUploaded() {
-    const fileInput = document.getElementById("formPostImage");
+function imageUploaded(id) {
+    const fileInput = document.getElementById(id)
     const uploadText = document.querySelector(".upload-text");
 
-    fileInput.addEventListener("change", () => {
+    fileInput.addEventListener("change", () => {        
         if (!fileInput.files || fileInput.files.length === 0) {
             // No file selected, reset text
             uploadText.textContent = "Upload Image (optional)";

@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         LoginFormListener();
         SignUpFormListener();
         NewPostListener();
-        imageUploaded();
+        imageUploaded("formPostImage");
         CheckOAuth()
 
     } catch (err) {
@@ -37,9 +37,9 @@ async function CheckSession() {
                 document.getElementById("tabBar").innerHTML = tabBarHTML;
                 SetupTabListeners();
             }
-        } else {
+        } else {           
             ShowloginSignup()
-            imageUploaded()
+            imageUploaded("profilePic")
         }
     } catch (err) {
         console.log(err);
