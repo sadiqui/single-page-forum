@@ -225,8 +225,6 @@
     color: var(--white);
 }
 
-
-
 /****************** Comments Tab *****************/
 .user-comments-scroll {
     max-height: 200px;
@@ -239,5 +237,4 @@
 
     /* Hide scrollbar by default */
     scrollbar-width: thin;
-    
 }

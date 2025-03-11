@@ -20,6 +20,10 @@ body {
     opacity: 0;
 }
 
+#content {
+    margin-top: 400px;
+}
+
 /****************Enable-JS Warning***************/
 .noscript-warning {
     background-color: var(--noscript-bg);

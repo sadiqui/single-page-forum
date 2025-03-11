@@ -276,6 +276,19 @@ const tabBarHTML = `
     </nav>
 `;
 
+const Filter = `
+        <!-- Tag Filter Section -->
+        <section id="tagFilterSection">
+            <h3>Filter by tags</h3>
+            <div id="tagFilterContainer">
+                <div id="selectedTags" class="selected-tags"></div>
+                <input type="text" id="tagFilterInput" class="tag-filter-input"
+                    placeholder="Type a tag..." />
+                <div id="tagSuggestions" class="tag-suggestions hidden"></div>
+            </div>
+        </section> 
+`
+
 // Num of posts on each scroll load.
 let HomeLimit = 10;
 let ProfileLimit = 6;

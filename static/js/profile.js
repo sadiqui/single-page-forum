@@ -10,7 +10,6 @@ function profileRenderer(username) {
     dynamicContent.innerHTML = `
         <div class="content-section">
             <div class="profile-card">
-                <div class="profile-div"></div>
                 <div class="profile-image">
                     <img src="../img/avatar.webp"
                         alt="Profile Picture" />

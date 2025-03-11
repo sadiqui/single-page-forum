@@ -3,12 +3,14 @@ let offset = 0;
 let isLoading = false;
 let lastScrollY = window.scrollY;
 
-// Initial load of unfiltered posts
-LoadPosts(offset).then(() => {
-    offset += HomeLimit;
-});
-
-window.addEventListener('scroll', handleScroll, { passive: true });
+function homeRenderer() { 
+    offset = 0;
+    // Initial load of unfiltered posts
+    LoadPosts(offset).then(() => {
+        offset += HomeLimit;
+    });
+    window.addEventListener('scroll', handleScroll, { passive: true });
+}
 
 async function LoadPosts(offset = 0, tagsStr = "") {
     try {
@@ -27,7 +29,7 @@ async function LoadPosts(offset = 0, tagsStr = "") {
         const posts = await res.json();
 
         // If offset == 0, we assume we're refreshing from start
-        // RenderPosts(posts, offset);
+        RenderPosts(posts, offset);
 
     } catch (err) {
         console.error(err);

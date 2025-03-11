@@ -76,9 +76,9 @@ function SetupTabListeners() {
 
 function LoadTabContent(tab) {
     if (tab === "home") {
-        // homeRenderer(offset);
         const dynamicContent = document.getElementById("content");
-    dynamicContent.innerHTML = "hello";
+        dynamicContent.innerHTML = "";
+        homeRenderer();
     } else if (tab === "filter") {
         // filterRenderer(offset);
     } else if (tab === "profile") {

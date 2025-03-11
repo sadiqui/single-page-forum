@@ -4,8 +4,8 @@ function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
     if (tabName === "profile") {
         postsContainer = document.getElementById("profileDynamicContent");
-    } else {
-        return
+    } else if (tabName === "home") {
+        postsContainer = document.getElementById("content");
     }
 
     // If offset = 0 clear the container
