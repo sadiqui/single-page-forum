@@ -4,13 +4,18 @@ function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
     if (tabName === "profile") {
         postsContainer = document.getElementById("profileDynamicContent");
-    } else if (tabName === "home") {
+    } else if (tabName === "home" || tabName === "filter") {
         postsContainer = document.getElementById("content");
     }
 
     // If offset = 0 clear the container
     if (offset == 0) {
         postsContainer.innerHTML = "";
+    }
+
+    // If we're on the "filter" tab, add the filter UI at the top (only once, when offset=0)
+    if (tabName === "filter" && offset === 0) {        
+        postsContainer.insertAdjacentHTML("beforeend", Filter);
     }
 
     if (!posts || posts.length === 0) {

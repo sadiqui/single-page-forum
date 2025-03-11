@@ -7,23 +7,23 @@ async function FilterCategories() {
     const TAGS = await FetchCategories(tagFilterSection);
 
     // // Show all suggestions on focus if input is empty
-    // tagInput.addEventListener("focus", () => {
-    //     if (!tagInput.value.trim()) {
-    //         const availableTags = TAGS.filter((tag) => !selectedTags.includes(tag));
-    //         showSuggestions(availableTags);
-    //     }
-    // });
+    tagInput.addEventListener("focus", () => {
+        if (!tagInput.value.trim()) {
+            const availableTags = TAGS.filter((tag) => !selectedTags.includes(tag));
+            showSuggestions(availableTags);
+        }
+    });
 
     // // Filter suggestions as user types
-    // tagInput.addEventListener("input", (e) => {
-    //     const query = e.target.value.trim().toLowerCase();
-    //     let matched = TAGS.filter((tag) =>
-    //         tag.toLowerCase().includes(query) && !selectedTags.includes(tag)
-    //     );
+    tagInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        let matched = TAGS.filter((tag) =>
+            tag.toLowerCase().includes(query) && !selectedTags.includes(tag)
+        );
 
-    //     matched = sortByQuery(matched, query);
-    //     matched.length === 0 ? hideSuggestions() : showSuggestions(matched);
-    // });
+        matched = sortByQuery(matched, query);
+        matched.length === 0 ? hideSuggestions() : showSuggestions(matched);
+    });
 
     document.addEventListener("click", (e) => {
         if (!suggestionsBox.contains(e.target) && e.target !== tagInput) {
@@ -99,5 +99,3 @@ async function FilterCategories() {
         }
     }
 }
-// Call the function handling Filter
-FilterCategories()

@@ -78,12 +78,14 @@ function SetupTabListeners() {
 
 function LoadTabContent(tab) {
     if (tab === "home") {
-        currentProfileTab = "home"
+        currentProfileTab = ""
         // const dynamicContent = document.getElementById("content");
         // dynamicContent.innerHTML = "";
         homeRenderer();
     } else if (tab === "filter") {
-        // filterRenderer(offset);
+        homeRenderer();
+        // Call the function handling Filter
+        FilterCategories()
     } else if (tab === "profile") {
         profileRenderer(Username);
     } else if (tab === "notifs") {
