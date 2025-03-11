@@ -39,7 +39,7 @@ function profileRenderer(username) {
     `;
     SetupProfileTabListeners()
     // Listen for scroll => infinite loading
-    if (tabName === "profile" ) {
+    if (tabName === "profile") {
         window.addEventListener("scroll", handleProfileScroll, { passive: true });
     }
 }
@@ -61,26 +61,26 @@ function SetupProfileTabListeners() {
             dynamicContent.innerHTML = "";
 
             // Get the tab name
-            const tabName = this.getAttribute("data-tab");
+            const profileTab = this.getAttribute("data-tab");
             profileOffset = 0;
             profileisLoading = false;
 
-            if (tabName === "liked") {
+            if (profileTab === "liked") {
                 currentProfileTab = "liked"
                 fetchLikedPosts(profileOffset, "like").then(() => {
                     window.scrollTo(0, scrollPos); // Restore scroll position
                 });
-            } else if (tabName === "disliked") {
+            } else if (profileTab === "disliked") {
                 currentProfileTab = "disliked"
                 fetchLikedPosts(profileOffset, "dislike").then(() => {
                     window.scrollTo(0, scrollPos); // Restore scroll position
                 });
-            } else if (tabName === "posts") {
+            } else if (profileTab === "posts") {
                 currentProfileTab = "posts"
                 fetchUserPosts(profileOffset).then(() => {
                     window.scrollTo(0, scrollPos);
                 });
-            } else if (tabName === "comments") {
+            } else if (profileTab === "comments") {
                 currentProfileTab = "comments"
                 fetchCommentedPosts(profileOffset).then(() => {
                     window.scrollTo(0, scrollPos);
@@ -122,7 +122,7 @@ async function fetchLikedPosts(profileOffset, reaction) {
    FETCH USER POSTS
 -------------------------*/
 async function fetchUserPosts(profileOffset) {
-    const dynamicContent = document.getElementById("dynamicContent");
+    const dynamicContent = document.getElementById("profileDynamicContent");
 
     try {
         const res = await fetch(`/api/user-posts?offset=${profileOffset}`);
@@ -144,7 +144,7 @@ async function fetchUserPosts(profileOffset) {
    FETCH Commented POSTS
 ---------------------------*/
 async function fetchCommentedPosts(profileOffset) {
-    const dynamicContent = document.getElementById("dynamicContent");
+    const dynamicContent = document.getElementById("profileDynamicContent");
 
     try {
         const res = await fetch(`/api/user-commented-posts?offset=${profileOffset}`);
