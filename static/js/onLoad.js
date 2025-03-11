@@ -76,6 +76,7 @@ function SetupTabListeners() {
 
 function LoadTabContent(tab) {
     if (tab === "home") {
+        currentProfileTab = ""
         const dynamicContent = document.getElementById("content");
         dynamicContent.innerHTML = "";
         homeRenderer();

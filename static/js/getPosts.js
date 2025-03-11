@@ -9,10 +9,14 @@ function homeRenderer() {
     LoadPosts(offset).then(() => {
         offset += HomeLimit;
     });
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Listen for scroll => infinite loading
+    window.addEventListener('scroll', handleScroll, { passive: true });   
 }
 
 async function LoadPosts(offset = 0, tagsStr = "") {
+    if (tabName === "profile" ) {
+        return
+    }
     try {
         let url = `/api/get-posts?offset=${offset}`;
         if (tagsStr) {

@@ -1,4 +1,4 @@
-let currentProfileTab = "liked"; // or "liked" or "info"
+let currentProfileTab = ""; // or "liked"...
 let profileOffset = 0;
 // Loading flag to prevent overlapping fetches (throttle)
 let profileisLoading = false;
@@ -39,7 +39,9 @@ function profileRenderer(username) {
     `;
     SetupProfileTabListeners()
     // Listen for scroll => infinite loading
-    window.addEventListener("scroll", handleProfileScroll, { passive: true });
+    if (tabName === "profile" ) {
+        window.addEventListener("scroll", handleProfileScroll, { passive: true });
+    }
 }
 
 
