@@ -117,8 +117,95 @@ function RenderPost(post, postDiv, single = "") {
     AttachReactionListeners(post.id, postDiv, "post")
     FetchCommentsCount(post.id, postDiv)
     updateTagIcons()
+    if (currentProfileTab == "comments") {
+        // Create a container for *this user's* comments
+        const userCommentsContainer = document.createElement("div");
+        userCommentsContainer.id = `userComments-${post.id}`;
+        userCommentsContainer.classList.add("user-comments-scroll");
+        // e.g. .user-comments-scroll { max-height: 200px; overflow-y: auto; }
+
+        // Insert it into the DOM (say, at the bottom of the postDiv)
+        postDiv.appendChild(userCommentsContainer);
+
+        // Now fetch the user's comments for this post
+        getUserComments(post.id);
+    }
 }
 
+// This function will be called for each post when you're on the "comments" tab.
+async function getUserComments(postId) {
+    try {
+        const res = await fetch(`/api/user-post-comments?post_id=${postId}`);
+        if (!res.ok) {
+            console.error("Failed to fetch user comments for post:", postId);
+            return;
+        }
+
+        // Parse the returned JSON array of comments
+        const comments = await res.json();
+
+        // Find the scrollable div we created in RenderPost
+        const container = document.getElementById(`userComments-${postId}`);
+        if (!container) {
+            console.warn("No container found for user comments on post:", postId);
+            return;
+        }
+
+        // Render those comments into that container
+        RenderUserComments(comments, container);
+    } catch (err) {
+        console.error("Error fetching user comments:", err);
+    }
+}
+
+function RenderUserComments(comments, container) {
+    // Clear whatever was there
+    container.innerHTML = "";
+
+    if (!comments || comments.length === 0) {
+        container.innerHTML = `<p>No comments yet!</p>`;
+        return;
+    }
+
+    // Loop through each comment, build markup, append
+    comments.forEach((comment) => {
+        const profilePic = comment.profilePic || "../img/avatar.webp";
+        const commentEl = document.createElement("div");
+        commentEl.classList.add("comment-item");
+
+        commentEl.innerHTML = `
+            <p class="comment-meta">
+                <div class="username">
+                    <img src="${profilePic}" alt="User Avatar" class="comment-user-avatar">
+                    ${comment.username}
+                    <span class="time-ago" data-timestamp="${comment.created_at}">
+                        &nbsp• ${timeAgo(comment.created_at)}
+                    </span>
+                </div>
+            </p>
+            <p class="comment-content">${comment.content}</p>
+
+            <!-- Reaction Section for each comment -->
+            <div class="comment-reaction-buttons">
+                <button class="reaction-button comment-like-button">
+                    <img class="comment-like-icon" src="../img/like.svg" alt="like">
+                </button>
+                <span class="comment-like-count">0</span>
+
+                <button class="reaction-button comment-dislike-button">
+                    <img class="comment-dislike-icon" src="../img/dislike.svg" alt="dislike">
+                </button>
+                <span class="comment-dislike-count">0</span>
+            </div>
+        `;
+
+        container.appendChild(commentEl);
+
+        // If you want to reuse your comment reaction logic:
+        FetchReactions(comment.id, commentEl, "comment");
+        AttachReactionListeners(comment.id, commentEl, "comment");
+    });
+}
 
 // Fetch comments count
 async function FetchCommentsCount(postId, postDiv) {

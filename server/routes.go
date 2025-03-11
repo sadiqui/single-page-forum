@@ -30,6 +30,8 @@ func Routes() http.Handler {
 	mux.HandleFunc("/api/user-info", ProfileInfoHandler)
 	mux.HandleFunc("/api/user-posts", UserPosts)
 	mux.HandleFunc("/api/user-liked-posts", LikedPosts)
+	mux.HandleFunc("/api/user-commented-posts", UserCommentedPosts)
+	mux.HandleFunc("/api/user-post-comments", GetUserPostComments)
 
 	// Rate Limiting (Auth & Content Creation)
 	mux.Handle("/api/login", rl.Middleware(http.HandlerFunc(LoginHandler)))

@@ -185,7 +185,7 @@ const socialForm = `
 const NewPostForm = `
 <!-- New Post Modal -->
 <div id="newPostModal" class="modal hidden">
-    <div class="post-dialog">
+    <div id="postMod" class="post-dialog">
         <span id="closeNewPostModal" class="close-button">&times;</span>
         <h2>Create New Post</h2>
         <form id="newPostForm" class="post-form">

@@ -205,6 +205,11 @@
     filter: invert(50%) brightness(50%);
 }
 
+.profileUsername {
+    color: var(--content-grey);
+    justify-content: space-around;
+}
+
 /* ======= Dark Mode Support ======= */
 :root.dark-mode .profile-tab-bar {
     background: #3a3f4b;
@@ -218,4 +223,21 @@
 :root.dark-mode .profile-tab-btn.active {
     background: var(--action-btn);
     color: var(--white);
+}
+
+
+
+/****************** Comments Tab *****************/
+.user-comments-scroll {
+    max-height: 200px;
+    /* Adjust height as needed */
+    overflow-y: auto;
+    margin-top: 1rem;
+    padding-left: 1rem;
+    /* Optional for indentation */
+    border-left: 2px solid #ccc;
+
+    /* Hide scrollbar by default */
+    scrollbar-width: thin;
+    
 }

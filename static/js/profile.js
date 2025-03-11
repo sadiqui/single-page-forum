@@ -15,7 +15,7 @@ function profileRenderer(username) {
                     <img src="../img/avatar.webp"
                         alt="Profile Picture" />
                 </div>
-                <div class="username">${username}</div>
+                <div class="profileUsername username">${username}</div>
                 <nav class="profile-tab-bar">
                     <button class="profile-tab-btn active" data-tab="liked">
                         <img src="../img/liked.svg" alt="liked">
@@ -27,7 +27,7 @@ function profileRenderer(username) {
                     </button>
                     <button class="profile-tab-btn" data-tab="posts">
                         <img src="../img/posts.svg" alt="Posts">
-                        <span class="profile-tab-txt">Posts</span>
+                        <span class="profile-tab-txt">My Posts</span>
                     </button>
                     <button class="profile-tab-btn" data-tab="comments">
                         <img src="../img/comments.svg" alt="comments">
@@ -50,7 +50,7 @@ function SetupProfileTabListeners() {
 
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
-            const scrollPos = window.scrollY; // Save current scroll position
+            const scrollPos = window.scrollY; // Save current click scroll position
 
             // Remove active class from all buttons
             tabButtons.forEach(btn => btn.classList.remove("active"));
@@ -80,13 +80,16 @@ function SetupProfileTabListeners() {
                     window.scrollTo(0, scrollPos);
                 });
             } else if (tabName === "comments") {
-                // messagesRenderer(offset);
+                currentProfileTab = "comments"
+                fetchCommentedPosts(profileOffset).then(() => {
+                    window.scrollTo(0, scrollPos);
+                });
             }
         });
     });
 
-    // By default, trigger the "Posts" button
-    const defaultInfoBtn = document.querySelector('.profile-tab-btn[data-tab="posts"]');
+    // By default, trigger the "liked" button
+    const defaultInfoBtn = document.querySelector('.profile-tab-btn[data-tab="liked"]');
     if (defaultInfoBtn) {
         defaultInfoBtn.click();
     }
@@ -136,6 +139,28 @@ async function fetchUserPosts(profileOffset) {
     }
 }
 
+/*-------------------------
+   FETCH Commented POSTS
+---------------------------*/
+async function fetchCommentedPosts(profileOffset) {
+    const dynamicContent = document.getElementById("dynamicContent");
+
+    try {
+        const res = await fetch(`/api/user-commented-posts?offset=${profileOffset}`);
+        if (!res.ok) return;
+
+        const posts = await res.json();
+        if ((!posts || posts.length == 0) && profileOffset == 0) {
+            dynamicContent.innerHTML = "No comments yet!"
+            return
+        }
+        RenderPosts(posts, profileOffset, 100);
+    } catch (err) {
+        console.error(err);
+        DisplayError("errMsg", dynamicContent, "Error loading user posts.");
+    }
+}
+
 /* -------------------
    SCROLL HANDLER
 --------------------*/
@@ -170,6 +195,14 @@ function handleProfileScroll() {
                 });
         } else if (currentProfileTab === "disliked") {
             fetchLikedPosts(profileOffset)
+                .then(() => {
+                    profileOffset += ProfileLimit;
+                })
+                .finally(() => {
+                    profileisLoading = false;
+                });
+        } else if (currentProfileTab === "comments") {
+            fetchCommentedPosts(profileOffset)
                 .then(() => {
                     profileOffset += ProfileLimit;
                 })
