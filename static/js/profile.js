@@ -264,7 +264,7 @@ function SetupImageUpdate() {
             if (document.querySelector(".avatar-menu img")) {
                 document.querySelector(".avatar-menu img").src = `../uploads/${data.profile_pic}`;
             }
-            ProfilePic = `../uploads/${data.profile_pic}`;
+            ProfilePic = `${data.profile_pic}`;
         } catch (err) {
             console.error("Network error:", err);
             PopError("Network error while updating profile picture");
