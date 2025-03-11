@@ -41,7 +41,7 @@ function RenderPosts(posts, offset, truncate = 300) {
 
 // Build post html (user in getPosts and singlePost)
 function RenderPost(post, postDiv, single = "") {
-    const profilePic = post.profilePic || "../img/avatar.webp";
+    const profilePic = post.profile_pic || "../img/avatar.webp";
 
     // Build categories HTML
     const categoriesHTML = (post.categories || [])
@@ -68,7 +68,7 @@ function RenderPost(post, postDiv, single = "") {
     postDiv.innerHTML = `
         <!-- Post Header -->
         <div class="post-header">
-            <img src="${profilePic}" alt="User Avatar" class="user-avatar">
+            <img src="../uploads/${profilePic}" alt="User Avatar" class="user-avatar">
             <div class="user-info">
                 <div class="username">
                     ${post.username}

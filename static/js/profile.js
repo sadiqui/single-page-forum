@@ -11,7 +11,7 @@ function profileRenderer(username) {
         <div class="content-section">
             <div class="profile-card">
                 <div class="profile-image">
-                    <img src="../img/avatar.webp"
+                    <img src="../uploads/${ProfiePic}"
                         alt="Profile Picture" />
                 </div>
                 <div class="profileUsername username">${username}</div>

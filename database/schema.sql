@@ -8,6 +8,7 @@ CREATE TABLE
         last_name TEXT NOT NULL,
         age INTEGER NOT NULL,
         gender TEXT NOT NULL CHECK (gender IN ('male', 'female')),
+        profile_pic TEXT NOT NULL DEFAULT 'avatar.webp',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 

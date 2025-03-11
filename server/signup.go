@@ -1,12 +1,21 @@
 package server
 
 import (
-	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"regexp"
+	"strconv"
 
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	maxEmailSize    = 200
+	maxUsernameSize = 50
+	maxNameSize     = 50
+	maxPasswordSize = 100
+	maxPicSize      = 5 << 20 // 5 MB for profile picture
 )
 
 // Signing up a new user.
@@ -16,15 +25,126 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Limit the size of the request body to 30 KB
-	r.Body = http.MaxBytesReader(w, r.Body, 30000)
-
-	var user User
-	if err := json.NewDecoder(r.Body).Decode(&user); err != nil {
-		JsonError(w, "Invalid request payload or size exceeded", http.StatusBadRequest, err)
+	// Parse the incoming multipart form
+	mr, err := r.MultipartReader()
+	if err != nil {
+		JsonError(w, "Invalid form submission", http.StatusBadRequest, err)
 		return
 	}
 
+	var (
+		email, username, password, firstName, lastName, gender string
+		ageStr                                                 string
+		profilePic                                             []byte
+	)
+
+	// Read parts in a loop
+	for {
+		part, err := mr.NextPart()
+		if err == io.EOF {
+			break // no more parts
+		}
+		if err != nil {
+			JsonError(w, "Error reading form data", http.StatusInternalServerError, err)
+			return
+		}
+
+		switch part.FormName() {
+		case "email":
+			b, err := LimitRead(part, maxEmailSize)
+			if err != nil {
+				JsonError(w, "Email is too long", http.StatusBadRequest, err)
+				return
+			}
+			email = string(b)
+
+		case "username":
+			b, err := LimitRead(part, maxUsernameSize)
+			if err != nil {
+				JsonError(w, "Username is too long", http.StatusBadRequest, err)
+				return
+			}
+			username = string(b)
+
+		case "password":
+			b, err := LimitRead(part, maxPasswordSize)
+			if err != nil {
+				JsonError(w, "Password is too long", http.StatusBadRequest, err)
+				return
+			}
+			password = string(b)
+
+		case "first_name":
+			b, err := LimitRead(part, maxNameSize)
+			if err != nil {
+				JsonError(w, "First name is too long", http.StatusBadRequest, err)
+				return
+			}
+			firstName = string(b)
+
+		case "last_name":
+			b, err := LimitRead(part, maxNameSize)
+			if err != nil {
+				JsonError(w, "Last name is too long", http.StatusBadRequest, err)
+				return
+			}
+			lastName = string(b)
+
+		case "age":
+			// Age is numeric, but read as a string first, then parse
+			b, err := LimitRead(part, 4) // Age won't exceed 4 digits realistically
+			if err != nil {
+				JsonError(w, "Age is too large or invalid", http.StatusBadRequest, err)
+				return
+			}
+			ageStr = string(b)
+
+		case "gender":
+			b, err := LimitRead(part, 10) // "male"/"female"
+			if err != nil {
+				JsonError(w, "Gender input is too long", http.StatusBadRequest, err)
+				return
+			}
+			gender = string(b)
+
+		case "profile_pic":
+			// Optional field
+			contentType := part.Header.Get("Content-Type")
+			if !(len(contentType) > 6 && contentType[:6] == "image/") {
+				JsonError(w, "Invalid image content type", http.StatusBadRequest, fmt.Errorf("content type: %s", contentType))
+				return
+			}
+			// Read the image data (limit size)
+			profilePic, err = LimitRead(part, maxPicSize)
+			if err != nil {
+				JsonError(w, "Profile picture too large", http.StatusBadRequest, err)
+				return
+			}
+		}
+	}
+
+	// Convert age from string -> int
+	var age int
+	if ageStr != "" {
+		age, err = strconv.Atoi(ageStr)
+		if err != nil {
+			JsonError(w, "Invalid age, must be a number", http.StatusBadRequest, err)
+			return
+		}
+	}
+
+	// Populate the user struct
+	user := User{
+		Email:     email,
+		Username:  username,
+		Password:  password,
+		FirstName: firstName,
+		LastName:  lastName,
+		Age:       age,
+		Gender:    gender,
+	}
+
+	// Validate user fields (same checks as your JSON-based approach)
 	if err := ValidateSignUp(user); err != nil {
 		JsonError(w, err.Error(), http.StatusNotAcceptable, err)
 		return
@@ -37,8 +157,39 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	insertUser := `INSERT INTO users (email, username, password, first_name, last_name, age, gender) VALUES (?, ?, ?, ?, ?, ?, ?)`
-	_, err = DB.Exec(insertUser, user.Email, user.Username, hashedPassword, user.FirstName, user.LastName, user.Age, user.Gender)
+	var profilePicPath string
+	if len(profilePic) > 0 {
+		// For safety, also check if it's an SVG
+		if isSVG(profilePic) {
+			JsonError(w, "svg images aren't supported", http.StatusUnauthorized, nil)
+			return
+		}
+		// Save the profile picture to disk
+		profilePicPath, err = SaveImg(profilePic)
+		if err != nil {
+			JsonError(w, "Failed to save profile image", http.StatusInternalServerError, err)
+			return
+		}
+	}
+	user.ProfilePic = profilePicPath
+
+	// Insert user into DB.
+	// If you have a column for profile_pic in your users table, adapt the query accordingly.
+	insertUser := `
+	INSERT INTO users 
+	(email, username, password, first_name, last_name, age, gender, profile_pic)
+	VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+
+	_, err = DB.Exec(insertUser,
+		user.Email,
+		user.Username,
+		hashedPassword,
+		user.FirstName,
+		user.LastName,
+		user.Age,
+		user.Gender,
+		user.ProfilePic,
+	)
 	if err != nil {
 		JsonError(w, "unexpected error, try again later", http.StatusInternalServerError, err)
 		return

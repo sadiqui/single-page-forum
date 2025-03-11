@@ -147,6 +147,25 @@ const LoginForm = `
                     </button>
                 </div>
 
+                <!-- IMAGE INPUT -->
+                <!-- Container for the file upload -->
+                <div class="file-upload-container">
+                    <label for="profilePic" class="file-upload">
+                        <span class="upload-icon">
+                            <img src="../img/upload.svg" alt="Upload Icon" />
+                        </span>
+                        <span class="upload-text">Upload Avatar (optional)</span>
+                    </label>
+
+                    <!-- The actual file input is hidden by CSS, but still clickable via the label -->
+                    <input
+                        type="file"
+                        id="profilePic"
+                        class="post-input hidden-file-input"
+                        accept="image/*"
+                    />
+                </div>
+
                 <button
                     type="submit"
                     id="signUpSubmit"
@@ -293,4 +312,5 @@ const Filter = `
 let HomeLimit = 10;
 let ProfileLimit = 6;
 let Username = "";
+let ProfiePic = "";
 let tabName = "home"

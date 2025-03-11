@@ -32,12 +32,14 @@ async function CheckSession() {
             const data = await res.json();
             if (data.loggedIn) {
                 Username = data.username;
-                ShowLoggedInNav(data.username, data.profilePic);
+                ProfiePic = data.profile_pic
+                ShowLoggedInNav(data.username, data.profile_pic);
                 document.getElementById("tabBar").innerHTML = tabBarHTML;
                 SetupTabListeners();
             }
         } else {
             ShowloginSignup()
+            imageUploaded()
         }
     } catch (err) {
         console.log(err);
@@ -76,9 +78,9 @@ function SetupTabListeners() {
 
 function LoadTabContent(tab) {
     if (tab === "home") {
-        currentProfileTab = ""
-        const dynamicContent = document.getElementById("content");
-        dynamicContent.innerHTML = "";
+        currentProfileTab = "home"
+        // const dynamicContent = document.getElementById("content");
+        // dynamicContent.innerHTML = "";
         homeRenderer();
     } else if (tab === "filter") {
         // filterRenderer(offset);

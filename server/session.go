@@ -22,7 +22,7 @@ func CheckSession(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, `{"loggedIn": false}`)
 		return
 	}
-	fmt.Fprintf(w, `{"loggedIn": true, "username": %q}`, user.Username)
+	fmt.Fprintf(w, `{"loggedIn": true, "username": %q, "profile_pic": %q}`, user.Username, user.ProfilePic)
 }
 
 // Get the user from the current session using cookies.
@@ -51,10 +51,11 @@ func GetUser(r *http.Request) (*User, error) {
 
 	// Fetch the user associated with the session from DB
 	var user User
-	err = DB.QueryRow(`SELECT id, email, username FROM users WHERE id = ?`, session.UserID).Scan(&user.ID, &user.Email, &user.Username)
+	err = DB.QueryRow(`SELECT id, email, username, profile_pic FROM users WHERE id = ?`, session.UserID).Scan(&user.ID, &user.Email, &user.Username, &user.ProfilePic)
 	if err != nil {
 		return nil, fmt.Errorf("user not found")
 	}
+
 	return &user, nil
 }
 

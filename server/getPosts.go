@@ -60,7 +60,7 @@ func GetPostsHandler(w http.ResponseWriter, r *http.Request) {
 // Returns all posts (10 limit, offset)
 func FetchAllPosts(offset int) ([]Post, error) {
 	rows, err := DB.Query(`
-        SELECT p.id, p.user_id, p.title, p.content, p.image, p.created_at, u.username
+        SELECT p.id, p.user_id, p.title, p.content, p.image, p.created_at, u.username, u.profile_pic
         FROM posts p
         JOIN users u ON p.user_id = u.id
         ORDER BY p.created_at DESC
@@ -93,7 +93,7 @@ func FetchPostsByTags(offset int, tags []string) ([]Post, error) {
 	args = append(args, offset)
 
 	query := fmt.Sprintf(`
-        SELECT p.id, p.user_id, p.title, p.content, p.image, p.created_at, u.username
+        SELECT p.id, p.user_id, p.title, p.content, p.image, p.created_at, u.username, u.profile_pic
         FROM posts p
         JOIN users u ON p.user_id = u.id
         JOIN post_categories pc ON p.id = pc.post_id
@@ -151,6 +151,7 @@ func ScanRows(rows *sql.Rows) ([]Post, error) {
 			&pa.Image,
 			&pa.CreatedAt,
 			&pa.Username,
+			&pa.ProfilePic,
 		); err != nil {
 			return nil, err
 		}

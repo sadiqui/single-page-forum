@@ -15,7 +15,7 @@ function ShowLoggedInNav(username, profilePicture) {
     </a>
     <div class="avatar-menu">
         <img 
-            src="${profilePicture || '../img/avatar.webp'}" 
+            src="../uploads/${profilePicture}" 
             alt="Profile Avatar" 
             class="avatar-img" 
         />
