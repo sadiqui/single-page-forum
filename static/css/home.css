@@ -21,7 +21,7 @@ body {
 }
 
 #content {
-    margin-top: 400px;
+    margin-top: 100px;
 }
 
 /****************Enable-JS Warning***************/
@@ -241,11 +241,13 @@ body {
 #tagFilterSection {
     width: 90%;
     margin: auto;
-    margin-top: 160px;
+    margin-top: 300px;
+    margin-bottom: -250px;
     text-align: center;
     max-width: 400px;
     font-family: Arial, sans-serif;
     color: var(--dark-grey);
+    display: none;
 }
 
 @media (max-width: 500px) {

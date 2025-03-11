@@ -77,9 +77,10 @@ function SetupTabListeners() {
 }
 
 function LoadTabContent(tab) {
+    const dynamicContent = document.getElementById("content");
+    dynamicContent.style.marginTop = "300px"
     if (tab === "home") {
         currentProfileTab = ""
-        // const dynamicContent = document.getElementById("content");
         // dynamicContent.innerHTML = "";
         homeRenderer();
     } else if (tab === "filter") {

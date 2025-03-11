@@ -34,7 +34,6 @@
     border-radius: 8px;
     padding: 2rem;
     box-shadow: 0 2px 8px var(--navBar-shadow);
-    margin-top: -120px;
     /* negative margin pulls the card "up" */
     display: inline-block;
     width: 100%;
