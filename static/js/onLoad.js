@@ -32,7 +32,7 @@ async function CheckSession() {
             const data = await res.json();
             if (data.loggedIn) {
                 Username = data.username;
-                ProfiePic = data.profile_pic
+                ProfilePic = data.profile_pic
                 ShowLoggedInNav(data.username, data.profile_pic);
                 document.getElementById("tabBar").innerHTML = tabBarHTML;
                 SetupTabListeners();
@@ -52,7 +52,7 @@ function SetupTabListeners() {
 
     // Set "Home" as the default active tab on page load
     //RECHECK
-    //LOadRoutes()
+    // LoadRoutes()
     const defaultTab = document.querySelector('.tab-btn[data-tab="home"]');
     if (defaultTab) {
         defaultTab.classList.add("active");
@@ -78,10 +78,10 @@ function SetupTabListeners() {
 
 function LoadTabContent(tab) {
     const dynamicContent = document.getElementById("content");
+    dynamicContent.innerHTML = "";
     dynamicContent.style.marginTop = "300px"
     if (tab === "home") {
         currentProfileTab = ""
-        // dynamicContent.innerHTML = "";
         homeRenderer();
     } else if (tab === "filter") {
         homeRenderer();

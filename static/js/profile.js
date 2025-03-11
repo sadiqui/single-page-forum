@@ -11,8 +11,19 @@ function profileRenderer(username) {
         <div class="content-section">
             <div class="profile-card">
                 <div class="profile-image">
-                    <img src="../uploads/${ProfiePic}"
+                    <img src="../uploads/${ProfilePic}"
                         alt="Profile Picture" />
+                        <!-- Label for uploading a new picture -->
+                        <label for="profilePic" class="edit-btn">
+                            <img src="../img/camera-icon.svg" alt="Change Profile Picture" />
+                        </label>
+
+                        <!-- Hidden file input -->
+                        <input
+                            type="file"
+                            id="profilePic"
+                            accept="image/*"
+                        />
                 </div>
                 <div class="profileUsername username">${username}</div>
                 <nav class="profile-tab-bar">
@@ -37,6 +48,7 @@ function profileRenderer(username) {
             </div>
         </div>
     `;
+    SetupImageUpdate()
     SetupProfileTabListeners()
     // Listen for scroll => infinite loading
     if (tabName === "profile") {
@@ -212,4 +224,50 @@ function handleProfileScroll() {
                 });
         }
     }
+}
+
+// Handle editing/updating profile picture.
+function SetupImageUpdate() {
+    const fileInput = document.getElementById("profilePic");
+    if (!fileInput) return;
+
+    // Triggered when the user selects a file
+    fileInput.addEventListener("change", async () => {
+        const file = fileInput.files[0];
+        if (!file) return; // No file selected
+
+        const formData = new FormData();
+        formData.append("profile_pic", file);
+
+        try {
+            const res = await fetch("/api/update-profile-pic", {
+                method: "POST",
+                body: formData,
+            });
+
+            if (!res.ok) {
+                // If server responded with an error, read it
+                const errText = await res.text();
+                PopError("Error updating picture (1mb max-size)");
+                return;
+            }
+            const data = await res.json(); // Get JSON response
+            if (!data.profile_pic) {
+                PopError("Invalid response from server");
+                return;
+            }
+            // Update the image source with the new file from the server
+            const imgElement = document.querySelector(".profile-image img");
+            if (imgElement) {
+                imgElement.src = `../uploads/${data.profile_pic}`;
+            }
+            if (document.querySelector(".avatar-menu img")) {
+                document.querySelector(".avatar-menu img").src = `../uploads/${data.profile_pic}`;
+            }
+            ProfilePic = `../uploads/${data.profile_pic}`;
+        } catch (err) {
+            console.error("Network error:", err);
+            PopError("Network error while updating profile picture");
+        }
+    });
 }

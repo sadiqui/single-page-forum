@@ -136,7 +136,6 @@ function RenderPost(post, postDiv, single = "") {
         const userCommentsContainer = document.createElement("div");
         userCommentsContainer.id = `userComments-${post.id}`;
         userCommentsContainer.classList.add("user-comments-scroll");
-        // e.g. .user-comments-scroll { max-height: 200px; overflow-y: auto; }
 
         // Insert it into the DOM (say, at the bottom of the postDiv)
         postDiv.appendChild(userCommentsContainer);
@@ -183,14 +182,14 @@ function RenderUserComments(comments, container) {
 
     // Loop through each comment, build markup, append
     comments.forEach((comment) => {
-        const profilePic = comment.profilePic || "../img/avatar.webp";
+        const profilePic = comment.profile_pic || "../img/avatar.webp";
         const commentEl = document.createElement("div");
         commentEl.classList.add("comment-item");
 
         commentEl.innerHTML = `
             <p class="comment-meta">
                 <div class="username">
-                    <img src="${profilePic}" alt="User Avatar" class="comment-user-avatar">
+                    <img src="../uploads/${profilePic}" alt="User Avatar" class="comment-user-avatar">
                     ${comment.username}
                     <span class="time-ago" data-timestamp="${comment.created_at}">
                         &nbsp• ${timeAgo(comment.created_at)}

@@ -15,7 +15,7 @@ const (
 	maxUsernameSize = 50
 	maxNameSize     = 50
 	maxPasswordSize = 100
-	maxPicSize      = 5 << 20 // 5 MB for profile picture
+	maxPicSize      = 1 << 20 // 1 MB for profile picture
 )
 
 // Signing up a new user.
@@ -117,7 +117,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			// Read the image data (limit size)
 			profilePic, err = LimitRead(part, maxPicSize)
 			if err != nil {
-				JsonError(w, "Profile picture too large", http.StatusBadRequest, err)
+				JsonError(w, "Profile picture too large (1mb max)", http.StatusBadRequest, err)
 				return
 			}
 		}

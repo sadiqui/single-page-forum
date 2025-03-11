@@ -34,8 +34,9 @@ type Category struct {
 }
 
 type Comment struct {
-	ID        int       `json:"id"`
-	Username  string    `json:"username"`
-	Content   string    `json:"content"`
-	CreatedAt time.Time `json:"created_at"`
+	ID         int       `json:"id"`
+	Username   string    `json:"username"`
+	Content    string    `json:"content"`
+	ProfilePic string    `json:"profile_pic"`
+	CreatedAt  time.Time `json:"created_at"`
 }

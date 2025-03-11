@@ -312,5 +312,5 @@ const Filter = `
 let HomeLimit = 10;
 let ProfileLimit = 6;
 let Username = "";
-let ProfiePic = "";
+let ProfilePic = "";
 let tabName = "home"
