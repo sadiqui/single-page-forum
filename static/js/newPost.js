@@ -69,7 +69,7 @@ async function HandleNewPost(e, categories, clearTags) {
         localStorage.setItem("postCreated", "true");
     } catch (err) {
         console.log(err);
-        PopError("Something went wrong")
+        DisplayError("postErrorMsg", e.target, "Something went wrong, make sure you are uploading an image");
     }
 }
 

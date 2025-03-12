@@ -32,6 +32,6 @@ async function HandleSignUp(e) {
             HandleLogin(e, signUpUsername, signUpPassword);
         }
     } catch (err) {
-        DisplayError("signUpErrorMsg", e.target, "Network error occurred");
+        DisplayError("signUpErrorMsg", e.target, "Wrong image format or network unavailable");
     }
 }
