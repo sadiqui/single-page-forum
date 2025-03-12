@@ -320,7 +320,7 @@ func UpdateProfilePic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Retrieve old pic from DB for removal later
-	var oldPic sql.NullString
+	var oldPic string
 	err = DB.QueryRow(`SELECT profile_pic FROM users WHERE id = ?`, user.ID).Scan(&oldPic)
 	if err != nil && err != sql.ErrNoRows {
 		JsonError(w, "Failed to fetch old profile pic", http.StatusInternalServerError, err)
@@ -344,8 +344,8 @@ func UpdateProfilePic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// If there was an old pic remove it
-	if oldPic.Valid && oldPic.String != "avatar.webp" {
-		_ = os.Remove("./static/uploads/" + oldPic.String)
+	if oldPic != "avatar.webp" {
+		_ = os.Remove("./static/uploads/" + oldPic)
 	}
 
 	response := map[string]string{"profile_pic": newPicFilename}
