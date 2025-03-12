@@ -57,7 +57,7 @@
 /* ===== Theme Toggle Button Styles ===== */
 .theme-toggle {
     position: fixed;
-    z-index: 900;
+    z-index: 2000;
     background-color: var(--theme-toggle);
     cursor: pointer;
     border: 2px solid var(--border-grey);
@@ -69,13 +69,12 @@
 @media (max-width: 1000px) {
     .theme-toggle {
         position: absolute;
-        top: 115px !important;
     }
 }
 
 @media (max-width: 500px) {
     .theme-toggle {
-        top: 85px !important;
+        top: 85px;
     }
 }
 
