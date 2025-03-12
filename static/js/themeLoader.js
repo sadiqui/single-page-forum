@@ -45,9 +45,7 @@ function updatePassIcon() {
         const checkAutofill = () => {
             // Multiple detection methods
             const isAutofilled = passwordInput.matches(":-webkit-autofill") ||
-                window.getComputedStyle(passwordInput).backgroundColor.includes("#e8f0fe") ||
-                passwordInput.classList.contains("autofilled");
-
+                window.getComputedStyle(passwordInput).backgroundColor.includes("#e8f0fe")
             return isAutofilled;
         };
 

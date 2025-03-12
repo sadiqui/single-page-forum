@@ -6,7 +6,6 @@ let profileisLoading = false;
 function profileRenderer(username) {
     const dynamicContent = document.getElementById("content");
     dynamicContent.innerHTML = "";
-
     dynamicContent.innerHTML = `
         <div class="content-section">
             <div class="profile-card">
@@ -48,8 +47,8 @@ function profileRenderer(username) {
             </div>
         </div>
     `;
-    SetupImageUpdate()
-    SetupProfileTabListeners()
+    SetupProfileTabListeners();
+    SetupImageUpdate();
     // Listen for scroll => infinite loading
     if (tabName === "profile") {
         window.addEventListener("scroll", handleProfileScroll, { passive: true });
@@ -73,31 +72,11 @@ function SetupProfileTabListeners() {
             dynamicContent.innerHTML = "";
 
             // Get the tab name
-            const profileTab = this.getAttribute("data-tab");
+            currentProfileTab = this.getAttribute("data-tab");
             profileOffset = 0;
             profileisLoading = false;
 
-            if (profileTab === "liked") {
-                currentProfileTab = "liked"
-                fetchLikedPosts(profileOffset, "like").then(() => {
-                    window.scrollTo(0, scrollPos); // Restore scroll position
-                });
-            } else if (profileTab === "disliked") {
-                currentProfileTab = "disliked"
-                fetchLikedPosts(profileOffset, "dislike").then(() => {
-                    window.scrollTo(0, scrollPos); // Restore scroll position
-                });
-            } else if (profileTab === "posts") {
-                currentProfileTab = "posts"
-                fetchUserPosts(profileOffset).then(() => {
-                    window.scrollTo(0, scrollPos);
-                });
-            } else if (profileTab === "comments") {
-                currentProfileTab = "comments"
-                fetchCommentedPosts(profileOffset).then(() => {
-                    window.scrollTo(0, scrollPos);
-                });
-            }
+            conditionalTabs(scrollPos)
         });
     });
 
@@ -105,6 +84,23 @@ function SetupProfileTabListeners() {
     const defaultInfoBtn = document.querySelector('.profile-tab-btn[data-tab="liked"]');
     if (defaultInfoBtn) {
         defaultInfoBtn.click();
+    }
+}
+
+// Helper function, render according tab
+function conditionalTabs(scrollPos) {
+    const actions = {
+        liked: () => fetchLikedPosts(profileOffset, "like"),
+        disliked: () => fetchLikedPosts(profileOffset, "dislike"),
+        posts: () => fetchUserPosts(profileOffset),
+        comments: () => fetchCommentedPosts(profileOffset),
+    };
+    if (actions[currentProfileTab]) {
+        actions[currentProfileTab]().then(() => {
+            setTimeout(() => {
+                window.scrollTo({ top: scrollPos, behavior: "smooth" });
+            }, 100);
+        });
     }
 }
 
@@ -266,6 +262,14 @@ function SetupImageUpdate() {
             }
             
             ProfilePic = `${data.profile_pic}`;
+
+            // Re-render dynamic content
+            setTimeout(() => {
+                const scrollPos = window.scrollY;
+                window.scrollTo(0, scrollPos);
+                conditionalTabs(scrollPos);
+                profileOffset = 0;
+            }, 1000);
         } catch (err) {
             console.error("Network error:", err);
             PopError("Network error while updating profile picture");
