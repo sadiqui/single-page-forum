@@ -61,6 +61,7 @@ body {
     max-width: 900px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     cursor: pointer;
+    width: 95%;
 }
 
 #postTitle {

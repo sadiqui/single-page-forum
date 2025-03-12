@@ -9,13 +9,13 @@ const Nav = `
     <button id="openAuthBtn" class="nav-btn">Log In</button>
 </nav>
 
-<!-- Floating '+' button -->
-<button id="fabAddPost" class="fab hidden">+</button>
-
 <!-- Scroll to the top button -->
 <button class="back-to-top hidden">
     <i class="fa fa-arrow-up"></i>
 </button>
+
+<!-- Floating '+' button -->
+<button id="fabAddPost" class="fab hidden">+</button>
 `
 
 const LoginForm = `

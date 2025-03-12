@@ -30,7 +30,6 @@ function ShowLoggedInNav(username, profilePicture) {
 
     // Floating add button + back to top button
     document.getElementById("fabAddPost")?.classList.remove("hidden");
-    document.querySelector(".back-to-top")?.classList.remove("hidden");
 
     DropDownMenu()
 }
@@ -78,13 +77,20 @@ function DropDownMenu() {
     });
 }
 
-/*******************
+/**********************
 * Scroll to the top
-********************/
+***********************/
 // Event delegation solve the issue of
 // having the script loaded before the button
 document.body.addEventListener("click", (event) => {
     if (event.target.closest(".back-to-top")) {
         window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+});
+window.addEventListener("scroll", function () {
+    if (window.scrollY > 2200) {
+        document.querySelector(".back-to-top")?.classList.remove("hidden");
+    } else {
+        document.querySelector(".back-to-top")?.classList.add("hidden");
     }
 });

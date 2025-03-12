@@ -143,6 +143,7 @@
     z-index: 2000;
     box-shadow: 3px 3px 3px var(--notif-shadow);
     transition: transform 0.3s ease, background-color 0.3s ease;
+    transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 
 .fab:hover {
@@ -152,7 +153,10 @@
 
 .back-to-top {
     font-size: 12px;
-    color: white;
+    color: white; 
+}
+
+.fab {
     right: 20px;
 }
 
@@ -193,14 +197,13 @@
     }
 
     .back-to-top {
-        right: 15px;
+        right: 55px;
         width: 30px;
         height: 30px;
         font-size: 10px;
     }
 
     .fab {
-        right: 50px;
         width: 30px;
         height: 30px;
         font-size: 20px;
