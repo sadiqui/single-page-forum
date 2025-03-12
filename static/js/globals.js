@@ -11,6 +11,11 @@ const Nav = `
 
 <!-- Floating '+' button -->
 <button id="fabAddPost" class="fab hidden">+</button>
+
+<!-- Scroll to the top button -->
+<button class="back-to-top hidden">
+    <i class="fa fa-arrow-up"></i>
+</button>
 `
 
 const LoginForm = `

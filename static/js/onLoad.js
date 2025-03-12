@@ -96,8 +96,8 @@ function LoadTabContent(tab) {
         currentProfileTab = ""
         homeRenderer();
     } else if (tab === "filter") {
-        homeRenderer(); // condition to show filter inside render
-        // Call the function handling Filter
+        homeRenderer();
+        // Then call filter handler
         FilterCategories()
     } else if (tab === "profile") {
         profileRenderer(Username);
