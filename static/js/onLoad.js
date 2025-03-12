@@ -88,8 +88,8 @@ function SetupTabListeners() {
 function LoadTabContent(tab) {
     const dynamicContent = document.getElementById("content");
     dynamicContent.innerHTML = "";
-    dynamicContent.style.marginTop = "300px"
     if (tab === "home") {
+        currentProfileTab = ""
         clearTagFilter()
         homeRenderer();
         // Then call filter handler
