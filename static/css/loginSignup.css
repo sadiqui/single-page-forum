@@ -172,16 +172,19 @@
 }
 
 /* Hide scrollbar for WebKit browsers (Chrome, Safari) */
-.modal-dialog::-webkit-scrollbar, .post-dialog::-webkit-scrollbar {
+.modal-dialog::-webkit-scrollbar,
+.post-dialog::-webkit-scrollbar {
     display: none;
 }
 
 /* Hide scrollbar for Firefox */
-.modal-dialog, .post-dialog {
+.modal-dialog,
+.post-dialog {
     scrollbar-width: none;
 }
 
 /* Hide scrollbar for Edge & IE */
-.modal-dialog, .post-dialog {
+.modal-dialog,
+.post-dialog {
     -ms-overflow-style: none;
 }
