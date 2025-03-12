@@ -40,3 +40,13 @@ type Comment struct {
 	ProfilePic string    `json:"profile_pic"`
 	CreatedAt  time.Time `json:"created_at"`
 }
+
+type Notification struct {
+	ID            int       `json:"id"`
+	UserID        int       `json:"user_id"`
+	ActorID       int       `json:"actor_id"`
+	ActorUsername string    `json:"actor_username"`
+	PostID        *int      `json:"post_id,omitempty"`
+	Type          string    `json:"type"`
+	CreatedAt     time.Time `json:"created_at"`
+}
