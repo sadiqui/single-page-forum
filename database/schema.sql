@@ -81,11 +81,11 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS notifications (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        user_id INT NOT NULL,
-        actor_id INT NOT NULL,
-        post_id INT DEFAULT NULL,
-        type ENUM ('like', 'dislike', 'comment') NOT NULL,
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        actor_id INTEGER NOT NULL,
+        post_id INTEGER DEFAULT NULL,
+        type TEXT NOT NULL CHECK (type IN ('like', 'dislike', 'comment')),
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (actor_id) REFERENCES users (id) ON DELETE CASCADE,
