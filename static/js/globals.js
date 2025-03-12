@@ -253,7 +253,7 @@ const NewPostForm = `
                     <span class="upload-icon">
                         <img src="../img/upload.svg" alt="Upload Icon" />
                     </span>
-                    <span class="upload-text">Upload Image (optional)</span>
+                    <span class="upload-text-post">Upload Image (optional)</span>
                 </label>
 
                 <!-- The actual file input is hidden by CSS, but still clickable via the label -->
