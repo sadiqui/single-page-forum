@@ -81,6 +81,7 @@ function LoadTabContent(tab) {
     dynamicContent.innerHTML = "";
     dynamicContent.style.marginTop = "300px"
     if (tab === "home") {
+        clearTagFilter()
         currentProfileTab = ""
         homeRenderer();
     } else if (tab === "filter") {

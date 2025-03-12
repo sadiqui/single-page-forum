@@ -14,7 +14,7 @@ async function FilterCategories() {
         }
     });
 
-    // // Filter suggestions as user types
+    // Filter suggestions as user types
     tagInput.addEventListener("input", (e) => {
         const query = e.target.value.trim().toLowerCase();
         let matched = TAGS.filter((tag) =>
@@ -98,4 +98,19 @@ async function FilterCategories() {
             tagInput.placeholder = "Type a tag...";
         }
     }
+}
+
+// Used to rest the tag filter when we go back to home.
+function clearTagFilter() {
+    const tagInput = document.getElementById("tagFilterInput");
+    const selectedTagsDiv = document.getElementById("selectedTags");
+
+    // Reset input field
+    tagInput.value = "";
+    tagInput.disabled = false;
+    tagInput.placeholder = "Type a tag...";
+
+    // Clear selected tags
+    selectedTags = [];
+    selectedTagsDiv.innerHTML = "";
 }
