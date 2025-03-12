@@ -179,7 +179,7 @@ func LimitRead(part io.Reader, maxSize int) ([]byte, error) {
 
 	// If we read more than maxSize bytes, the data is too large.
 	if n > int64(maxSize) {
-		return nil, fmt.Errorf("data exceeds max allowed size of %d bytes", maxSize)
+		return nil, fmt.Errorf("data exceeds max allowed size of 1mb")
 	}
 
 	// Return the full data (up to maxSize).

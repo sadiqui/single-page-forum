@@ -242,9 +242,7 @@ function SetupImageUpdate() {
             });
 
             if (!res.ok) {
-                // If server responded with an error, read it
-                const errText = await res.text();
-                PopError("Error updating picture (1mb max-size)");
+                PopError("Invalid picture format or size (1mb max-size)");
                 return;
             }
             const data = await res.json(); // Get JSON response
@@ -272,7 +270,7 @@ function SetupImageUpdate() {
             }, 1000);
         } catch (err) {
             console.error("Network error:", err);
-            PopError("Network error while updating profile picture");
+            PopError("Invalid picture or Network error");
         }
     });
 }

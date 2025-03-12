@@ -20,7 +20,7 @@
     font-family: Arial, sans-serif;
     font-size: 16px;
     box-shadow: 0 4px 4px var(--notif-shadow);
-    z-index: 1000;
+    z-index: 2002;
     opacity: 1;
     transition: opacity 0.5s ease-out, transform 0.5s ease-out;
     transform: translateY(0);
