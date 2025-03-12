@@ -15,7 +15,7 @@ function profileRenderer(username) {
                         alt="Profile Picture" />
                         <!-- Label for uploading a new picture -->
                         <label for="profilePic" class="edit-btn">
-                            <img src="../img/camera-icon.svg" alt="Change Profile Picture" />
+                            <img src="../img/camera.svg" alt="Change Profile Picture" />
                         </label>
 
                         <!-- Hidden file input -->
@@ -56,7 +56,7 @@ function profileRenderer(username) {
     }
 }
 
-
+// Handles Profile tabs clicks.
 function SetupProfileTabListeners() {
     const tabButtons = document.querySelectorAll(".profile-tab-btn");
     const dynamicContent = document.getElementById("profileDynamicContent");
