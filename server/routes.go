@@ -19,7 +19,6 @@ func Routes() http.Handler {
 	mux.HandleFunc("/img/", FilesHandler)
 	mux.HandleFunc("/uploads/", FilesHandler)
 	mux.HandleFunc("/cooldown", Cooldown)
-	mux.HandleFunc("/post", ServePostHtml)
 	mux.HandleFunc("/api/check-session", CheckSession)
 	mux.HandleFunc("/api/get-posts", GetPostsHandler)
 	mux.HandleFunc("/api/get-categories", GetCategoriesHandler)

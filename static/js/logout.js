@@ -6,11 +6,7 @@ async function HandleLogout() {
             console.log(errData.msg);
             PopError("Something went wrong.")
         } else {
-            if (window.location.href.includes("profile")) {
-                window.location.href = "/";
-            } else {
-                window.location.reload()
-            }
+            window.location.href = "/";
         }
     } catch (err) {
         console.log(err);

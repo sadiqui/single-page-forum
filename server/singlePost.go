@@ -6,32 +6,6 @@ import (
 	"strconv"
 )
 
-// Serve just the html of the post.
-func ServePostHtml(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		ErrorHandler(w, 405, http.StatusText(http.StatusMethodNotAllowed), "Only GET method is allowed!", nil)
-		return
-	}
-	postID := r.URL.Query().Get("post_id")
-	if postID == "" {
-		ErrorHandler(w, 400, "Bad Request", "Missing post id!", nil)
-		return
-	}
-
-	var exists bool
-	err := DB.QueryRow("SELECT EXISTS(SELECT 1 FROM posts WHERE id = ?)", postID).Scan(&exists)
-	if err != nil {
-		ErrorHandler(w, 500, "Internal Server Error", "Database error occurred while validating post_id.", err)
-		return
-	}
-
-	if !exists {
-		ErrorHandler(w, 404, "Not Found", "Post with the specified ID does not exist.", nil)
-		return
-	}
-	ParseAndExecute(w, "", "static/templates/post.html")
-}
-
 // Serve the Post json
 func SinglePostHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {

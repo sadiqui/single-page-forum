@@ -34,16 +34,27 @@ async function CheckSession() {
                 Username = data.username;
                 ProfilePic = data.profile_pic
                 ShowLoggedInNav(data.username, data.profile_pic);
-                document.getElementById("tabBar").innerHTML = tabBarHTML;
-                SetupTabListeners();
+                Routing()
             }
-        } else {           
+        } else {
             ShowloginSignup()
             imageUploaded("profilePic")
         }
     } catch (err) {
         console.log(err);
         PopError("Something went wrong.")
+    }
+}
+
+function Routing() {
+    if (window.location.pathname === "/") {
+        document.getElementById("tabBar").innerHTML = tabBarHTML;
+        SetupTabListeners()
+    }
+    if (window.location.pathname.startsWith("/post")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("post_id");
+        LoadPostPage(postId);
     }
 }
 
@@ -85,7 +96,7 @@ function LoadTabContent(tab) {
         currentProfileTab = ""
         homeRenderer();
     } else if (tab === "filter") {
-        homeRenderer();
+        homeRenderer(); // condition to show filter inside render
         // Call the function handling Filter
         FilterCategories()
     } else if (tab === "profile") {
@@ -100,13 +111,13 @@ function LoadTabContent(tab) {
 }
 
 // Handle Refresh: Check URL and Load Correct Content
-// window.addEventListener("DOMContentLoaded", () => {
-//     const params = new URLSearchParams(window.location.search);
-//     const username = params.get("user");
-//     if (username) {
-//         profileRenderer(username);
-//     }
-// });
+window.addEventListener("DOMContentLoaded", () => {
+    if (window.location.pathname.startsWith("/post")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("post_id");
+        LoadPostPage(postId);
+    }
+});
 
 // // Handle browser back/forward navigation
 // window.addEventListener("popstate", () => {
@@ -118,3 +129,14 @@ function LoadTabContent(tab) {
 //         homeRenderer();
 //     }
 // });
+
+// Handle Back/Forward Button Clicks
+window.addEventListener("popstate", () => {
+    if (window.location.pathname.startsWith("/post")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("post_id");
+        LoadPostPage(postId);
+    } else {
+        window.location.href = "/";
+    }
+});
