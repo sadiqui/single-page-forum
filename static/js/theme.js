@@ -84,7 +84,7 @@ function togglePosition() {
     const toggle = document.querySelector(".theme-toggle");
     if (!toggle) return;
     if (window.innerWidth < 768) {
-        toggle.style.top = "100px";
+        toggle.style.top = "115px";
         toggle.style.left = "5px";
     } else {
         toggle.style.top = "150px";

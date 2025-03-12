@@ -277,10 +277,6 @@ const tabBarHTML = `
             <img src="../img/home.svg" alt="Home">
             <span class="tab-txt">Home</span>
         </button>
-        <button class="tab-btn" data-tab="filter">
-            <img src="../img/filter.png" alt="Filter">
-            <span class="tab-txt">Filter</span>
-        </button>
         <button class="tab-btn" data-tab="profile">
             <img src="../img/profile.png" alt="Profile">
             <span class="tab-txt">Profile</span>

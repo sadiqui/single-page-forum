@@ -4,7 +4,7 @@ function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
     if (tabName === "profile") {
         postsContainer = document.getElementById("profileDynamicContent");
-    } else if (tabName === "home" || tabName === "filter") {
+    } else if (tabName === "home") {
         postsContainer = document.getElementById("content");
     }
 
@@ -14,7 +14,7 @@ function RenderPosts(posts, offset, truncate = 300) {
     }
 
     // If we're on the "filter" tab, add the filter UI at the top (only once, when offset=0)
-    if (tabName === "filter") {
+    if (tabName === "home") {
         const tagFilterSection = document.getElementById("tagFilterSection");
         if (tagFilterSection) {
             tagFilterSection.style.display = "block"; // Show the filter UI

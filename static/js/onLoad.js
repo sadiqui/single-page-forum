@@ -62,8 +62,6 @@ function SetupTabListeners() {
     const tabButtons = document.querySelectorAll(".tab-btn");
 
     // Set "Home" as the default active tab on page load
-    //RECHECK
-    // LoadRoutes()
     const defaultTab = document.querySelector('.tab-btn[data-tab="home"]');
     if (defaultTab) {
         defaultTab.classList.add("active");
@@ -93,9 +91,6 @@ function LoadTabContent(tab) {
     dynamicContent.style.marginTop = "300px"
     if (tab === "home") {
         clearTagFilter()
-        currentProfileTab = ""
-        homeRenderer();
-    } else if (tab === "filter") {
         homeRenderer();
         // Then call filter handler
         FilterCategories()

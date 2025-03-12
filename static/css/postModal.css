@@ -19,7 +19,9 @@
 }
 
 .close-button {
-    margin-left: 500px;
+    position: absolute;
+    right: 20px;
+    top: 20px;
     cursor: pointer;
     font-weight: bold;
     color: var(--tagclose-btn);

@@ -74,7 +74,7 @@
 
 @media (max-width: 500px) {
     .theme-toggle {
-        top: 85px;
+        top: 85px !important;
     }
 }
 

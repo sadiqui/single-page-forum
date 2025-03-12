@@ -15,14 +15,14 @@
 
 .modal-dialog {
     background-color: var(--white);
-    width: 400px;
+    width: 90%;
+    max-width: 500px;
     padding: 2rem;
     border-radius: 12px;
     text-align: center;
     position: relative;
-    max-height: 80vh;
+    max-height: 90vh;
     overflow-y: auto;
-    margin-top: -60px;
 }
 
 /* ------------- Auth Form ------------- */
