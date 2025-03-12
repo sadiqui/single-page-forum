@@ -68,6 +68,13 @@ async function AddReaction(ID, reactionType, postOrComm, type) {
                     profileOffset += ProfileLimit;
                 })
         }
+        if (currentProfileTab == "disliked") {
+            profileOffset = 0;
+            fetchLikedPosts(profileOffset, "dislike")
+                .then(() => {
+                    profileOffset += ProfileLimit;
+                })
+        }
         // Set to refresh when back to profile/liked tab if there is a reaction
         localStorage.setItem("reactionUpdated", "true");
 

@@ -40,11 +40,11 @@ window.addEventListener("pageshow", async (e) => {
         RefreshReactions()
         RefreshCommentsCounts()
         if (localStorage.getItem("postCreated") === "true") {
-            if (window.location.href.includes("profile") && currentTab == "posts") {
-                offset = 0;
-                fetchUserPosts(offset)
+            if (currentProfileTab == "posts") {
+                profileOffset = 0;
+                fetchUserPosts(profileOffset)
                     .then(() => {
-                        offset += ProfileLimit;
+                        profileOffset += ProfileLimit;
                     })
             } else if (window.location.pathname === "/") {
                 offset = 0;
@@ -54,11 +54,20 @@ window.addEventListener("pageshow", async (e) => {
             }
             localStorage.removeItem("postCreated"); // clear the marker
         }
-        if (localStorage.getItem("reactionUpdated") === "true" && window.location.href.includes("profile") && currentTab == "liked") {
-            offset = 0;
-            fetchLikedPosts(offset)
+        // update liked posts when: click post dislike navigate back
+        if (localStorage.getItem("reactionUpdated") === "true" && currentProfileTab == "liked") {         
+            profileOffset = 0;
+            fetchLikedPosts(profileOffset, "like")
                 .then(() => {
-                    offset += ProfileLimit;
+                    profileOffset += ProfileLimit;
+                })
+            localStorage.removeItem("reactionUpdated"); // clear the marker
+        }
+        if (localStorage.getItem("reactionUpdated") === "true" && currentProfileTab == "disliked") {         
+            profileOffset = 0;
+            fetchLikedPosts(profileOffset, "dislike")
+                .then(() => {
+                    profileOffset += ProfileLimit;
                 })
             localStorage.removeItem("reactionUpdated"); // clear the marker
         }

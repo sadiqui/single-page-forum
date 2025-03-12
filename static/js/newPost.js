@@ -52,19 +52,14 @@ async function HandleNewPost(e, categories, clearTags) {
             document.querySelector(".upload-text").textContent = "Upload Image (optional)";
             clearTags;
 
-            if (window.location.href.includes("profile") && currentTab == "liked") {
-                offset = 0;
-                fetchLikedPosts(offset)
+            if (currentProfileTab == "posts") {
+                profileOffset = 0;
+                fetchUserPosts(profileOffset)
                     .then(() => {
-                        offset += ProfileLimit;
+                        profileOffset += ProfileLimit;
                     })
-            } else if (window.location.href.includes("profile") && currentTab == "posts") {
-                offset = 0;
-                fetchUserPosts(offset)
-                    .then(() => {
-                        offset += ProfileLimit; // increment offset
-                    })
-            } else if (window.location.pathname === "/") { // Don't work in post page
+            }
+            if (window.location.pathname === "/") {
                 offset = 0;
                 LoadPosts(offset, selectedTags.join(",")).then(() => {
                     offset += HomeLimit;
