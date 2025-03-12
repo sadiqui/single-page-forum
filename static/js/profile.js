@@ -199,7 +199,7 @@ function handleProfileScroll() {
                     profileisLoading = false;
                 });
         } else if (currentProfileTab === "liked") {
-            fetchLikedPosts(profileOffset)
+            fetchLikedPosts(profileOffset, "like")
                 .then(() => {
                     profileOffset += ProfileLimit;
                 })
@@ -207,7 +207,7 @@ function handleProfileScroll() {
                     profileisLoading = false;
                 });
         } else if (currentProfileTab === "disliked") {
-            fetchLikedPosts(profileOffset)
+            fetchLikedPosts(profileOffset, "dislike")
                 .then(() => {
                     profileOffset += ProfileLimit;
                 })

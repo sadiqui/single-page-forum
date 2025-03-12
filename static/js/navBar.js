@@ -21,7 +21,6 @@ function ShowLoggedInNav(username, profilePicture) {
         />
         <ul class="dropdown-menu hidden">
             <li class="dropdown-header">${username}</li>
-            <li><a href="/profile?user=${username}" class="profile-link">Profile</a></li>
             <li id="createPost"><a href="#">Create Post</a></li>
             <li id="logoutBtn"><a href="#">Logout<i class="fas fa-sign-out-alt" style="margin-left: 8px;"></i></a></li>
         </ul>
