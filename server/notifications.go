@@ -83,6 +83,33 @@ func buildNotification(actorUsername, notifType string) string {
 		return fmt.Sprintf("%s commented on your post", actorUsername)
 	// Add other cases if needed
 	default:
-		return fmt.Sprintf("%s did something", actorUsername)
+		return fmt.Sprintf("%s ", actorUsername)
 	}
+}
+
+// Insert a row in "notifications" for like/dislike on a post or comment
+func InsertNotification(ownerID, actorID int, postID *int, reactionType string) error {
+	if reactionType == "like" || reactionType == "dislike" {
+		// Delete any existing like/dislike notification for this (owner, actor, post)
+		_, err := DB.Exec(`
+			DELETE FROM notifications
+			WHERE user_id = ?
+  			AND actor_id = ?
+  			AND post_id = ?
+		`, ownerID, actorID, postID)
+		if err != nil {
+			return fmt.Errorf("failed to delete old reaction notification: %w", err)
+		}
+	}
+	fmt.Println("ttttttttttttt")
+	_, err := DB.Exec(`
+		INSERT INTO notifications (user_id, actor_id, post_id, type)
+		VALUES (?, ?, ?, ?)
+	`,
+		ownerID,      // the user receiving the notification
+		actorID,      // the user who performed the action
+		postID,       // if nil, it will be NULL; see note below for SQLite
+		reactionType, // "like" or "dislike"
+	)
+	return err
 }

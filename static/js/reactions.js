@@ -8,8 +8,11 @@ async function FetchReactions(ID, postOrComm, type) {
         const { likes, dislikes, userReaction } = await res.json()
 
         // Update counts
-        postOrComm.querySelector(`.${type}-like-count`).textContent = likes
-        postOrComm.querySelector(`.${type}-dislike-count`).textContent = dislikes
+        const likeCountEl = postOrComm.querySelector(`.${type}-like-count`);
+        const dislikeCountEl = postOrComm.querySelector(`.${type}-dislike-count`);
+
+        if (likeCountEl) likeCountEl.textContent = likes;
+        if (dislikeCountEl) dislikeCountEl.textContent = dislikes;
 
         // Update the icon states
         UpdateReactionIcons(postOrComm, userReaction, type)
@@ -89,15 +92,17 @@ function UpdateReactionIcons(postOrComm, userReaction, type) {
     const likeIcon = postOrComm.querySelector(`.${type}-like-icon`);
     const dislikeIcon = postOrComm.querySelector(`.${type}-dislike-icon`);
 
-    if (userReaction === "like") {
-        likeIcon.src = "../img/likeactive.svg";
-        dislikeIcon.src = "../img/dislike.svg";
-    } else if (userReaction === "dislike") {
-        likeIcon.src = "../img/like.svg";
-        dislikeIcon.src = "../img/dislikeactive.svg";
-    } else {
-        // not active user
-        likeIcon.src = "../img/like.svg";
-        dislikeIcon.src = "../img/dislike.svg";
+    if (likeIcon && dislikeIcon) {
+        if (userReaction === "like") {
+            likeIcon.src = "../img/likeactive.svg";
+            dislikeIcon.src = "../img/dislike.svg";
+        } else if (userReaction === "dislike") {
+            likeIcon.src = "../img/like.svg";
+            dislikeIcon.src = "../img/dislikeactive.svg";
+        } else {
+            // not active user
+            likeIcon.src = "../img/like.svg";
+            dislikeIcon.src = "../img/dislike.svg";
+        }
     }
 }

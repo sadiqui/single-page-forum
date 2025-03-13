@@ -65,6 +65,18 @@ func AddReaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// For Notifaction isnsertion
+	var ownerID int
+	if typeParam == "post" {
+		// e.g. select user who created the post
+		err = DB.QueryRow(`SELECT user_id FROM posts WHERE id = ?`, payload.ID).Scan(&ownerID)
+		if err != nil {
+			JsonError(w, "Failed to find post owner", http.StatusInternalServerError, err)
+			return
+		}
+	}
+	/////////////////////////////
+
 	existingReaction := ""
 	querySelect := `SELECT reaction_type FROM ` + tableName + ` WHERE user_id = ? AND ` + idColumn + ` = ?`
 	DB.QueryRow(querySelect, user.ID, payload.ID).Scan(&existingReaction)
@@ -75,11 +87,17 @@ func AddReaction(w http.ResponseWriter, r *http.Request) {
 		 INSERT INTO ` + tableName + ` (` + idColumn + `, user_id, reaction_type)
 		 VALUES (?, ?, ?)
 		 ON CONFLICT(` + idColumn + `, user_id) DO UPDATE SET reaction_type = excluded.reaction_type
-	 `
+	`
 		_, err = DB.Exec(queryUpsert, payload.ID, user.ID, payload.ReactionType)
 		if err != nil {
 			JsonError(w, "Failed to add/update reaction", http.StatusInternalServerError, err)
 			return
+		}
+		if ownerID != user.ID && typeParam == "post" {
+			err = InsertNotification(ownerID, user.ID, &payload.ID, payload.ReactionType)
+			if err != nil {
+				fmt.Println("Failed to insert notification:", err)
+			}
 		}
 	} else {
 		// If the same, remove it => "un-toggle"

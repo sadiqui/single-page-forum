@@ -89,7 +89,7 @@ CREATE TABLE
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (actor_id) REFERENCES users (id) ON DELETE CASCADE,
-        FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE
+        FOREIGN KEY (post_id) REFERENCES posts (id) ON DELETE CASCADE 
     );
 
 CREATE TRIGGER IF NOT EXISTS delete_expired_insert BEFORE INSERT ON sessions BEGIN

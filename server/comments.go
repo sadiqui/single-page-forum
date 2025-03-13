@@ -86,6 +86,19 @@ func processComment(payload *CommentPayload, user *User) error {
 		return fmt.Errorf("failed to add comments: %w", err)
 	}
 
+	// Get the post's owner
+	var ownerID int
+	err = DB.QueryRow(`SELECT user_id FROM posts WHERE id = ?`, payload.PostID).Scan(&ownerID)
+	if err != nil {
+		return err
+	}
+	// Insert notification if the commenter != post owner
+	if ownerID != user.ID {
+		err := InsertNotification(ownerID, user.ID, &payload.PostID, "comment")
+		if err != nil {
+			fmt.Println("Failed to insert notification:", err)
+		}
+	}
 	return nil
 }
 
