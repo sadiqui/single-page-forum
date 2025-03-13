@@ -91,11 +91,13 @@ func buildNotification(actorUsername, notifType string) string {
 func InsertNotification(ownerID, actorID int, postID *int, reactionType string) error {
 	if reactionType == "like" || reactionType == "dislike" {
 		// Delete any existing like/dislike notification for this (owner, actor, post)
+
 		_, err := DB.Exec(`
 			DELETE FROM notifications
 			WHERE user_id = ?
   			AND actor_id = ?
   			AND post_id = ?
+			AND type IN ('like', 'dislike')
 		`, ownerID, actorID, postID)
 		if err != nil {
 			return fmt.Errorf("failed to delete old reaction notification: %w", err)
