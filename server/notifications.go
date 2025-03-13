@@ -101,7 +101,6 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 			return fmt.Errorf("failed to delete old reaction notification: %w", err)
 		}
 	}
-	fmt.Println("ttttttttttttt")
 	_, err := DB.Exec(`
 		INSERT INTO notifications (user_id, actor_id, post_id, type)
 		VALUES (?, ?, ?, ?)

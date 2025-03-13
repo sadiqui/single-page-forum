@@ -140,26 +140,6 @@ function LoadTabContent(tab) {
     }, 200); // Matches fade-out duration
 }
 
-// Handle Refresh: Check URL and Load Correct Content
-window.addEventListener("DOMContentLoaded", () => {
-    if (window.location.pathname.startsWith("/post")) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get("post_id");
-        LoadPostPage(postId);
-    }
-});
-
-// // Handle browser back/forward navigation
-// window.addEventListener("popstate", () => {
-//     const params = new URLSearchParams(window.location.search);
-//     const username = params.get("user");
-//     if (username) {
-//         profileRenderer(username);
-//     } else {
-//         homeRenderer();
-//     }
-// });
-
 // Handle Back/Forward Button Clicks
 window.addEventListener("popstate", () => {
     if (window.location.pathname.startsWith("/post")) {

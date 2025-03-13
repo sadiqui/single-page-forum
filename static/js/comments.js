@@ -78,7 +78,7 @@ function RenderComments(comments, isLoadMore) {
 async function AddComment(postID, content) {
     const commContainer = document.getElementById("addCommentContainer")
 
-    try {
+    try {      
         const res = await fetch("/api/add-comment", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
