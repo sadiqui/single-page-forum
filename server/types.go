@@ -48,5 +48,6 @@ type Notification struct {
 	ActorUsername string    `json:"actor_username"`
 	PostID        *int      `json:"post_id,omitempty"`
 	Type          string    `json:"type"`
+	Message       string    `json:"message"`
 	CreatedAt     time.Time `json:"created_at"`
 }
