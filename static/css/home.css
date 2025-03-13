@@ -20,6 +20,11 @@ body {
     opacity: 0;
 }
 
+/* Smooth transition for content */
+#content {
+    transition: opacity 0.3s ease-out, transform 0.1s ease-out;
+}
+
 /****************Enable-JS Warning***************/
 .noscript-warning {
     background-color: var(--noscript-bg);

@@ -170,6 +170,8 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			JsonError(w, "Failed to save profile image", http.StatusInternalServerError, err)
 			return
 		}
+	} else {
+		profilePicPath = "avatar.webp"
 	}
 	user.ProfilePic = profilePicPath
 

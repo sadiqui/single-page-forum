@@ -140,6 +140,7 @@
 #profileDynamicContent {
     text-align: left;
     color: var(--dark-grey);
+    transition: opacity 0.3s ease-out, transform 0.1s ease-out;
 }
 
 /******************** Profile Tabs **************************/

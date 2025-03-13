@@ -86,23 +86,58 @@ function SetupTabListeners() {
 }
 
 function LoadTabContent(tab) {
-    const dynamicContent = document.getElementById("content");
-    dynamicContent.innerHTML = "";
-    if (tab === "home") {
-        currentProfileTab = ""
-        clearTagFilter()
-        homeRenderer();
-        // Then call filter handler
-        FilterCategories()
-    } else if (tab === "profile") {
-        profileRenderer(Username);
-    } else if (tab === "notifs") {
-        // notifsRenderer(offset);
-    } else if (tab === "messages") {
-        // messagesRenderer(offset);
-    } else if (tab === "settings") {
-        // settingsRenderer();
+    // If we're on the "home" tab, add the filter UI at the top (only once, when offset=0)
+    if (tabName === "home") {
+        const tagFilterSection = document.getElementById("tagFilterSection");
+        if (tagFilterSection) {
+            tagFilterSection.style.display = "block"; // Show the filter UI
+        }
+    } else {
+        // Hide the filter UI when not in "home" tab
+        const tagFilterSection = document.getElementById("tagFilterSection");
+        if (tagFilterSection) {
+            tagFilterSection.style.display = "none";
+        }
     }
+    const dynamicContent = document.getElementById("content");
+
+    // Fade out old content
+    dynamicContent.style.opacity = "0";
+    dynamicContent.innerHTML = "";
+
+    // Wait for fade-out to complete before changing content
+    setTimeout(() => {
+        // Load new content based on tab
+        if (tab === "home") {
+            currentProfileTab = "";
+            clearTagFilter();
+            homeRenderer();
+            FilterCategories();
+        } else if (tab === "profile") {
+            profileRenderer(Username);
+        } else if (tab === "notifs") {
+            // notifsRenderer(offset);
+        } else if (tab === "messages") {
+            // messagesRenderer(offset);
+        } else if (tab === "settings") {
+            // settingsRenderer();
+        }
+
+        // Animate opacity from 0 to 1 smoothly
+        let opacity = 0;
+        dynamicContent.style.opacity = opacity;
+
+        function fadeIn() {
+            opacity += 0.1; // Increase opacity gradually
+            dynamicContent.style.opacity = opacity;
+
+            if (opacity < 1) {
+                requestAnimationFrame(fadeIn); // Continue animation
+            }
+        }
+
+        requestAnimationFrame(fadeIn); // Start fade-in effect
+    }, 300); // Matches fade-out duration
 }
 
 // Handle Refresh: Check URL and Load Correct Content

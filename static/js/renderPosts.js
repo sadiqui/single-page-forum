@@ -13,20 +13,6 @@ function RenderPosts(posts, offset, truncate = 300) {
         postsContainer.innerHTML = "";
     }
 
-    // If we're on the "filter" tab, add the filter UI at the top (only once, when offset=0)
-    if (tabName === "home") {
-        const tagFilterSection = document.getElementById("tagFilterSection");
-        if (tagFilterSection) {
-            tagFilterSection.style.display = "block"; // Show the filter UI
-        }
-    } else {
-        // Hide the filter UI when not in "filter" tab
-        const tagFilterSection = document.getElementById("tagFilterSection");
-        if (tagFilterSection) {
-            tagFilterSection.style.display = "none";
-        }
-    }
-
     if (!posts || posts.length === 0) {
         return;
     }

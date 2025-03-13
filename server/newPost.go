@@ -227,6 +227,7 @@ func InsertCategories(w http.ResponseWriter, postID int64, categories []string) 
 }
 
 // Save image and return uuid path to insert in DB.
+// Return only Image name
 func SaveImg(imageB []byte) (string, error) {
 	imguuid, err := uuid.NewV4()
 	if err != nil {

@@ -58,7 +58,6 @@ function profileRenderer(username) {
 // Handles Profile tabs clicks.
 function SetupProfileTabListeners() {
     const tabButtons = document.querySelectorAll(".profile-tab-btn");
-    const dynamicContent = document.getElementById("profileDynamicContent");
 
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
@@ -69,7 +68,6 @@ function SetupProfileTabListeners() {
 
             // Add active class to clicked button
             this.classList.add("active");
-            dynamicContent.innerHTML = "";
 
             // Get the tab name
             currentProfileTab = this.getAttribute("data-tab");
@@ -89,20 +87,45 @@ function SetupProfileTabListeners() {
 
 // Helper function, render according tab
 function conditionalTabs(scrollPos) {
-    const actions = {
-        liked: () => fetchLikedPosts(profileOffset, "like"),
-        disliked: () => fetchLikedPosts(profileOffset, "dislike"),
-        posts: () => fetchUserPosts(profileOffset),
-        comments: () => fetchCommentedPosts(profileOffset),
-    };
-    if (actions[currentProfileTab]) {
-        actions[currentProfileTab]().then(() => {
-            setTimeout(() => {
-                window.scrollTo({ top: scrollPos, behavior: "smooth" });
-            }, 100);
-        });
-    }
+    const dynamicContent = document.getElementById("profileDynamicContent"); // Adjust based on your actual container
+
+    if (!dynamicContent) return; // Prevent errors if the element is missing
+
+    // Fade out current content
+    dynamicContent.style.opacity = "0";
+
+    // Wait for fade-out to complete before fetching new content
+    setTimeout(() => {
+        dynamicContent.innerHTML = "";
+        const actions = {
+            liked: () => fetchLikedPosts(profileOffset, "like"),
+            disliked: () => fetchLikedPosts(profileOffset, "dislike"),
+            posts: () => fetchUserPosts(profileOffset),
+            comments: () => fetchCommentedPosts(profileOffset),
+        };
+
+        if (actions[currentProfileTab]) {
+            actions[currentProfileTab]().then(() => {
+                setTimeout(() => {
+                    window.scrollTo({ top: scrollPos, behavior: "smooth" });
+
+                    // Animate fade-in effect
+                    let opacity = 0;
+                    function fadeIn() {
+                        opacity += 0.1; // Increase opacity gradually
+                        dynamicContent.style.opacity = opacity;
+
+                        if (opacity < 1) {
+                            requestAnimationFrame(fadeIn); // Continue animation
+                        }
+                    }
+                    requestAnimationFrame(fadeIn); // Start fade-in effect
+                }, 100); // Small delay to ensure content loads
+            });
+        }
+    }, 300); // Matches fade-out duration
 }
+
 
 /* -------------------------------
         FETCH LIKED/Disliked POSTS
@@ -258,11 +281,11 @@ function SetupImageUpdate() {
             if (document.querySelector(".avatar-menu img")) {
                 document.querySelector(".avatar-menu img").src = `../uploads/${data.profile_pic}`;
             }
-            
+
             ProfilePic = `${data.profile_pic}`;
 
             // Re-render dynamic content
-            setTimeout(() => {
+            setTimeout(() => { // (used to show comments image when changed)
                 const scrollPos = window.scrollY;
                 window.scrollTo(0, scrollPos);
                 conditionalTabs(scrollPos);
