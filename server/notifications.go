@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // Get user's corresponding notifications.
@@ -145,13 +146,14 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 	if err == nil {
 		// Fetch the latest notification and send via WebSocket
 		notification := Notification{
-			UserID:        ownerID,
-			ActorID:       actorID,
-			PostID:        postID,
-			Type:          reactionType,
-			Message:       buildNotification(reactionType),
-			ActorUsername: GetUsernameByID(actorID),
+			UserID:          ownerID,
+			ActorID:         actorID,
+			PostID:          postID,
+			Type:            reactionType,
+			Message:         buildNotification(reactionType),
+			ActorUsername:   GetUsernameByID(actorID),
 			ActorProfilePic: GetUserProfilePic(actorID),
+			CreatedAt:       time.Now(),
 		}
 		NotifyUser(notification) // Send real-time WS update
 	}

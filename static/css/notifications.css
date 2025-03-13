@@ -1,34 +1,16 @@
-/* Notifications List Container */
+/* Notifications Container */
 .notifications-container {
-    max-width: 700px;
+    max-width: 600px;
     margin: 20px auto;
     margin-top: 300px;
     padding: 40px;
     background: var(--white);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-height: 500px;
+    max-height: 400px;
     /* Fixed height */
     overflow-y: auto;
-    /* Enable vertical scrolling */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Scrollbar Customization */
-.notifications-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.notifications-container::-webkit-scrollbar-thumb {
-    background-color: var(--border-grey);
-    border-radius: 4px;
-}
-
-.notifications-container::-webkit-scrollbar-track {
-    background: var(--light-grey);
+    /* Scrollable */
 }
 
 /* Each Notification Item */
@@ -37,15 +19,18 @@
     align-items: center;
     padding: 10px;
     border-bottom: 1px solid var(--border-white);
-    transition: background 0.2s ease-in-out, transform 0.2s;
-    cursor: pointer;
-    position: relative;
-    width: 100%;
+    transition: background 0.2s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 1;
 }
 
 .notification-item:hover {
     background: var(--light-blue);
-    transform: scale(1.02);
+}
+
+/* Fade out effect */
+.notification-item.fade-out {
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
 
 /* Profile Picture */
@@ -78,32 +63,43 @@
 .notif-close {
     background: none;
     border: none;
-    color: var(--grey-mr);
     font-size: 1.2rem;
     cursor: pointer;
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    transition: color 0.2s ease-in-out;
+    color: var(--grey-mr);
 }
 
-.notif-close:hover {
+/* Clear All Button */
+.clear-all-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    max-width: 150px;
+    padding: 12px;
+    background-color: var(--nav-btn-hvr);
     color: var(--white);
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    text-align: center;
+    margin: 20px auto; /* Center the button horizontally */
+    margin-top: 80px;
+    letter-spacing: 0.5px;
+}
+
+/* Hover effect */
+.clear-all-btn:hover {
+    background-color: var(--submit-btn)
 }
 
 /* No Notifications Message */
 .no-notifications {
     text-align: center;
-    color: var(--grey-mr);
-    padding: 20px;
     font-size: 1rem;
-    font-weight: 600;
-}
-
-/* Error Message */
-.error-msg {
-    text-align: center;
-    color: var(--red-color);
+    font-weight: 600; /* Slightly bold */
+    color: var(--content-grey);
     padding: 20px;
+    opacity: 0.9;
 }
