@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
 
+// Get user's corresponding notifications.
 func GetNotifications(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
@@ -19,14 +21,28 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get offset from query parameter (default 0 if invalid or missing)
+	offsetParam := r.URL.Query().Get("offset")
+	offset, err := strconv.Atoi(offsetParam)
+	if err != nil || offset < 0 {
+		offset = 0
+	}
+	const limit = 15 // Fetch 15 notifications at a time
+
 	rows, err := DB.Query(`
-		SELECT n.id, n.user_id, n.actor_id, a.username AS actor_username,
-		       n.post_id, n.type, n.created_at
-		FROM notifications n
-		JOIN users a ON n.actor_id = a.id
-		WHERE n.user_id = ?
-		ORDER BY n.created_at DESC
-	`, user.ID)
+        SELECT 
+            n.id, n.user_id, n.actor_id, 
+            a.username AS actor_username, 
+            a.profile_pic, 
+            n.post_id, 
+            n.type, 
+            n.created_at
+        FROM notifications n
+        JOIN users a ON n.actor_id = a.id
+        WHERE n.user_id = ?
+        ORDER BY n.created_at DESC
+        LIMIT ? OFFSET ?
+    `, user.ID, limit, offset)
 	if err != nil {
 		JsonError(w, "Failed to query notifications", http.StatusInternalServerError, err)
 		return
@@ -34,38 +50,52 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 
 	var notifs []Notification
+
 	for rows.Next() {
 		var (
-			n       Notification
-			postID  sql.NullInt64
-			actorUN string
+			n          Notification
+			actorUN    string
+			profilePic string
+			postID     sql.NullInt64
 		)
-		err := rows.Scan(
+
+		if err := rows.Scan(
 			&n.ID,
 			&n.UserID,
 			&n.ActorID,
-			&actorUN,
-			&postID,
+			&actorUN,    // a.username
+			&profilePic, // a.profile_pic
+			&postID,     // n.post_id
 			&n.Type,
 			&n.CreatedAt,
-		)
-		if err != nil {
+		); err != nil {
 			JsonError(w, "Failed to scan notification", http.StatusInternalServerError, err)
 			return
 		}
 
 		// Convert postID if valid
 		if postID.Valid {
-			val := int(postID.Int64)
-			n.PostID = &val
+			pID := int(postID.Int64)
+			n.PostID = &pID
 		}
 
+		// Assign actor fields and build message
 		n.ActorUsername = actorUN
-
-		// Build a user-friendly message
+		n.ActorProfilePic = profilePic
 		n.Message = buildNotification(n.ActorUsername, n.Type)
 
 		notifs = append(notifs, n)
+	}
+
+	if err := rows.Err(); err != nil {
+		JsonError(w, "Error iterating notifications", http.StatusInternalServerError, err)
+		return
+	}
+
+	if len(notifs) == 0 {
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte("[]"))
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -81,9 +111,8 @@ func buildNotification(actorUsername, notifType string) string {
 		return fmt.Sprintf("%s disliked your post", actorUsername)
 	case "comment":
 		return fmt.Sprintf("%s commented on your post", actorUsername)
-	// Add other cases if needed
 	default:
-		return fmt.Sprintf("%s ", actorUsername)
+		return fmt.Sprintf("%s reacted on your comment", actorUsername)
 	}
 }
 

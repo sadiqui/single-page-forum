@@ -42,12 +42,13 @@ type Comment struct {
 }
 
 type Notification struct {
-	ID            int       `json:"id"`
-	UserID        int       `json:"user_id"`
-	ActorID       int       `json:"actor_id"`
-	ActorUsername string    `json:"actor_username"`
-	PostID        *int      `json:"post_id,omitempty"`
-	Type          string    `json:"type"`
-	Message       string    `json:"message"`
-	CreatedAt     time.Time `json:"created_at"`
+	ID              int       `json:"id"`
+	UserID          int       `json:"user_id"`
+	ActorID         int       `json:"actor_id"`
+	ActorUsername   string    `json:"actor_username"`
+	ActorProfilePic string    `json:"actor_profilePic"`
+	PostID          *int      `json:"post_id,omitempty"`
+	Type            string    `json:"type"`
+	Message         string    `json:"message"`
+	CreatedAt       time.Time `json:"created_at"`
 }

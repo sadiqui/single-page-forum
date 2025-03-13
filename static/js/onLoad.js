@@ -116,7 +116,8 @@ function LoadTabContent(tab) {
         } else if (tab === "profile") {
             profileRenderer(Username);
         } else if (tab === "notifs") {
-            // notifsRenderer(offset);
+            notifOffset = 0;
+            notifsRenderer();
         } else if (tab === "messages") {
             // messagesRenderer(offset);
         } else if (tab === "settings") {

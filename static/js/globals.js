@@ -312,6 +312,7 @@ const Filter = `
 // Num of posts on each scroll load.
 let HomeLimit = 10;
 let ProfileLimit = 6;
+let NotifLimit = 15;
 let Username = "";
 let ProfilePic = "";
 let tabName = "home"

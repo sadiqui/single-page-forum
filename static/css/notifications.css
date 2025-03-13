@@ -1,0 +1,62 @@
+/* Notifications Container */
+.notifications-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 10px;
+    background: var(--white);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Each Notification Item */
+.notification-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid var(--border-white);
+    transition: background 0.2s ease-in-out;
+}
+
+.notification-item:hover {
+    background: var(--light-blue);
+}
+
+/* Profile Picture */
+.notif-avatar img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 12px;
+    border: 2px solid var(--submit-btn);
+}
+
+/* Notification Content */
+.notif-content {
+    flex: 1;
+}
+
+.notif-message {
+    font-size: 0.9rem;
+    color: var(--content-grey);
+    margin: 0;
+}
+
+.notif-time {
+    font-size: 0.75rem;
+    color: var(--light-grey);
+}
+
+/* Empty State */
+.no-notifications {
+    text-align: center;
+    color: var(--grey-mr);
+    padding: 20px;
+}
+
+/* Error Message */
+.error-msg {
+    text-align: center;
+    color: var(--red-color);
+    padding: 20px;
+}
