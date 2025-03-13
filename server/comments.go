@@ -92,7 +92,7 @@ func processComment(payload *CommentPayload, user *User) error {
 	if err != nil {
 		return err
 	}
-	// Insert notification if the commenter != post owner
+	// Insert to notification if the commenter != post owner
 	if ownerID != user.ID {
 		err := InsertNotification(ownerID, user.ID, &payload.PostID, "comment")
 		if err != nil {

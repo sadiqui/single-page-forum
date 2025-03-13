@@ -82,7 +82,7 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 		// Assign actor fields and build message
 		n.ActorUsername = actorUN
 		n.ActorProfilePic = profilePic
-		n.Message = buildNotification(n.ActorUsername, n.Type)
+		n.Message = buildNotification(n.Type)
 
 		notifs = append(notifs, n)
 	}
@@ -103,16 +103,16 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 }
 
 // Helper to build the "message" string
-func buildNotification(actorUsername, notifType string) string {
+func buildNotification(notifType string) string {
 	switch notifType {
 	case "like":
-		return fmt.Sprintf("%s liked your post", actorUsername)
+		return "liked your post"
 	case "dislike":
-		return fmt.Sprintf("%s disliked your post", actorUsername)
+		return "disliked your post"
 	case "comment":
-		return fmt.Sprintf("%s commented on your post", actorUsername)
+		return "commented on your post"
 	default:
-		return fmt.Sprintf("%s reacted on your comment", actorUsername)
+		return "reacted on your comment"
 	}
 }
 
@@ -142,4 +142,30 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 		reactionType, // "like" or "dislike"
 	)
 	return err
+}
+
+// Delete a notification
+func DeleteNotification(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
+		return
+	}
+
+	// Get the notification ID from the query parameters
+	notifIDParam := r.URL.Query().Get("id")
+	notifID, err := strconv.Atoi(notifIDParam)
+	if err != nil {
+		JsonError(w, "Invalid notification ID", http.StatusBadRequest, err)
+		return
+	}
+
+	// Delete notification from the database
+	_, err = DB.Exec(`DELETE FROM notifications WHERE id = ?`, notifID)
+	if err != nil {
+		JsonError(w, "Failed to delete notification", http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("Notification deleted successfully"))
 }

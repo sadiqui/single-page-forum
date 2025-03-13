@@ -116,6 +116,7 @@ function LoadTabContent(tab) {
         } else if (tab === "profile") {
             profileRenderer(Username);
         } else if (tab === "notifs") {
+            window.addEventListener("scroll", handleNotifScroll, { passive: true });
             notifOffset = 0;
             notifsRenderer();
         } else if (tab === "messages") {
