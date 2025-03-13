@@ -141,7 +141,46 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 		postID,       // if nil, it will be NULL; see note below for SQLite
 		reactionType, // "like" or "dislike"
 	)
+
+	if err == nil {
+		// Fetch the latest notification and send via WebSocket
+		notification := Notification{
+			UserID:        ownerID,
+			ActorID:       actorID,
+			PostID:        postID,
+			Type:          reactionType,
+			Message:       buildNotification(reactionType),
+			ActorUsername: GetUsernameByID(actorID),
+			ActorProfilePic: GetUserProfilePic(actorID),
+		}
+		NotifyUser(notification) // Send real-time WS update
+	}
 	return err
+}
+
+// fetches a username from the database using the user ID.
+func GetUsernameByID(userID int) string {
+	var username string
+	err := DB.QueryRow("SELECT username FROM users WHERE id = ?", userID).Scan(&username)
+	if err != nil {
+		fmt.Println("Error fetching username:", err)
+		return "Unknown" // Fallback value if user not found
+	}
+	return username
+}
+
+// fetches a user's profile picture from the database.
+func GetUserProfilePic(userID int) string {
+	var profilePic sql.NullString // Allows NULL handling
+	err := DB.QueryRow("SELECT profile_pic FROM users WHERE id = ?", userID).Scan(&profilePic)
+	if err != nil {
+		fmt.Println("Error fetching profile picture:", err)
+		return "avatar.webp" // Default profile picture
+	}
+	if profilePic.Valid {
+		return profilePic.String
+	}
+	return "avatar.webp" // If NULL, return default avatar
 }
 
 // Delete a notification

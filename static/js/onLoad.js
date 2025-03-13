@@ -35,6 +35,7 @@ async function CheckSession() {
                 ProfilePic = data.profile_pic
                 ShowLoggedInNav(data.username, data.profile_pic);
                 Routing()
+                connectNotificationsWS()
             }
         } else {
             ShowloginSignup()
