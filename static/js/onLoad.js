@@ -137,7 +137,7 @@ function LoadTabContent(tab) {
         }
 
         requestAnimationFrame(fadeIn); // Start fade-in effect
-    }, 300); // Matches fade-out duration
+    }, 200); // Matches fade-out duration
 }
 
 // Handle Refresh: Check URL and Load Correct Content
