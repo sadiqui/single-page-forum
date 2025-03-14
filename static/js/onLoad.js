@@ -142,7 +142,7 @@ function LoadTabContent(tab) {
         dynamicContent.style.opacity = opacity;
 
         function fadeIn() {
-            opacity += 0.1; // Increase opacity gradually
+            opacity += 0.2; // Increase opacity gradually
             dynamicContent.style.opacity = opacity;
 
             if (opacity < 1) {
