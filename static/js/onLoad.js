@@ -151,7 +151,7 @@ function LoadTabContent(tab) {
         }
 
         requestAnimationFrame(fadeIn); // Start fade-in effect
-    }, 200); // Matches fade-out duration
+    }, 100); // Matches fade-out duration
 }
 
 // Handle Back/Forward Button Clicks
