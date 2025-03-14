@@ -14,6 +14,29 @@
     /* Scrollable */
 }
 
+/* Modern Scrollbar */
+.notifications-container::-webkit-scrollbar {
+    width: 8px;
+    /* Thin scrollbar */
+}
+
+.notifications-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Light grey background */
+    border-radius: 8px;
+}
+
+.notifications-container::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #66a1ee, #2575fc);
+    /* Gradient effect */
+    border-radius: 8px;
+}
+
+.notifications-container::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #66abeb, #1b5cd7);
+    /* Darker on hover */
+}
+
 /* Each Notification Item */
 .notification-item {
     display: flex;
@@ -55,9 +78,16 @@
     margin: 0;
 }
 
+error-msg {
+    color: var(--error-red);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
 .notif-time {
-    font-size: 0.75rem;
+    font-size: 0.75rem ;
     color: var(--light-grey);
+    font-weight: bold;
 }
 
 /* Close Button */
@@ -85,7 +115,8 @@
     border-radius: 12px;
     cursor: pointer;
     text-align: center;
-    margin: 20px auto; /* Center the button horizontally */
+    margin: 20px auto;
+    /* Center the button horizontally */
     margin-top: 80px;
     letter-spacing: 0.5px;
 }
@@ -99,7 +130,8 @@
 .no-notifications {
     text-align: center;
     font-size: 1rem;
-    font-weight: 600; /* Slightly bold */
+    font-weight: 600;
+    /* Slightly bold */
     color: var(--content-grey);
     padding: 20px;
     opacity: 0.9;

@@ -22,7 +22,7 @@ func SinglePostHandler(w http.ResponseWriter, r *http.Request) {
 
 	// SELECT the columns that match post ID
 	err := DB.QueryRow(`
-        SELECT p.id, p.title, p.content, u.username, p.image, p.created_at
+        SELECT p.id, p.title, p.content, u.username, p.image, p.created_at, u.profile_pic
         FROM posts p
         JOIN users u ON p.user_id = u.id
         WHERE p.id = ?`,
@@ -34,6 +34,7 @@ func SinglePostHandler(w http.ResponseWriter, r *http.Request) {
 		&post.Username,
 		&post.Image,
 		&post.CreatedAt,
+		&post.ProfilePic,
 	)
 	if err != nil {
 		JsonError(w, "Post not found or DB error: "+err.Error(), http.StatusNotFound, err)

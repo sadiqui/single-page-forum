@@ -110,14 +110,17 @@ function LoadTabContent(tab) {
     setTimeout(() => {
         // Load new content based on tab
         if (tab === "home") {
+            window.addEventListener('scroll', handleProfileScroll);
             currentProfileTab = "";
             clearTagFilter();
             homeRenderer();
             FilterCategories();
         } else if (tab === "profile") {
+            window.removeEventListener('scroll', handleScroll);
             profileRenderer(Username);
         } else if (tab === "notifs") {
-            window.addEventListener("scroll", handleNotifScroll, { passive: true });
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', handleProfileScroll);
             notifOffset = 0;
             notifsRenderer();
         } else if (tab === "messages") {

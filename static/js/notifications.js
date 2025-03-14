@@ -14,6 +14,7 @@ async function notifsRenderer() {
         notifContainer.id = "notifContainer";
         notifContainer.className = "notifications-container";
         dynamicContent.appendChild(notifContainer);
+        notifContainer.addEventListener("scroll", handleNotifScroll, { passive: true });
     }
 
     try {
@@ -48,7 +49,7 @@ async function notifsRenderer() {
                 </div>
                 <div class="notif-content">
                     <p class="notif-message"><strong>${notif.actor_username}</strong> ${notif.message}</p>
-                    <span class="notif-time time-ago" data-timestamp="${notif.created_at}">${timeAgo(notif.created_at)}</span>
+                    <span class="notif-time time-ago" data-timestamp="${notif.created_at}">• ${timeAgo(notif.created_at)}</span>
                 </div>
                 <button class="notif-close">&times;</button>
             `;
@@ -63,7 +64,7 @@ async function notifsRenderer() {
             // Close button event listener (Removes from UI & Backend with fade effect)
             notifElement.querySelector(".notif-close").addEventListener("click", async (event) => {
                 event.stopPropagation(); // Prevent navigating to post
-                
+
                 const notifID = notifElement.getAttribute("data-notif-id"); // Get notification ID
 
                 // Remove from backend
@@ -79,7 +80,6 @@ async function notifsRenderer() {
 
             notifContainer.appendChild(notifElement);
         });
-
     } catch (err) {
         console.error("Error fetching notifications:", err);
         notifContainer.innerHTML = "<p class='error-msg'>Something went wrong.</p>";
@@ -90,7 +90,7 @@ async function notifsRenderer() {
 
 function attachClearAllButton() {
     let clearAllBtn = document.getElementById("clearAllNotifications");
-    
+
     if (!clearAllBtn) {
         clearAllBtn = document.createElement("button");
         clearAllBtn.id = "clearAllNotifications";
@@ -139,20 +139,16 @@ async function deleteNotification(notifID) {
 
 // Infinite Scroll for Notifications
 function handleNotifScroll() {
+    const notifContainer = document.getElementById("notifContainer");
+
+    // Check if already loading notifications.
     if (notifLoading) return;
 
-    const windowHeight = window.innerHeight;
-    const scrollY = window.scrollY;
-    const docHeight = document.documentElement.scrollHeight || document.body.scrollHeight;
-
-    if (scrollY + windowHeight >= docHeight - 400) {
-        notifLoading = true;
+    // Calculate when to load more notifications.
+    if (notifContainer.scrollTop + notifContainer.clientHeight >= notifContainer.scrollHeight - 400) {
         notifsRenderer()
             .then(() => {
-                notifOffset += NotifLimit;
-            })
-            .finally(() => {
-                notifLoading = false;
+                notifOffset += NotifLimit; // Ensure NotifLimit is defined
             });
     }
 }

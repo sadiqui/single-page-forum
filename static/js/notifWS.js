@@ -35,14 +35,13 @@ function insertWSNotification(notif) {
     notifElement.setAttribute("data-post-id", notif.post_id);
     notifElement.setAttribute("data-notif-id", notif.id);
 
-    // Same HTML structure as in your "notifications.forEach(...)"
     notifElement.innerHTML = `
         <div class="notif-avatar">
             <img src="../uploads/${notif.actor_profile_pic || 'avatar.webp'}" alt="User Avatar">
         </div>
         <div class="notif-content">
             <p class="notif-message"><strong>${notif.actor_username}</strong> ${notif.message}</p>
-            <span class="notif-time">${timeAgo(notif.created_at)}</span>
+            <span class="notif-time time-ago" data-timestamp="${notif.created_at}">• ${timeAgo(notif.created_at)}</span>
         </div>
         <button class="notif-close">&times;</button>
     `;
