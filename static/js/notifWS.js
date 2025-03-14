@@ -18,7 +18,7 @@ function connectNotificationsWS() {
 }
 
 // This function inserts a single new notification object
-// into your existing #notifContainer DOM, just like you do in notifsRenderer
+// into your existing #notifContainer DOM element.
 function insertWSNotification(notif) {
     // If container doesn't exist, create it
     let notifContainer = document.getElementById("notifContainer");
@@ -62,7 +62,7 @@ function insertWSNotification(notif) {
         }
     });
 
-    // Insert at the *top* of the container if you want newest first
+    // Insert at the top of the container (newest first)
     notifContainer.prepend(notifElement);
 
     // Remove "no notifications" message if present
