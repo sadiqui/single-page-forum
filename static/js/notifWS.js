@@ -5,7 +5,6 @@ function connectNotificationsWS() {
     ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
-        // parse the JSON
         const notif = JSON.parse(event.data);
         // Insert into the notifContainer
         insertWSNotification(notif);
