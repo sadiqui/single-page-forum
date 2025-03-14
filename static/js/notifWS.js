@@ -4,15 +4,12 @@ function connectNotificationsWS() {
 
     ws = new WebSocket(wsUrl);
 
-    ws.onopen = () => {
-        console.log("WebSocket for notifications connected!");
-    };
-
     ws.onmessage = (event) => {
         // parse the JSON
         const notif = JSON.parse(event.data);
         // Insert into the notifContainer
         insertWSNotification(notif);
+        addNotificationBadge();
     };
 
     ws.onerror = (err) => {

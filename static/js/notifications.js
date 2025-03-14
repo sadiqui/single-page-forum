@@ -116,6 +116,7 @@ async function clearAllNotifications() {
         });
         const notifContainer = document.getElementById("notifContainer");
         notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
+        removeNotificationBadge()
     } catch (err) {
         console.error("Failed to clear notifications:", err);
     }
@@ -125,6 +126,7 @@ function checkEmptyNotifications() {
     const notifContainer = document.getElementById("notifContainer");
     if (document.querySelectorAll(".notification-item").length === 0) {
         notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
+        removeNotificationBadge()
     }
 }
 
@@ -150,5 +152,63 @@ function handleNotifScroll() {
             .then(() => {
                 notifOffset += NotifLimit; // Ensure NotifLimit is defined
             });
+    }
+}
+
+/*************************************
+*     Notification Badge Logic
+**************************************/
+// Check for new notification
+async function checkNotificationCount() {
+    try {
+        const res = await fetch("/api/get-notifications?offset=0&limit=1"); // Fetch only one notification
+        if (!res.ok) throw new Error("Failed to fetch notifications");
+        const notifications = await res.json();
+        if (notifications.length > 0) {
+            // Notifications exist, show red dot
+            addNotificationBadge();
+        } else {
+            removeNotificationBadge()
+        }
+    } catch (err) {
+        console.error("Error fetching notifications:", err);
+    }
+}
+
+// Function to add a notification badge to the tab button
+function addNotificationBadge() {
+    // Select the notification tab button
+    const notifTab = document.querySelector('.tab-btn[data-tab="notifs"]');
+    if (notifTab) {
+        // Prevent duplicate badges
+        if (!notifTab.querySelector('.notification-badge')) {
+            // Create the badge element
+            const badge = document.createElement('span');
+            badge.classList.add('notification-badge');
+            // Basic inline styling for a red circle
+            badge.style.cssText = `
+                position: absolute;
+                top: 3px;
+                right: 3px;
+                background-color: red;
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+            `;
+            // Ensure the button is positioned relative to contain the badge
+            notifTab.style.position = 'relative';
+            notifTab.appendChild(badge);
+        }
+    }
+}
+
+function removeNotificationBadge() {
+    // Select the notification tab button
+    const notifTab = document.querySelector('.tab-btn[data-tab="notifs"]');
+    if (notifTab) {
+        const badge = notifTab.querySelector('.notification-badge');
+        if (badge) {
+            badge.remove();
+        }
     }
 }
