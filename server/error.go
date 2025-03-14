@@ -16,7 +16,7 @@ type ErrorData struct {
 	StatusCode int
 }
 
-// Parse and execute error.html page depending on error type.
+// Fetch external error page depending on error type.
 func ErrorHandler(w http.ResponseWriter, statusCode int, msg1, msg2 string, err error) {
 	// Log the error in case of internal server error.
 	if err != nil && statusCode == 500 {
@@ -30,18 +30,22 @@ func ErrorHandler(w http.ResponseWriter, statusCode int, msg1, msg2 string, err 
 	}
 
 	w.WriteHeader(statusCode)
-	ParseAndExecute(w, Error, "static/templates/error.html")
+	ServeCloudError(w, Error, err)
 }
 
 // Serve the error page from the json file error link.
 func ServeCloudError(w http.ResponseWriter, error ErrorData, err error) {
-	log.Println(err)
+	if err != nil {
+		log.Println(err)
+	}
+
 	errBody, err := GetErrorPage()
 	if err != nil {
 		http.Error(w, http.StatusText(error.StatusCode), error.StatusCode)
 		log.Println(err)
 		return
 	}
+
 	// Replace placeholders in the error page with dynamic messages
 	errBody = strings.ReplaceAll(errBody, "{{.Msg1}}", error.Msg1)
 	errBody = strings.ReplaceAll(errBody, "{{.Msg2}}", error.Msg2)

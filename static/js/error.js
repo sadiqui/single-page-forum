@@ -73,3 +73,37 @@ function FocusOnField(errMsg) {
         }
     }
 }
+
+function LoadNotFoundPage() {
+    // Fetch page content dynamically, similar to "display: block";
+    fetch("https://gist.githubusercontent.com/kinoz01/6fed8332121b3be5ba6bb957a3498f88/raw/08b09cdd8f75a07d373ad494126f5b401fcece48/gistfile1.txt")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Failed to fetch content"); //
+            }
+            return response.text();
+        })
+        .then(html => {
+            // Render fetched-treated content
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, "text/html");
+
+            const title = doc.querySelector("title");
+            if (title) title.textContent = "dwi 404";
+
+            const h1 = doc.querySelector("h1");
+            if (h1) h1.textContent = "404";
+
+            const h3 = doc.querySelector("h3");
+            if (h3) h3.textContent = "Looks like you're lost!";
+
+            const p = doc.querySelector("p");
+            if (p) p.textContent = "The page you are looking for is not available!";
+
+            document.documentElement.replaceWith(doc.documentElement);
+        })
+        .catch(error => {
+            console.error("Error loading content:", error);
+        });
+
+}

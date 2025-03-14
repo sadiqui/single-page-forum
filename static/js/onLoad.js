@@ -49,14 +49,20 @@ async function CheckSession() {
 }
 
 function Routing() {
-    if (window.location.pathname === "/") {
+    const path = window.location.pathname;
+    if (path === "/") {
         document.getElementById("tabBar").innerHTML = tabBarHTML;
         SetupTabListeners()
-    }
-    if (window.location.pathname.startsWith("/post")) {
+    } else if (path.startsWith("/post")) {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
-        LoadPostPage(postId);
+        if (postId) {
+            LoadPostPage(postId);
+        } else {
+            LoadNotFoundPage();
+        }
+    } else {
+        LoadNotFoundPage();
     }
 }
 
