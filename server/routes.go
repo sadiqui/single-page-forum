@@ -34,6 +34,7 @@ func Routes() http.Handler {
 	mux.HandleFunc("/api/update-profile-pic", UpdateProfilePic)
 	mux.HandleFunc("/api/get-notifications", GetNotifications)
 	mux.HandleFunc("/api/delete-notification", DeleteNotification)
+	mux.HandleFunc("/api/delete-all-notifications", DeleteAllNotifications)
 	mux.HandleFunc("/ws/notifications", NotificationSocket)
 
 	// Rate Limiting (Auth & Content Creation)

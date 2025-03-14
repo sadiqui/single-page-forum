@@ -151,7 +151,7 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 			PostID:          postID,
 			Type:            reactionType,
 			Message:         buildNotification(reactionType),
-			ActorUsername:   GetUsernameByID(actorID),
+			ActorUsername:   GetUsername(actorID),
 			ActorProfilePic: GetUserProfilePic(actorID),
 			CreatedAt:       time.Now(),
 		}
@@ -161,12 +161,12 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 }
 
 // fetches a username from the database using the user ID.
-func GetUsernameByID(userID int) string {
+func GetUsername(userID int) string {
 	var username string
 	err := DB.QueryRow("SELECT username FROM users WHERE id = ?", userID).Scan(&username)
 	if err != nil {
 		fmt.Println("Error fetching username:", err)
-		return "Unknown" // Fallback value if user not found
+		return "Unknown" // Fallback value
 	}
 	return username
 }
@@ -185,14 +185,20 @@ func GetUserProfilePic(userID int) string {
 	return "avatar.webp" // If NULL, return default avatar
 }
 
-// Delete a notification
+// Delete a single notification after confirming the user
 func DeleteNotification(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
 		return
 	}
 
-	// Get the notification ID from the query parameters
+	user, err := GetUser(r)
+	if err != nil {
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
+		return
+	}
+
+	// Get the notification ID from query parameters
 	notifIDParam := r.URL.Query().Get("id")
 	notifID, err := strconv.Atoi(notifIDParam)
 	if err != nil {
@@ -200,7 +206,25 @@ func DeleteNotification(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Delete notification from the database
+	// Check if the notification belongs to the logged-in user
+	var ownerID int
+	err = DB.QueryRow(`SELECT user_id FROM notifications WHERE id = ?`, notifID).Scan(&ownerID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			JsonError(w, "Notification not found", http.StatusNotFound, nil)
+		} else {
+			JsonError(w, "Failed to query notification", http.StatusInternalServerError, err)
+		}
+		return
+	}
+
+	// Ensure user is the owner of the notification
+	if ownerID != user.ID {
+		JsonError(w, "Unauthorized action", http.StatusForbidden, nil)
+		return
+	}
+
+	// Delete the notification
 	_, err = DB.Exec(`DELETE FROM notifications WHERE id = ?`, notifID)
 	if err != nil {
 		JsonError(w, "Failed to delete notification", http.StatusInternalServerError, err)
@@ -209,4 +233,28 @@ func DeleteNotification(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte("Notification deleted successfully"))
+}
+
+// Delete all notifications for the logged-in user
+func DeleteAllNotifications(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
+		return
+	}
+
+	user, err := GetUser(r)
+	if err != nil {
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
+		return
+	}
+
+	// Delete all notifications for the logged-in user
+	_, err = DB.Exec(`DELETE FROM notifications WHERE user_id = ?`, user.ID)
+	if err != nil {
+		JsonError(w, "Failed to delete notifications", http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("All notifications deleted successfully"))
 }
