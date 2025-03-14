@@ -79,7 +79,7 @@ function LoadNotFoundPage() {
     fetch("https://gist.githubusercontent.com/kinoz01/6fed8332121b3be5ba6bb957a3498f88/raw/08b09cdd8f75a07d373ad494126f5b401fcece48/gistfile1.txt")
         .then(response => {
             if (!response.ok) {
-                throw new Error("Failed to fetch content"); //
+                throw new Error("Failed to fetch content");
             }
             return response.text();
         })

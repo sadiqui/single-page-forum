@@ -4,7 +4,7 @@ import "net/http"
 
 // Handle index web page.
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
+	if r.URL.Path != "/" && r.URL.Path != "/post" {
 		ErrorHandler(w, 404, "Looks like you're lost!", "The page you are looking for is not available!", nil)
 		return
 	}

@@ -1,3 +1,4 @@
+let postFound = false;
 
 async function LoadPostPage(postID) {
     const dynamicContent = document.getElementById("content");
@@ -28,23 +29,25 @@ async function LoadPostPage(postID) {
             <div id="showMoreContainer">
                 <button id="showMoreBtn" style="display: none;">Show older comments</button>
             </div>
-
-
         </div>
     </div>
     `;
+
     // Clear the body and insert new content 
-    const postDiv = document.getElementById("postDiv")
+    const postDiv = document.getElementById("postDiv");
 
     // Fetchers
     if (postID) {
-        await FetchFullPost(postID)
-        FetchReactions(postID, postDiv, "post")
-        FetchComments(postID)
+        await FetchFullPost(postID);
+        if (postFound) {
+            FetchReactions(postID, postDiv, "post");
+            FetchComments(postID);
+        }
+        postFound = false;
     } else {
         console.log("No post found");
-        PopError("Something went wrong")
-        return
+        PopError("Something went wrong");
+        return;
     }
 
     // Comment Listener
@@ -70,7 +73,6 @@ async function LoadPostPage(postID) {
     });
 }
 
-
 // Send fetch to backEnd with post ID
 async function FetchFullPost(id) {
     try {
@@ -78,14 +80,13 @@ async function FetchFullPost(id) {
         if (!res.ok) {
             const errData = await res.json();
             console.error("Failed to fetch post:", errData.msg);
-            PopError("Something went wrong")
-            return;
+            LoadNotFoundPage();
+        } else {
+            postFound = true;
+            const post = await res.json();
+            RenderPost(post, postDiv, "single");
+            longTagNames();
         }
-        const post = await res.json()
-
-        RenderPost(post, postDiv, "single")
-        longTagNames()
-
     } catch (err) {
         console.log(err);
         PopError("Something went wrong")
