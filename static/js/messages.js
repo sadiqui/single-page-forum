@@ -30,19 +30,31 @@ async function loadMessages(selectedUsername, profilePic) {
 
         if (!messages || messages.length === 0) {
             chatMessages.innerHTML = `<p class="no-messages">Start the conversation...</p>`;
+            return;
         }
 
+        let lastDate = "";
+
         messages.forEach(msg => {
+            const msgDate = formatDate(msg.created_at);
+            if (msgDate !== lastDate) {
+                chatMessages.innerHTML += `<div class="chat-date-separator">${msgDate}</div>`;
+                lastDate = msgDate;
+            }
+
             const messageElement = document.createElement("div");
             messageElement.classList.add("message");
-            
-            if (msg.sender === Username) {                
+
+            if (msg.sender === Username) {
                 messageElement.classList.add("sent"); // Sent messages (blue, right)
             } else {
                 messageElement.classList.add("received"); // Received messages (white, left)
             }
 
-            messageElement.innerHTML = `<p>${msg.content}</p>`;
+            messageElement.innerHTML = `
+                <p>${msg.content}</p>
+                <span class="message-time">${formatTime(msg.created_at)}</span>
+            `;
             chatMessages.appendChild(messageElement);
         });
 
@@ -79,7 +91,10 @@ async function sendMessage(receiver) {
         const chatMessages = document.getElementById("chatMessages");
         const messageElement = document.createElement("div");
         messageElement.className = "message sent";
-        messageElement.innerHTML = `<p>${messageContent}</p>`;
+        messageElement.innerHTML = `
+            <p>${messageContent}</p>
+            <span class="message-time">${formatTime(new Date())}</span>
+        `;
         chatMessages.appendChild(messageElement);
 
         inputField.value = ""; // Clear input
@@ -87,4 +102,26 @@ async function sendMessage(receiver) {
     } catch (err) {
         console.error("Error sending message:", err);
     }
+}
+
+// Format date (Today, Yesterday, or "21 Oct 2025")
+function formatDate(dateString) {
+    const date = new Date(dateString);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    if (date.toDateString() === today.toDateString()) {
+        return "Today";
+    } else if (date.toDateString() === yesterday.toDateString()) {
+        return "Yesterday";
+    } else {
+        return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+    }
+}
+
+// Format time (e.g., "17:50")
+function formatTime(dateString) {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
 }

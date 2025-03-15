@@ -48,6 +48,15 @@
     scrollbar-color: var(--light-blue) var(--body-bg);
 }
 
+/* Message Date Separator */
+.chat-date-separator {
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--light-grey);
+    margin: 10px 0;
+}
+
 /* Individual Messages */
 .message {
     max-width: 70%;
@@ -56,13 +65,14 @@
     font-size: 1rem;
     word-wrap: break-word;
     display: inline-block;
+    position: relative;
 }
 
 /* Sent Messages (Blue, Right) */
 .sent {
     align-self: flex-end;
-    background: var(--submit-btn);
-    color: var(--white);
+    background: rgb(199, 217, 240);
+    color: var(--content-grey);
     border-bottom-right-radius: 5px;
     text-align: left;
 }
@@ -70,11 +80,19 @@
 /* Received Messages (White, Left) */
 .received {
     align-self: flex-start;
-    background: var(--white);
+    background: greenyellow;
     color: var(--content-grey);
     border-bottom-left-radius: 5px;
     text-align: left;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Message Timestamp */
+.message-time {
+    font-size: 0.7rem;
+    color: var(--content-grey);
+    position: relative;
+    top: 5px;
 }
 
 /* Input Field */
