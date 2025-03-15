@@ -9,63 +9,87 @@ import (
 )
 
 // Represents the incoming request to send a message.
-type SendMessageRequest struct {
+type MessagePayload struct {
 	Receiver string `json:"receiver"`
 	Content  string `json:"content"`
 }
 
+const messagesLimit = 20
+
 // Returns all messages exchanged between the logged-in user and a selected user.
 func GetMessages(w http.ResponseWriter, r *http.Request) {
-	// Get current logged-in user (implement GetUser accordingly)
 	currentUser, err := GetUser(r)
 	if err != nil {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 
-	// Get selected user's username from query parameter
 	selectedUsername := r.URL.Query().Get("user")
 	if selectedUsername == "" {
 		http.Error(w, "Missing user parameter", http.StatusBadRequest)
 		return
 	}
 
-	// Get the selected user object
+	// Parse offset/limit from query
+	offsetStr := r.URL.Query().Get("offset")
+
+	var offset int
+	if offsetStr == "" {
+		offset = 0
+	} else {
+		fmt.Sscanf(offsetStr, "%d", &offset) // handle error if needed
+	}
+
 	selectedUser, err := GetUserByUsername(selectedUsername)
 	if err != nil {
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
 	}
 
-	// Query messages exchanged between currentUser and selectedUser,
-	// joining the users table to get the sender and receiver usernames.
+	// We want the *newest* messages first, so we ORDER BY created_at DESC
+	// Then we LIMIT & OFFSET. Because we want them in ascending order
+	// in the UI, we'll reverse them after scanning.
 	query := `
-        SELECT m.id, u1.username AS sender, u2.username AS receiver, m.content, m.created_at
+        SELECT m.id,
+               u1.username AS sender,
+               u2.username AS receiver,
+               m.content,
+               m.created_at
         FROM messages m
         JOIN users u1 ON m.sender_id = u1.id
         JOIN users u2 ON m.receiver_id = u2.id
-        WHERE (m.sender_id = ? AND m.receiver_id = ?)
-           OR (m.sender_id = ? AND m.receiver_id = ?)
-        ORDER BY m.created_at ASC
+        WHERE ((m.sender_id = ? AND m.receiver_id = ?)
+            OR (m.sender_id = ? AND m.receiver_id = ?))
+        ORDER BY m.created_at DESC
+        LIMIT ? OFFSET ?
     `
-	rows, err := DB.Query(query, currentUser.ID, selectedUser.ID, selectedUser.ID, currentUser.ID)
+	rows, err := DB.Query(query,
+		currentUser.ID, selectedUser.ID,
+		selectedUser.ID, currentUser.ID,
+		messagesLimit, offset)
 	if err != nil {
 		http.Error(w, "Database error", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
 
-	var messages []Message
+	var reverseOrder []Message
 	for rows.Next() {
 		var msg Message
-		err := rows.Scan(&msg.ID, &msg.Sender, &msg.Receiver, &msg.Content, &msg.CreatedAt)
-		if err != nil {
+		if err := rows.Scan(&msg.ID, &msg.Sender, &msg.Receiver, &msg.Content, &msg.CreatedAt); err != nil {
 			http.Error(w, "Database error", http.StatusInternalServerError)
 			return
 		}
-		messages = append(messages, msg)
+		reverseOrder = append(reverseOrder, msg)
 	}
 
+	// Reverse them so the earliest is first, the newest is last
+	// i.e. ascending order by created_at
+	var messages []Message
+	for i := len(reverseOrder) - 1; i >= 0; i-- {
+		messages = append(messages, reverseOrder[i])
+	}
+	
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(messages)
 }
@@ -107,7 +131,7 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var req SendMessageRequest
+	var req MessagePayload
 	err = json.NewDecoder(r.Body).Decode(&req)
 	if err != nil || req.Receiver == "" || req.Content == "" {
 		http.Error(w, "Invalid request payload", http.StatusBadRequest)

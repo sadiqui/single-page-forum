@@ -33,7 +33,6 @@
     overflow-x: auto;
     white-space: nowrap;
     gap: 20px;
-    padding: 10px;
     max-width: 90%;
     scrollbar-width: thin;
     scrollbar-color: var(--light-blue) var(--body-bg);

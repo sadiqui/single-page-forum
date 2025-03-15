@@ -1,82 +1,134 @@
+let messageOffset = 0;
+const messageLimit = 20;
+let allLoaded = false;
+let isLoadingMore = false;
+let globalLastDate = null; // Tracks last date we inserted a separator
+
 async function loadMessages(selectedUsername, profilePic) {
     const dynamicContent = document.getElementById("content");
 
-    // Clear previous content and create chat container
     dynamicContent.innerHTML = `
-        <div id="chatContainer">
-            <div id="chatHeader">
-                <img src="../uploads/${profilePic || 'avatar.webp'}" alt="${selectedUsername}" class="chat-profile-pic">
-                <span id="chatUsername">${selectedUsername}</span>
-            </div>
-            <div id="chatMessages" class="chat-messages">
-                <p class="loading-text">Loading messages...</p>
-            </div>
-            <div id="chatInputContainer">
-                <input type="text" id="chatInput" placeholder="Type a message...">
-                <button id="sendMessageBtn">
-                    <img src="../img/send.svg" alt="Send">
-                </button>
-            </div>
+      <div id="chatContainer">
+        <div id="chatHeader">
+            <img src="../uploads/${profilePic || 'avatar.webp'}" alt="${selectedUsername}" class="chat-profile-pic">
+            <span id="chatUsername">${selectedUsername}</span>
         </div>
+        <div id="chatMessages" class="chat-messages">
+            <p class="loading-text">Loading messages...</p>
+        </div>
+        <div id="chatInputContainer">
+            <input type="text" id="chatInput" placeholder="Type a message...">
+            <button id="sendMessageBtn">
+                <img src="../img/send.svg" alt="Send">
+            </button>
+        </div>
+      </div>
     `;
 
-    // Fetch messages
-    try {
-        const res = await fetch(`/api/get-messages?user=${encodeURIComponent(selectedUsername)}`);
-        const messages = await res.json();
-        const chatMessages = document.getElementById("chatMessages");
+    messageOffset = 0;
+    allLoaded = false;
+    isLoadingMore = false;
+    globalLastDate = null;
 
-        chatMessages.innerHTML = ""; // Clear loading text
+    const chatMessages = document.getElementById("chatMessages");
+    chatMessages.innerHTML = "<p class='loading-text'>Loading messages...</p>";
 
-        if (!messages || messages.length === 0) {
-            chatMessages.innerHTML = `<p class="no-messages">Start the conversation...</p>`;
-            return;
+    await fetchMoreMessages(selectedUsername, false);
+
+    chatMessages.addEventListener("scroll", async () => {
+        if (chatMessages.scrollTop === 0 && !allLoaded && !isLoadingMore) {
+            await fetchMoreMessages(selectedUsername, true);
         }
+    });
 
-        let lastDate = "";
-
-        messages.forEach(msg => {
-            const msgDate = formatDate(msg.created_at);
-            if (msgDate !== lastDate) {
-                chatMessages.innerHTML += `<div class="chat-date-separator">${msgDate}</div>`;
-                lastDate = msgDate;
-            }
-
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("message");
-
-            if (msg.sender === Username) {
-                messageElement.classList.add("sent"); // Sent messages (blue, right)
-            } else {
-                messageElement.classList.add("received"); // Received messages (white, left)
-            }
-
-            messageElement.innerHTML = `
-                <p>${msg.content}</p>
-                <span class="message-time">${formatTime(msg.created_at)}</span>
-            `;
-            chatMessages.appendChild(messageElement);
-        });
-
-        // Scroll to latest message
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    } catch (err) {
-        console.error("Failed to load messages:", err);
-        document.getElementById("chatMessages").innerHTML = `<p class="error-msg">Failed to load messages.</p>`;
-    }
-
-    // Send message event
     document.getElementById("sendMessageBtn").addEventListener("click", () => sendMessage(selectedUsername));
     document.getElementById("chatInput").addEventListener("keypress", (event) => {
         if (event.key === "Enter") sendMessage(selectedUsername);
     });
 }
 
+async function fetchMoreMessages(selectedUsername, prepend = false) {
+    if (isLoadingMore) return;
+    isLoadingMore = true;
+    const chatMessages = document.getElementById("chatMessages");
+    const oldScrollHeight = chatMessages.scrollHeight;
+
+    try {
+        const res = await fetch(`/api/get-messages?user=${encodeURIComponent(selectedUsername)}&offset=${messageOffset}`);
+        if (!res.ok) throw new Error("Failed to load messages");
+
+        const fetched = await res.json();
+
+        if (chatMessages.querySelector(".loading-text")) {
+            chatMessages.innerHTML = "";
+        }
+
+        if (!fetched || fetched.length === 0) {
+            if (messageOffset === 0 && !prepend) {
+                chatMessages.innerHTML = `<p class="no-messages">Start the conversation...</p>`;
+            } else {
+                allLoaded = true;
+            }
+            isLoadingMore = false;
+            return;
+        }
+
+        const messageBatch = document.createDocumentFragment();
+        const wrapper = document.createElement("div"); 
+        wrapper.classList.add("message-batch"); // Ensure batch messages are properly stacked
+
+        fetched.forEach(msg => {
+            const msgDate = formatDate(msg.created_at);
+
+            if (msgDate !== globalLastDate) {
+                const dateSep = document.createElement("div");
+                dateSep.className = "chat-date-separator";
+                dateSep.textContent = msgDate;
+                wrapper.appendChild(dateSep);
+                globalLastDate = msgDate;
+            }
+
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message", msg.sender === Username ? "sent" : "received");
+            messageElement.innerHTML = `
+                <p>${msg.content}</p>
+                <span class="message-time">${formatTime(msg.created_at)}</span>
+            `;
+
+            wrapper.appendChild(messageElement);
+        });
+
+        messageBatch.appendChild(wrapper);
+        prepend ? chatMessages.prepend(messageBatch) : chatMessages.appendChild(messageBatch);
+
+        if (!prepend && messageOffset === 0) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        if (prepend) {
+            const newScrollHeight = chatMessages.scrollHeight;
+            chatMessages.scrollTop = newScrollHeight - oldScrollHeight;
+        }
+
+        messageOffset += messageLimit;
+    } catch (err) {
+        console.error("Failed to fetch messages:", err);
+        if (messageOffset === 0 && !prepend) {
+            chatMessages.innerHTML = `<p class="error-msg">Failed to load messages.</p>`;
+        }
+    }
+    isLoadingMore = false;
+}
+
 // Send message function
 async function sendMessage(receiver) {
+    const chatMessages = document.getElementById("chatMessages");
     const inputField = document.getElementById("chatInput");
     const messageContent = inputField.value.trim();
     if (!messageContent) return;
+
+    // Remove "Start the conversation" message if it exists
+    const startConversation = chatMessages.querySelector(".no-messages");
+    if (startConversation) startConversation.remove();
 
     try {
         const res = await fetch("/api/send-message", {
@@ -84,11 +136,8 @@ async function sendMessage(receiver) {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ receiver, content: messageContent }),
         });
-
         if (!res.ok) throw new Error("Failed to send message");
 
-        // Append sent message
-        const chatMessages = document.getElementById("chatMessages");
         const messageElement = document.createElement("div");
         messageElement.className = "message sent";
         messageElement.innerHTML = `
@@ -97,30 +146,25 @@ async function sendMessage(receiver) {
         `;
         chatMessages.appendChild(messageElement);
 
-        inputField.value = ""; // Clear input
-        chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll down
+        inputField.value = "";
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     } catch (err) {
         console.error("Error sending message:", err);
     }
 }
 
-// Format date (Today, Yesterday, or "21 Oct 2025")
+// Helper date/time format
 function formatDate(dateString) {
     const date = new Date(dateString);
     const today = new Date();
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
-    if (date.toDateString() === today.toDateString()) {
-        return "Today";
-    } else if (date.toDateString() === yesterday.toDateString()) {
-        return "Yesterday";
-    } else {
-        return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
-    }
+    if (date.toDateString() === today.toDateString()) return "Today";
+    if (date.toDateString() === yesterday.toDateString()) return "Yesterday";
+    return date.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
-// Format time (e.g., "17:50")
 function formatTime(dateString) {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
