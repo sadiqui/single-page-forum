@@ -123,7 +123,7 @@ function conditionalTabs(scrollPos) {
                 }, 100); // Small delay to ensure content loads
             });
         }
-    }, 300); // Matches fade-out duration
+    }, 100); // Matches fade-out duration
 }
 
 
