@@ -40,7 +40,7 @@
     /* Keep some spacing at bottom just in case */
     margin-bottom: 2rem;
     min-height: 400px;
-    margin-top: 300px;
+    margin-top: 150px;
 }
 
 @media (max-width: 600px) {

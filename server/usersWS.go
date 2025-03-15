@@ -58,20 +58,22 @@ func BroadcastOnlineUsers() {
 	mu.Lock()
 	defer mu.Unlock()
 
-	var users []map[string]string
+	// For each connected user, build a custom list of online users that excludes their own entry.
+	for recipientID, conn := range onlineUsers {
+		var users []map[string]string
+		for userID := range onlineUsers {
+			if userID == recipientID {
+				// Skip the recipient's own information.
+				continue
+			}
+			username, profilePic := GetUsername(userID), GetUserProfilePic(userID)
+			users = append(users, map[string]string{
+				"username":    username,
+				"profile_pic": profilePic,
+			})
+		}
 
-	for userID := range onlineUsers {
-		username, profilePic := GetUsername(userID), GetUserProfilePic(userID)
-		users = append(users, map[string]string{
-			"username":    username,
-			"profile_pic": profilePic,
-		})
-	}
-
-	data, _ := json.Marshal(users)
-
-	// Send data to all connected users
-	for _, conn := range onlineUsers {
+		data, _ := json.Marshal(users)
 		conn.WriteMessage(websocket.TextMessage, data)
 	}
 }

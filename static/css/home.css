@@ -243,7 +243,7 @@ body {
 #tagFilterSection {
     width: 90%;
     margin: auto;
-    margin-top: 300px;
+    margin-top: 200px;
     margin-bottom: 60px;
     text-align: center;
     max-width: 400px;
@@ -546,12 +546,12 @@ body {
 /* ======= Tab Bar ======= */
 .tab-bar {
     position: absolute;
-    top: 150px;
     left: 50%;
     transform: translateX(-50%);
     width: 90%;
     max-width: 500px;
     background: var(--white);
+    margin-top: 50px;
     display: flex;
     justify-content: space-around;
     padding: 10px 0;

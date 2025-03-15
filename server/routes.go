@@ -36,6 +36,7 @@ func Routes() http.Handler {
 	mux.HandleFunc("/api/delete-notification", DeleteNotification)
 	mux.HandleFunc("/api/delete-all-notifications", DeleteAllNotifications)
 	mux.HandleFunc("/ws/notifications", NotificationSocket)
+	mux.HandleFunc("/ws/online-users", OnlineUsersWS)
 
 	// Rate Limiting (Auth & Content Creation)
 	mux.Handle("/api/login", rl.Middleware(http.HandlerFunc(LoginHandler)))

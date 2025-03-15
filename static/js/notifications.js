@@ -188,8 +188,8 @@ function addNotificationBadge() {
             // Basic inline styling for a red circle
             badge.style.cssText = `
                 position: absolute;
-                top: 3px;
-                right: 3px;
+                top: 5px;
+                right: 8px;
                 background-color: red;
                 width: 8px;
                 height: 8px;

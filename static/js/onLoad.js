@@ -35,9 +35,11 @@ async function CheckSession() {
                 Username = data.username;
                 ProfilePic = data.profile_pic;
                 ShowLoggedInNav(data.username, data.profile_pic);
+                showOnlineUsers()
                 Routing();
                 checkNotificationCount();
                 connectNotificationsWS();
+                connectUsersWS()
             }
         } else {
             ShowloginSignup();
@@ -134,7 +136,6 @@ function LoadTabContent(tab) {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('scroll', handleProfileScroll);
             notifOffset = 0;
-            removeNotificationBadge();
             notifsRenderer();
         } else if (tab === "messages") {
             // messagesRenderer(offset);
