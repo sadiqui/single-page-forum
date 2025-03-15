@@ -56,7 +56,8 @@
     object-fit: cover;
     border: 3px solid var(--nav-btn);
     transition: transform 0.2s ease-in-out;
-    margin-bottom: 5px; /* Ensures spacing between avatar & username */
+    margin-bottom: 5px;
+    /* Ensures spacing between avatar & username */
 }
 
 /* Username */
@@ -65,13 +66,14 @@
     color: var(--content-grey);
     font-weight: bold;
     text-align: center;
-    display: block; /* Ensures it stays below the image */
+    display: block;
+    /* Ensures it stays below the image */
     font-family: "Zain";
 }
 
 /* remove underline from the entire profile link */
 .online-user-link {
-    text-decoration: none;
+    cursor: pointer;
 }
 
 /* Scrollbar Styling */
@@ -89,7 +91,8 @@
 }
 
 /* No Users Online */
-.no-online, .loading {
+.no-online,
+.loading {
     font-size: 1rem;
     font-weight: bold;
     color: var(--light-grey);

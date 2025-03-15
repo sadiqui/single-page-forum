@@ -138,6 +138,8 @@ function LoadTabContent(tab) {
             notifOffset = 0;
             notifsRenderer();
         } else if (tab === "messages") {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('scroll', handleProfileScroll);
             // messagesRenderer(offset);
         } else if (tab === "settings") {
             // settingsRenderer();

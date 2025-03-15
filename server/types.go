@@ -52,3 +52,12 @@ type Notification struct {
 	Message         string    `json:"message"`
 	CreatedAt       time.Time `json:"created_at"`
 }
+
+// Message between two users.
+type Message struct {
+	ID         int       `json:"id"`
+	Sender   string       `json:"sender"`
+	Receiver string       `json:"receiver"`
+	Content    string    `json:"content"`
+	CreatedAt  time.Time `json:"created_at"`
+}

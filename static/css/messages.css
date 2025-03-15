@@ -1,0 +1,121 @@
+/* Chat Container */
+#chatContainer {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    max-width: 500px;
+    height: 500px;
+    background: var(--white);
+    border-radius: 15px;
+    box-shadow: 0 4px 10px var(--navBar-shadow);
+    margin: auto;
+    margin-top: 200px;
+    margin-bottom: 60px;
+    overflow: hidden;
+}
+
+/* Chat Header */
+#chatHeader {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--content-grey);
+    background: var(--body-bg2);
+    border-bottom: 1px solid var(--border-grey);
+}
+
+/* Profile Picture */
+.chat-profile-pic {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+    border: 2px solid var(--nav-btn);
+}
+
+/* Chat Messages */
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--light-blue) var(--body-bg);
+}
+
+/* Individual Messages */
+.message {
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 15px;
+    font-size: 1rem;
+    word-wrap: break-word;
+    display: inline-block;
+}
+
+/* Sent Messages (Blue, Right) */
+.sent {
+    align-self: flex-end;
+    background: var(--submit-btn);
+    color: var(--white);
+    border-bottom-right-radius: 5px;
+    text-align: left;
+}
+
+/* Received Messages (White, Left) */
+.received {
+    align-self: flex-start;
+    background: var(--white);
+    color: var(--content-grey);
+    border-bottom-left-radius: 5px;
+    text-align: left;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Input Field */
+#chatInputContainer {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid var(--border-grey);
+    background: var(--body-bg2);
+    align-items: center;
+}
+
+#chatInput {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    font-size: 1rem;
+    outline: none;
+}
+
+/* Send Button */
+#sendMessageBtn {
+    margin-left: 10px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 5px;
+}
+
+#sendMessageBtn img {
+    width: 28px;
+    height: 28px;
+    transition: transform 0.2s;
+}
+
+#sendMessageBtn:hover img {
+    transform: scale(1.1);
+}
+
+/* Empty & Error States */
+.no-messages, .loading-text, .error-msg {
+    text-align: center;
+    color: var(--light-grey);
+}

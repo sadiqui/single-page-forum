@@ -34,16 +34,15 @@ function RenderOnlineUsers(users) {
     const header = document.createElement("div");
     header.className = "online-users-header";
 
-    if (users) {
-        header.innerHTML = `Say hello (${users.length} online)`
+    if (users && users.length > 0) {
+        header.innerHTML = `Say hello (${users.length} online)`;
     } else {
-        header.innerHTML = "No one is connected! 🥹 </br></br>Enjoy the silence... or invite your friends!"; 
+        header.innerHTML = "No one is connected! 🥹<br><br>Enjoy the silence... or invite your friends!";
     }
-
     onlineUsersContainer.appendChild(header);
 
     // Stop here if no users online
-    if (!users) return;
+    if (!users || users.length === 0) return;
 
     // Create a horizontal scrollable container for users
     const listContainer = document.createElement("div");
@@ -53,12 +52,23 @@ function RenderOnlineUsers(users) {
         const userElement = document.createElement("div");
         userElement.className = "online-user";
 
+        // Set inner HTML without inline event handlers
         userElement.innerHTML = `
-            <a href="/profile?user=${user.username}" class="online-user-link">
+            <div class="online-user-link">
                 <img src="../uploads/${user.profile_pic || 'avatar.webp'}" alt="${user.username}" class="online-user-avatar">
                 <span class="online-user-name">${user.username}</span>
-            </a>
+            </div>
         `;
+
+        // Attach click listener to load the conversation
+        userElement.addEventListener("click", () => {
+            const changeTab = document.querySelector('.tab-btn[data-tab="messages"]');
+            if (changeTab) {
+                changeTab.click();
+            }
+            loadMessages(user.username, user.profile_pic);
+        });
+
         listContainer.appendChild(userElement);
     });
 
