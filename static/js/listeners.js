@@ -205,7 +205,7 @@ function NewPostListener() {
     });
 
     HandleTags(newPostForm).then(tagHandler => {
-        newPostForm.addEventListener("submit", (e) => {
+        newPostForm?.addEventListener("submit", (e) => {
             HandleNewPost(e, tagHandler.getChosenTags(), tagHandler.clearTags());
         });
     }).catch((err) => {
@@ -218,7 +218,9 @@ function NewPostListener() {
 // Listen for image upload in post form to display the filename.
 function imageUploaded(id) {
     let uploadText
-    const fileInput = document.getElementById(id)
+    const fileInput = document.getElementById(id);
+    if (!fileInput) return;
+
     if (id === "formPostImage") {
         uploadText = document.querySelector(".upload-text-post");
     } else {

@@ -147,9 +147,8 @@
     transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 
-.fab:hover {
-    transform: rotate(90deg) scale(1.1);
-    background-color: var(--submit-btn);
+.fab {
+    right: 20px;
 }
 
 .back-to-top {
@@ -157,12 +156,9 @@
     color: white; 
 }
 
-.fab {
-    right: 20px;
-}
-
-.back-to-top:hover {
+.fab:hover, .back-to-top:hover {
     animation: rotateTransition 0.3s ease-in-out;
+    background-color: var(--submit-btn);
     transform: scale(1.1);
 }
 

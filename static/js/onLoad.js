@@ -1,14 +1,15 @@
 // Launch once the DOM is loaded to dynamically insert elements
 document.addEventListener("DOMContentLoaded", async () => {
-    document.body.insertAdjacentHTML("beforeend", socialForm)
+    document.body.insertAdjacentHTML("beforeend", socialForm);
     LoadTheme();
     if (sessionStorage.getItem("socialModalShown") === null || sessionStorage.getItem("socialModalShown") === "false") {
         SocialSignUp();
     }
+
     try {
         // Load html inside body.
-        document.body.insertAdjacentHTML("beforeend", LoginForm)
-        document.body.insertAdjacentHTML("beforeend", NewPostForm)
+        document.body.insertAdjacentHTML("beforeend", LoginForm);
+        document.body.insertAdjacentHTML("beforeend", NewPostForm);
 
         await CheckSession();
         AuthListener();
@@ -17,7 +18,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         SignUpFormListener();
         NewPostListener();
         imageUploaded("formPostImage");
-        CheckOAuth()
+        CheckOAuth();
 
     } catch (err) {
         console.log(err);
@@ -32,33 +33,37 @@ async function CheckSession() {
             const data = await res.json();
             if (data.loggedIn) {
                 Username = data.username;
-                ProfilePic = data.profile_pic
+                ProfilePic = data.profile_pic;
                 ShowLoggedInNav(data.username, data.profile_pic);
-                Routing()
-                checkNotificationCount()
-                connectNotificationsWS()
+                Routing();
+                checkNotificationCount();
+                connectNotificationsWS();
             }
         } else {
-            ShowloginSignup()
-            imageUploaded("profilePic")
+            ShowloginSignup();
+            imageUploaded("profilePic");
         }
     } catch (err) {
         console.log(err);
-        PopError("Something went wrong.")
+        PopError("Something went wrong.");
     }
 }
 
 function Routing() {
     const path = window.location.pathname;
     if (path === "/") {
-        document.getElementById("tabBar").innerHTML = tabBarHTML;
+        const tabBar = document.getElementById("tabBar");
+        if (!tabBar) return;
+        tabBar.innerHTML = tabBarHTML;
         SetupTabListeners()
     } else if (path.startsWith("/post")) {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
         if (postId) {
+            postFound = true;
             LoadPostPage(postId);
         } else {
+            postFound = false;
             LoadNotFoundPage();
         }
     } else {

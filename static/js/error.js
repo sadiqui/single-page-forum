@@ -102,8 +102,5 @@ function LoadNotFoundPage() {
 
             document.documentElement.replaceWith(doc.documentElement);
         })
-        .catch(error => {
-            console.error("Error loading content:", error);
-        });
-
+        .catch(error => console.error("Failed to fetch:", error));
 }

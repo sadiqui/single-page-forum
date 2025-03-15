@@ -6,26 +6,10 @@ on:
     branches:
       - main
 jobs:
-  # To run only on GitHub
-  check_environment:
-    runs-on: ubuntu-latest
-    outputs:
-      is_github: ${{ steps.check.outputs.is_github }}
-    steps:
-      - id: check
-        run: |
-          if [ "$GITHUB_SERVER_URL" = "https://github.com" ]; then
-            echo "is_github=true" >> $GITHUB_OUTPUT
-          else
-            echo "is_github=false" >> $GITHUB_OUTPUT
-          fi
-
   deploy:
     name: Deploy app
-    needs: check_environment
-    if: needs.check_environment.outputs.is_github == 'true'
     runs-on: ubuntu-latest
-    concurrency: deploy-group
+    concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master

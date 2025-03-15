@@ -5,10 +5,12 @@ function ShowLoggedInNav(username, profilePicture) {
     setTimeout(togglePosition, 0);
     window.addEventListener("resize", togglePosition);
 
-    document.getElementById('navBar').innerHTML = Nav
-    const navbar = document.querySelector(".navbar")
-    if (!navbar) return
+    const navElement = document.getElementById('navBar');
+    if (!navElement) return;
+    navElement.innerHTML = Nav;
 
+    const navbar = document.querySelector(".navbar");
+    if (!navbar) return;
     navbar.innerHTML = `
     <a href="/" class="logo-link">
         <img src="/img/logo.svg" alt="Forum Logo" class="logo-img" />
@@ -30,7 +32,7 @@ function ShowLoggedInNav(username, profilePicture) {
     // Floating add button + back to top button
     document.getElementById("fabAddPost")?.classList.remove("hidden");
 
-    DropDownMenu()
+    DropDownMenu();
 }
 
 /****************************************

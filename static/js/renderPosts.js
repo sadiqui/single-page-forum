@@ -104,7 +104,6 @@ function RenderPost(post, postDiv, single = "") {
             </div>
         </div>
 
-
         <!-- Comments Counts -->
         <div class="reaction-item" id="${single}comments-counts">
             <button class="reaction-button comment-button">
@@ -114,6 +113,13 @@ function RenderPost(post, postDiv, single = "") {
         </div>
     `;
 
+    // Remove link from single post's title
+    if (window.location.pathname.startsWith("/post")) {
+        const titleLink = document.querySelector(".post-header-link");
+        titleLink.removeAttribute("href");
+        titleLink.style.pointerEvents = "none";
+    }
+    
     AttachReactionListeners(post.id, postDiv, "post")
     FetchCommentsCount(post.id, postDiv)
     updateTagIcons()
