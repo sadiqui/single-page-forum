@@ -4,10 +4,6 @@ function connectUsersWS() {
 
     ws = new WebSocket(wsUrl);
 
-    ws.onopen = () => {
-        console.log("WebSocket for users connected!");
-    };
-
     ws.onmessage = (event) => {
         const users = JSON.parse(event.data);
         RenderOnlineUsers(users);
