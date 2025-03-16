@@ -180,7 +180,7 @@ async function sendMessage(receiver) {
             <span class="message-time">${formatTime(new Date())}</span>
         `;
         chatMessages.appendChild(messageElement);
-
+        updateOnlineUsers()
         inputField.value = "";
         chatMessages.scrollTop = chatMessages.scrollHeight;
     } catch (err) {

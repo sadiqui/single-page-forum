@@ -8,6 +8,7 @@ function connectMessagesWS() {
             const msg = JSON.parse(event.data);
             // Append the received message to the chat UI
             appendMessage(msg.content, "received");
+            updateOnlineUsers()
         } catch (e) {
             console.error("Error parsing message:", e);
         }
