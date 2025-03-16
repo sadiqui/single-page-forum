@@ -19,12 +19,17 @@ jobs:
       #     curl -L https://fly.io/install.sh | sh
       #     export FLYCTL_INSTALL="/home/runner/.fly"
       #     export PATH="$FLYCTL_INSTALL/bin:$PATH"
+
       - name: Set Fly.io Secrets
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-          flyctl secrets set GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
-          flyctl secrets set GOOGLE_OAUTH_CLIENT_SECRET=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
-          flyctl secrets set GHUB_OAUTH_CLIENT_ID=${{ secrets.GHUB_OAUTH_CLIENT_ID }}
-          flyctl secrets set GHUB_OAUTH_CLIENT_ID=${{ secrets.GHUB_OAUTH_CLIENT_ID }}
+            flyctl auth token
+            flyctl secrets set GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }} --app dwi
+            flyctl secrets set GOOGLE_OAUTH_CLIENT_SECRET=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }} --app dwi
+            flyctl secrets set GHUB_OAUTH_CLIENT_ID=${{ secrets.GHUB_OAUTH_CLIENT_ID }} --app dwi
+            flyctl secrets set GHUB_OAUTH_CLIENT_SECRET=${{ secrets.GHUB_OAUTH_CLIENT_SECRET }} --app dwi
+      
       - name: Deploy to Fly.io
         run: flyctl deploy --remote-only
         env:
