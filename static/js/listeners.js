@@ -10,12 +10,6 @@ function NavBarListener() {
         document.getElementById("signUpContainer").classList.add("hidden");
     });
 
-    // Listener on profile link to reset cooldown counter
-    document.querySelector(".profile-link")?.addEventListener("click", () => {
-        // Reset cooldown counter
-        localStorage.setItem("reloadCount", 0);
-    })
-
     // Create Post and Logout listeners.
     AddPostListener()
     document.getElementById("logoutBtn")?.addEventListener("click", (e) => {

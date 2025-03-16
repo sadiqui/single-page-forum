@@ -14,7 +14,7 @@ function homeRenderer() {
 }
 
 async function LoadPosts(offset = 0, tagsStr = "") {
-    if (tabName === "profile" ) {
+    if (tabName === "history" ) {
         return
     }
     try {

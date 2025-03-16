@@ -2,8 +2,8 @@
 // if clearFirst we first remove content inside it.
 function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
-    if (tabName === "profile") {
-        postsContainer = document.getElementById("profileDynamicContent");
+    if (tabName === "history") {
+        postsContainer = document.getElementById("historyDynamicContent");
     } else if (tabName === "home") {
         postsContainer = document.getElementById("content");
     }
@@ -123,7 +123,7 @@ function RenderPost(post, postDiv, single = "") {
     AttachReactionListeners(post.id, postDiv, "post")
     FetchCommentsCount(post.id, postDiv)
     updateTagIcons()
-    if (currentProfileTab == "comments") {
+    if (currentHistoryTab == "comments") {
         // Create a container for *this user's* comments
         const userCommentsContainer = document.createElement("div");
         userCommentsContainer.id = `userComments-${post.id}`;

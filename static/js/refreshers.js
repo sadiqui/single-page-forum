@@ -40,11 +40,11 @@ window.addEventListener("pageshow", async (e) => {
         RefreshReactions()
         RefreshCommentsCounts()
         if (localStorage.getItem("postCreated") === "true") {
-            if (currentProfileTab == "posts") {
-                profileOffset = 0;
-                fetchUserPosts(profileOffset)
+            if (currentHistoryTab == "posts") {
+                historyOffset = 0;
+                fetchUserPosts(historyOffset)
                     .then(() => {
-                        profileOffset += ProfileLimit;
+                        historyOffset += HistoryLimit;
                     })
             } else if (window.location.pathname === "/") {
                 offset = 0;
@@ -55,19 +55,19 @@ window.addEventListener("pageshow", async (e) => {
             localStorage.removeItem("postCreated"); // clear the marker
         }
         // update liked posts when: click post dislike navigate back
-        if (localStorage.getItem("reactionUpdated") === "true" && currentProfileTab == "liked") {         
-            profileOffset = 0;
-            fetchLikedPosts(profileOffset, "like")
+        if (localStorage.getItem("reactionUpdated") === "true" && currentHistoryTab == "liked") {         
+            historyOffset = 0;
+            fetchLikedPosts(historyOffset, "like")
                 .then(() => {
-                    profileOffset += ProfileLimit;
+                    historyOffset += HistoryLimit;
                 })
             localStorage.removeItem("reactionUpdated"); // clear the marker
         }
-        if (localStorage.getItem("reactionUpdated") === "true" && currentProfileTab == "disliked") {         
-            profileOffset = 0;
-            fetchLikedPosts(profileOffset, "dislike")
+        if (localStorage.getItem("reactionUpdated") === "true" && currentHistoryTab == "disliked") {         
+            historyOffset = 0;
+            fetchLikedPosts(historyOffset, "dislike")
                 .then(() => {
-                    profileOffset += ProfileLimit;
+                    historyOffset += HistoryLimit;
                 })
             localStorage.removeItem("reactionUpdated"); // clear the marker
         }

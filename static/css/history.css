@@ -26,9 +26,9 @@
 }
 
 /****************************************************
-                * PROFILE CARD 
+                * history CARD 
 ****************************************************/
-.profile-card {
+.history-card {
     position: relative;
     background: var(--white);
     border-radius: 8px;
@@ -44,7 +44,7 @@
 }
 
 @media (max-width: 600px) {
-    .profile-card {
+    .history-card {
         padding: 1rem;
     }
 }
@@ -96,9 +96,9 @@
 }
 
 
-/************ Profile info  *************/
-/* The container around all profile info */
-.profile-info {
+/************ history info  *************/
+/* The container around all history info */
+.history-info {
     background-color: var(--white);
     padding: 1rem;
     border-radius: 8px;
@@ -109,21 +109,21 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Each row (item) in the profile info */
-.profile-info-item {
+/* Each row (item) in the history info */
+.history-info-item {
     display: flex;
     align-items: center;
     margin-bottom: 0.75rem;
 }
 
-/* Profile info icons */
-.profile-info-item i {
+/* history info icons */
+.history-info-item i {
     margin-right: 0.5rem;
     font-size: 1.2rem;
     color: var(--content-grey);
 }
 
-/* The label text profile info */
+/* The label text history info */
 .info-label {
     font-weight: 600;
     margin-right: 0.3rem;
@@ -143,9 +143,9 @@
     transition: opacity 0.1s ease-out, transform 0.1s ease-out;
 }
 
-/******************** Profile Tabs **************************/
-/* ======= Profile Tab Bar ======= */
-.profile-tab-bar {
+/******************** history Tabs **************************/
+/* ======= history Tab Bar ======= */
+.history-tab-bar {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -163,8 +163,8 @@
     margin-bottom: 50px;
 }
 
-/* ======= Profile Tab Buttons ======= */
-.profile-tab-btn {
+/* ======= history Tab Buttons ======= */
+.history-tab-btn {
     background: none;
     border: none;
     display: flex;
@@ -176,12 +176,12 @@
     transition: all 0.3s ease;
 }
 
-.profile-tab-txt {
+.history-tab-txt {
     font-family: "Zain";
     font-size: 18px;
 }
 
-.profile-tab-btn img {
+.history-tab-btn img {
     width: 20px;
     margin-bottom: 5px;
     filter: invert(53%) sepia(50%) saturate(1500%) hue-rotate(175deg);
@@ -189,14 +189,14 @@
 }
 
 /* Active Button */
-.profile-tab-btn.active {
+.history-tab-btn.active {
     background: var(--action-btn);
     border-radius: 6px;
     padding: 5px 20px;
     color: var(--content-grey);
 }
 
-.profile-tab-btn.active img {
+.history-tab-btn.active img {
     filter: invert(50%) brightness(50%);
 }
 
@@ -206,16 +206,16 @@
 }
 
 /* ======= Dark Mode Support ======= */
-:root.dark-mode .profile-tab-bar {
+:root.dark-mode .history-tab-bar {
     background: #3a3f4b;
     box-shadow: 0 4px 10px var(--notif-shadow);
 }
 
-:root.dark-mode .profile-tab-btn {
+:root.dark-mode .history-tab-btn {
     color: var(--light-grey);
 }
 
-:root.dark-mode .profile-tab-btn.active {
+:root.dark-mode .history-tab-btn.active {
     background: var(--action-btn);
     color: var(--white);
 }
@@ -234,8 +234,8 @@
     scrollbar-width: thin;
 }
 
-/******************** Modify Profile Image ********************/
-/* Container with dotted border around the profile pic */
+/******************** Modify history Image ********************/
+/* Container with dotted border around the history pic */
 .profile-image {
     position: relative;
     width: 120px;

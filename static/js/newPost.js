@@ -52,11 +52,11 @@ async function HandleNewPost(e, categories, clearTags) {
             document.querySelector(".upload-text").textContent = "Upload Image (optional)";
             clearTags;
 
-            if (currentProfileTab == "posts") {
-                profileOffset = 0;
-                fetchUserPosts(profileOffset)
+            if (currentHistoryeTab == "posts") {
+                historyOffset = 0;
+                fetchUserPosts(historyOffset)
                     .then(() => {
-                        profileOffset += ProfileLimit;
+                        historyOffset += HistoryLimit;
                     })
             }
             if (window.location.pathname === "/") {

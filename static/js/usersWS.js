@@ -67,7 +67,7 @@ function RenderOnlineUsers(users) {
                 changeTab.classList.add("active");
                 tabName = "messages";
                 window.removeEventListener('scroll', handleScroll);
-                window.removeEventListener('scroll', handleProfileScroll);
+                window.removeEventListener('scroll', handleHistoryScroll);
                 tagFilterSection.style.display = "none";
             }
             loadMessages(user.username, user.profile_pic);

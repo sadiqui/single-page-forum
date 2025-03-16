@@ -130,22 +130,22 @@ function LoadTabContent(tab) {
     setTimeout(() => {
         // Load new content based on tab
         if (tab === "home") {
-            window.addEventListener('scroll', handleProfileScroll);
-            currentProfileTab = "";
+            window.addEventListener('scroll', handleHistoryScroll);
+            currentHistoryTab = "";
             clearTagFilter();
             homeRenderer();
             FilterCategories();
-        } else if (tab === "profile") {
+        } else if (tab === "history") {
             window.removeEventListener('scroll', handleScroll);
-            profileRenderer(Username);
+            historyRenderer(Username);
         } else if (tab === "notifs") {
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', handleProfileScroll);
+            window.removeEventListener('scroll', handleHistoryScroll);
             notifOffset = 0;
             notifsRenderer();
         } else if (tab === "messages") {
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', handleProfileScroll);
+            window.removeEventListener('scroll', handleHistoryScroll);
             loadLastConversation();
         } else if (tab === "settings") {
             // settingsRenderer();

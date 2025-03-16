@@ -277,9 +277,9 @@ const tabBarHTML = `
             <img src="../img/home.svg" alt="Home">
             <span class="tab-txt">Home</span>
         </button>
-        <button class="tab-btn" data-tab="profile">
-            <img src="../img/profile.png" alt="Profile">
-            <span class="tab-txt">Profile</span>
+        <button class="tab-btn" data-tab="history">
+            <img src="../img/history.png" alt="History">
+            <span class="tab-txt">History</span>
         </button>
         <button class="tab-btn" data-tab="notifs">
             <img src="../img/notifs.png" alt="Notifs">
@@ -311,7 +311,7 @@ const Filter = `
 
 // Num of posts on each scroll load.
 let HomeLimit = 10;
-let ProfileLimit = 6;
+let HistoryLimit = 6;
 let NotifLimit = 15;
 let Username = "";
 let ProfilePic = "";

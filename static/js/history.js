@@ -1,14 +1,14 @@
-let currentProfileTab = ""; // or "liked"...
-let profileOffset = 0;
+let currentHistoryTab = ""; // or "liked"...
+let historyOffset = 0;
 // Loading flag to prevent overlapping fetches (throttle)
-let profileisLoading = false;
+let historyisLoading = false;
 
-function profileRenderer(username) {
+function historyRenderer(username) {
     const dynamicContent = document.getElementById("content");
     dynamicContent.innerHTML = "";
     dynamicContent.innerHTML = `
         <div class="content-section">
-            <div class="profile-card">
+            <div class="history-card">
                 <div class="profile-image">
                     <img src="../uploads/${ProfilePic}"
                         alt="Profile Picture" />
@@ -25,39 +25,39 @@ function profileRenderer(username) {
                         />
                 </div>
                 <div class="profileUsername username">${username}</div>
-                <nav class="profile-tab-bar">
-                    <button class="profile-tab-btn active" data-tab="liked">
+                <nav class="history-tab-bar">
+                    <button class="history-tab-btn active" data-tab="liked">
                         <img src="../img/liked.svg" alt="liked">
-                        <span class="profile-tab-txt">Liked</span>
+                        <span class="history-tab-txt">Liked</span>
                     </button>
-                    <button class="profile-tab-btn" data-tab="disliked">
+                    <button class="history-tab-btn" data-tab="disliked">
                         <img src="../img/disliked.svg" alt="disliked">
-                        <span class="profile-tab-txt">Disliked</span>
+                        <span class="history-tab-txt">Disliked</span>
                     </button>
-                    <button class="profile-tab-btn" data-tab="posts">
+                    <button class="history-tab-btn" data-tab="posts">
                         <img src="../img/posts.svg" alt="Posts">
-                        <span class="profile-tab-txt">My Posts</span>
+                        <span class="history-tab-txt">My Posts</span>
                     </button>
-                    <button class="profile-tab-btn" data-tab="comments">
+                    <button class="history-tab-btn" data-tab="comments">
                         <img src="../img/comments.svg" alt="comments">
-                        <span class="profile-tab-txt">Comments</span>
+                        <span class="history-tab-txt">Comments</span>
                     </button>
                 </nav>
-                <div id="profileDynamicContent"></div>
+                <div id="historyDynamicContent"></div>
             </div>
         </div>
     `;
-    SetupProfileTabListeners();
+    SetupHistoryTabListeners();
     SetupImageUpdate();
     // Listen for scroll => infinite loading
-    if (tabName === "profile") {
-        window.addEventListener("scroll", handleProfileScroll, { passive: true });
+    if (tabName === "history") {
+        window.addEventListener("scroll", handleHistoryScroll, { passive: true });
     }
 }
 
-// Handles Profile tabs clicks.
-function SetupProfileTabListeners() {
-    const tabButtons = document.querySelectorAll(".profile-tab-btn");
+// Handles History tabs clicks.
+function SetupHistoryTabListeners() {
+    const tabButtons = document.querySelectorAll(".history-tab-btn");
 
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
@@ -70,16 +70,16 @@ function SetupProfileTabListeners() {
             this.classList.add("active");
 
             // Get the tab name
-            currentProfileTab = this.getAttribute("data-tab");
-            profileOffset = 0;
-            profileisLoading = false;
+            currentHistoryTab = this.getAttribute("data-tab");
+            historyOffset = 0;
+            historyisLoading = false;
 
             conditionalTabs(scrollPos)
         });
     });
 
     // By default, trigger the "liked" button
-    const defaultInfoBtn = document.querySelector('.profile-tab-btn[data-tab="liked"]');
+    const defaultInfoBtn = document.querySelector('.history-tab-btn[data-tab="liked"]');
     if (defaultInfoBtn) {
         defaultInfoBtn.click();
     }
@@ -87,7 +87,7 @@ function SetupProfileTabListeners() {
 
 // Helper function, render according tab
 function conditionalTabs(scrollPos) {
-    const dynamicContent = document.getElementById("profileDynamicContent"); // Adjust based on your actual container
+    const dynamicContent = document.getElementById("historyDynamicContent"); // Adjust based on your actual container
 
     if (!dynamicContent) return; // Prevent errors if the element is missing
 
@@ -98,14 +98,14 @@ function conditionalTabs(scrollPos) {
     setTimeout(() => {
         dynamicContent.innerHTML = "";
         const actions = {
-            liked: () => fetchLikedPosts(profileOffset, "like"),
-            disliked: () => fetchLikedPosts(profileOffset, "dislike"),
-            posts: () => fetchUserPosts(profileOffset),
-            comments: () => fetchCommentedPosts(profileOffset),
+            liked: () => fetchLikedPosts(historyOffset, "like"),
+            disliked: () => fetchLikedPosts(historyOffset, "dislike"),
+            posts: () => fetchUserPosts(historyOffset),
+            comments: () => fetchCommentedPosts(historyOffset),
         };
 
-        if (actions[currentProfileTab]) {
-            actions[currentProfileTab]().then(() => {
+        if (actions[currentHistoryTab]) {
+            actions[currentHistoryTab]().then(() => {
                 setTimeout(() => {
                     window.scrollTo({ top: scrollPos, behavior: "smooth" });
 
@@ -130,19 +130,19 @@ function conditionalTabs(scrollPos) {
 /* -------------------------------
         FETCH LIKED/Disliked POSTS
 ----------------------------------*/
-async function fetchLikedPosts(profileOffset, reaction) {
-    const dynamicContent = document.getElementById("profileDynamicContent");
+async function fetchLikedPosts(historyOffset, reaction) {
+    const dynamicContent = document.getElementById("historyDynamicContent");
     try {
-        const res = await fetch(`/api/user-liked-posts?offset=${profileOffset}&reaction=${reaction}`);
+        const res = await fetch(`/api/user-liked-posts?offset=${historyOffset}&reaction=${reaction}`);
         if (!res.ok) return;
 
         const posts = await res.json();
-        if ((!posts || posts.length == 0) && profileOffset == 0) {
+        if ((!posts || posts.length == 0) && historyOffset == 0) {
             dynamicContent.innerHTML = `No ${reaction}d posts!`
             return
         }
 
-        RenderPosts(posts, profileOffset, 100);
+        RenderPosts(posts, historyOffset, 100);
     } catch (err) {
         console.error(err);
         DisplayError("errMsg", dynamicContent, "Error loading posts.");
@@ -152,19 +152,19 @@ async function fetchLikedPosts(profileOffset, reaction) {
 /* -----------------------
    FETCH USER POSTS
 -------------------------*/
-async function fetchUserPosts(profileOffset) {
-    const dynamicContent = document.getElementById("profileDynamicContent");
+async function fetchUserPosts(historyOffset) {
+    const dynamicContent = document.getElementById("historyDynamicContent");
 
     try {
-        const res = await fetch(`/api/user-posts?offset=${profileOffset}`);
+        const res = await fetch(`/api/user-posts?offset=${historyOffset}`);
         if (!res.ok) return;
 
         const posts = await res.json();
-        if ((!posts || posts.length == 0) && profileOffset == 0) {
+        if ((!posts || posts.length == 0) && historyOffset == 0) {
             dynamicContent.innerHTML = "No posts yet!"
             return
         }
-        RenderPosts(posts, profileOffset, 100);
+        RenderPosts(posts, historyOffset, 100);
     } catch (err) {
         console.error(err);
         DisplayError("errMsg", dynamicContent, "Error loading user posts.");
@@ -174,19 +174,19 @@ async function fetchUserPosts(profileOffset) {
 /*-------------------------
    FETCH Commented POSTS
 ---------------------------*/
-async function fetchCommentedPosts(profileOffset) {
-    const dynamicContent = document.getElementById("profileDynamicContent");
+async function fetchCommentedPosts(historyOffset) {
+    const dynamicContent = document.getElementById("historyDynamicContent");
 
     try {
-        const res = await fetch(`/api/user-commented-posts?offset=${profileOffset}`);
+        const res = await fetch(`/api/user-commented-posts?offset=${historyOffset}`);
         if (!res.ok) return;
 
         const posts = await res.json();
-        if ((!posts || posts.length == 0) && profileOffset == 0) {
+        if ((!posts || posts.length == 0) && historyOffset == 0) {
             dynamicContent.innerHTML = "No comments yet!"
             return
         }
-        RenderPosts(posts, profileOffset, 100);
+        RenderPosts(posts, historyOffset, 100);
     } catch (err) {
         console.error(err);
         DisplayError("errMsg", dynamicContent, "Error loading user posts.");
@@ -196,10 +196,10 @@ async function fetchCommentedPosts(profileOffset) {
 /* -------------------
    SCROLL HANDLER
 --------------------*/
-function handleProfileScroll() {
+function handleHistoryScroll() {
 
     // Already loading => skip
-    if (profileisLoading) return;
+    if (historyisLoading) return;
 
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY;
@@ -207,39 +207,39 @@ function handleProfileScroll() {
 
     // If close to bottom, fetch more
     if (scrollY + windowHeight >= docHeight - 400) {
-        profileisLoading = true;
+        historyisLoading = true;
 
-        if (currentProfileTab === "posts") {
-            fetchUserPosts(profileOffset)
+        if (currentHistoryTab === "posts") {
+            fetchUserPosts(historyOffset)
                 .then(() => {
-                    profileOffset += ProfileLimit; // increment offset
+                    historyOffset += HistoryLimit; // increment offset
                 })
                 .finally(() => {
-                    profileisLoading = false;
+                    historyisLoading = false;
                 });
-        } else if (currentProfileTab === "liked") {
-            fetchLikedPosts(profileOffset, "like")
+        } else if (currentHistoryTab === "liked") {
+            fetchLikedPosts(historyOffset, "like")
                 .then(() => {
-                    profileOffset += ProfileLimit;
+                    historyOffset += HistoryLimit;
                 })
                 .finally(() => {
-                    profileisLoading = false;
+                    historyisLoading = false;
                 });
-        } else if (currentProfileTab === "disliked") {
-            fetchLikedPosts(profileOffset, "dislike")
+        } else if (currentHistoryTab === "disliked") {
+            fetchLikedPosts(historyOffset, "dislike")
                 .then(() => {
-                    profileOffset += ProfileLimit;
+                    historyOffset += HistoryLimit;
                 })
                 .finally(() => {
-                    profileisLoading = false;
+                    historyisLoading = false;
                 });
-        } else if (currentProfileTab === "comments") {
-            fetchCommentedPosts(profileOffset)
+        } else if (currentHistoryTab === "comments") {
+            fetchCommentedPosts(historyOffset)
                 .then(() => {
-                    profileOffset += ProfileLimit;
+                    historyOffset += HistoryLimit;
                 })
                 .finally(() => {
-                    profileisLoading = false;
+                    historyisLoading = false;
                 });
         }
     }
@@ -289,7 +289,7 @@ function SetupImageUpdate() {
                 const scrollPos = window.scrollY;
                 window.scrollTo(0, scrollPos);
                 conditionalTabs(scrollPos);
-                profileOffset = 0;
+                historyOffset = 0;
             }, 1000);
         } catch (err) {
             console.error("Network error:", err);
