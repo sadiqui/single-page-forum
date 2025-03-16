@@ -45,10 +45,9 @@ async function loadMessages(selectedUsername, profilePic) {
     document.getElementById("sendMessageBtn").addEventListener("touchend", () => sendMessage(selectedUsername));
     document.getElementById("chatInput").addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
+            chatInput.style.height = "auto";
             if (isMobile() || event.shiftKey) {
-                event.preventDefault();
-                chatInput.value += "\n";
-                chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Adjust height
+                // Nothing
             } else {
                 // Desktop Enter (without Shift) -> Send message
                 event.preventDefault();
@@ -144,6 +143,7 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
 
 // Send message function
 async function sendMessage(receiver) {
+    chatInput.style.height = "auto";
     const chatMessages = document.getElementById("chatMessages");
     const inputField = document.getElementById("chatInput");
     const messageContent = inputField.value.trim();
