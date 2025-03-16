@@ -59,3 +59,12 @@ func Routes() http.Handler {
 
 	return secureHeaders(mux)
 }
+
+// Home (spa) handler.
+func HomeHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		JsonError(w, http.StatusText(http.StatusMethodNotAllowed), 405, nil)
+		return
+	}
+	ParseAndExecute(w, "", "static/templates/home.html")
+}

@@ -1,5 +1,5 @@
 // Launch once the DOM is loaded to dynamically insert elements
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {    
     document.body.insertAdjacentHTML("beforeend", socialForm);
     LoadTheme();
     if (sessionStorage.getItem("socialModalShown") === null || sessionStorage.getItem("socialModalShown") === "false") {
@@ -35,7 +35,7 @@ async function CheckSession() {
                 Username = data.username;
                 ProfilePic = data.profile_pic;
                 ShowLoggedInNav(data.username, data.profile_pic);
-                showOnlineUsers()
+                showOnlineUsers()             
                 Routing();
                 checkNotificationCount();
                 connectNotificationsWS();
@@ -52,8 +52,8 @@ async function CheckSession() {
     }
 }
 
-function Routing() {
-    const path = window.location.pathname;
+async function Routing() {
+    const path = window.location.pathname;    
     if (path === "/") {
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
@@ -62,14 +62,19 @@ function Routing() {
     } else if (path.startsWith("/post")) {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
-        if (postId) {
-            LoadPostPage(postId);
+        if (postId) {            
+            const exists = await checkPost(postId);
+            if (exists) {
+                LoadPostPage(postId);
+            } else {
+                LoadNotFoundPage();
+            }
         } else {
             LoadNotFoundPage();
         }
-    } else if (path.startsWith("/cooldown")) {
+    } else if (path === "/cooldown") {        
         cooldownRenderer();
-    } else {
+    } else {        
         LoadNotFoundPage();
     }
 }
@@ -162,14 +167,3 @@ function LoadTabContent(tab) {
         requestAnimationFrame(fadeIn); // Start fade-in effect
     }, 100); // Matches fade-out duration
 }
-
-// Handle Back/Forward Button Clicks
-window.addEventListener("popstate", () => {
-    if (window.location.pathname.startsWith("/post")) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const postId = urlParams.get("post_id");
-        LoadPostPage(postId);
-    } else {
-        window.location.href = "/";
-    }
-});

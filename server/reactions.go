@@ -65,7 +65,7 @@ func AddReaction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// For Notifaction isnsertion
+	// For Notifaction insertion
 	var ownerID int
 	if typeParam == "post" {
 		// e.g. select user who created the post
