@@ -68,6 +68,10 @@
     position: relative;
 }
 
+.message p {
+    white-space: pre-wrap; 
+}
+
 /* Sent Messages (Blue, Right) */
 .sent {
     align-self: flex-end;
@@ -152,4 +156,6 @@
     overflow-y: auto; 
     max-height: 150px;
     font-family: "Roboto";
+    line-height: 1.4; /* Improve spacing */
+    white-space: pre-wrap; /* Preserve line breaks visually */
 }

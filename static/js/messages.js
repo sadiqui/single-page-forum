@@ -44,7 +44,9 @@ async function loadMessages(selectedUsername, profilePic) {
     document.getElementById("sendMessageBtn").addEventListener("click", () => sendMessage(selectedUsername));
     document.getElementById("chatInput").addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            if (!event.shiftKey) {
+            if (event.shiftKey) {
+                // Allow default behavior (new line when Shift+Enter is pressed)
+            } else {
                 event.preventDefault(); // Prevent new line
                 sendMessage(selectedUsername);
             }
@@ -52,7 +54,7 @@ async function loadMessages(selectedUsername, profilePic) {
     });
     // Adjust the textarea height automatically
     chatInput.addEventListener("input", () => {
-        chatInput.style.height = "auto";
+        chatInput.style.height = "auto"; // Reset height
         chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Limit max height
     });
 
