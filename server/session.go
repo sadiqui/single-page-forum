@@ -11,7 +11,8 @@ import (
 // Checks whether the user has a valid session.
 func CheckSession(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		ErrorHandler(w, 405, http.StatusText(http.StatusMethodNotAllowed), "Only GET method is allowed!", nil)
+		JsonError(w, "Only GET method is allowed!", http.StatusMethodNotAllowed, nil)
+		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")

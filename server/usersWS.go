@@ -32,7 +32,7 @@ func OnlineUsersWS(w http.ResponseWriter, r *http.Request) {
 	// Upgrade to WebSocket
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		http.Error(w, "WebSocket Upgrade Failed", http.StatusInternalServerError)
+		JsonError(w, "WebSocket upgrade failed", http.StatusInternalServerError, err)
 		return
 	}
 

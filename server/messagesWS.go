@@ -18,13 +18,13 @@ var (
 func MessageWebSocket(w http.ResponseWriter, r *http.Request) {
 	user, err := GetUser(r) // Get logged-in user
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
 		return
 	}
 
 	conn, err := upgrader.Upgrade(w, r, nil) // Upgrade HTTP to WebSocket
 	if err != nil {
-		http.Error(w, "WebSocket Upgrade Failed", http.StatusInternalServerError)
+		JsonError(w, "WebSocket upgrade failed", http.StatusInternalServerError, err)
 		return
 	}
 
@@ -70,7 +70,7 @@ func BroadcastMessage(senderID int, receiverID int, content string) {
 func SendMessage(w http.ResponseWriter, r *http.Request) {
 	user, err := GetUser(r)
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
 		return
 	}
 
@@ -79,21 +79,22 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		Content  string `json:"content"`
 	}
 	if err := json.NewDecoder(r.Body).Decode(&msgPayload); err != nil {
-		http.Error(w, "Invalid request", http.StatusBadRequest)
+		JsonError(w, "Invalid request", http.StatusBadRequest, err)
 		return
 	}
 
 	receiver, err := GetUserByUsername(msgPayload.Receiver)
 	if err != nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		JsonError(w, "User not found", http.StatusNotFound, err)
 		return
 	}
+
 
 	// Store message in DB
 	_, err = DB.Exec(`INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)`,
 		user.ID, receiver.ID, msgPayload.Content)
 	if err != nil {
-		http.Error(w, "Failed to save message", http.StatusInternalServerError)
+		JsonError(w, "Failed to save message", http.StatusInternalServerError, err)
 		return
 	}
 

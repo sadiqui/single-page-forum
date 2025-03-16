@@ -43,7 +43,7 @@ func (rl *RateLimiter) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		clientIP := r.RemoteAddr
 		if !rl.Allow(clientIP) {
-			http.Error(w, "Request could not be processed.", http.StatusServiceUnavailable)
+			JsonError(w, "Request could not be processed.", http.StatusServiceUnavailable, nil)
 			return
 		}
 		next.ServeHTTP(w, r)

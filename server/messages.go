@@ -19,13 +19,13 @@ const messagesLimit = 20
 func GetMessages(w http.ResponseWriter, r *http.Request) {
 	currentUser, err := GetUser(r)
 	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
 		return
 	}
 
 	selectedUsername := r.URL.Query().Get("user")
 	if selectedUsername == "" {
-		http.Error(w, "Missing user parameter", http.StatusBadRequest)
+		JsonError(w, "Missing user parameter", http.StatusBadRequest, nil)
 		return
 	}
 
@@ -41,7 +41,7 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 
 	selectedUser, err := GetUserByUsername(selectedUsername)
 	if err != nil {
-		http.Error(w, "User not found", http.StatusNotFound)
+		JsonError(w, "User not found", http.StatusNotFound, err)
 		return
 	}
 
@@ -67,7 +67,7 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 		selectedUser.ID, currentUser.ID,
 		messagesLimit, offset)
 	if err != nil {
-		http.Error(w, "Database error", http.StatusInternalServerError)
+		JsonError(w, "Database error", http.StatusInternalServerError, err)
 		return
 	}
 	defer rows.Close()
@@ -76,7 +76,7 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var msg Message
 		if err := rows.Scan(&msg.ID, &msg.Sender, &msg.Receiver, &msg.Content, &msg.CreatedAt); err != nil {
-			http.Error(w, "Database error", http.StatusInternalServerError)
+			JsonError(w, "Database error", http.StatusInternalServerError, err)
 			return
 		}
 		reverseOrder = append(reverseOrder, msg)
