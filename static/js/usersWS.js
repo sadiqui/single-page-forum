@@ -62,6 +62,7 @@ function RenderOnlineUsers(users) {
         userElement.addEventListener("click", () => {
             const changeTab = document.querySelector('.tab-btn[data-tab="messages"]');
             if (changeTab) {
+                // Cant use click() (content will be overriden by Loadlastconversation), so manually change tab
                 document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
                 changeTab.classList.add("active");
                 tabName = "messages";

@@ -8,7 +8,7 @@ async function loadMessages(selectedUsername, profilePic) {
     const dynamicContent = document.getElementById("content");
 
     dynamicContent.innerHTML = `
-      <div id="chatContainer">
+      <div id="chatContainer" data-username="${selectedUsername}">
         <div id="chatHeader">
             <img src="../uploads/${profilePic || 'avatar.webp'}" alt="${selectedUsername}" class="chat-profile-pic">
             <span id="chatUsername">${selectedUsername}</span>
@@ -46,9 +46,9 @@ async function loadMessages(selectedUsername, profilePic) {
         if (event.key === "Enter") {
             chatInput.style.height = "auto";
             if (isMobile() || event.shiftKey) {
-                // Nothing
+                // do nothing keep default behaviour
             } else {
-                // Desktop Enter (without Shift) -> Send message
+                // Desktop Enter
                 event.preventDefault();
                 sendMessage(selectedUsername);
             }

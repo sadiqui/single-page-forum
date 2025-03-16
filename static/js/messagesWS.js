@@ -7,7 +7,7 @@ function connectMessagesWS() {
         try {
             const msg = JSON.parse(event.data);
             // Append the received message to the chat UI
-            appendMessage(msg.content, "received");
+            appendMessage(msg.sender, msg.content, "received");
             updateOnlineUsers()
         } catch (e) {
             console.error("Error parsing message:", e);
@@ -24,9 +24,13 @@ function connectMessagesWS() {
     };
 }
 
-function appendMessage(content, type) {
+function appendMessage(sender, content, type) {
     const chatMessages = document.getElementById("chatMessages");
     if (!chatMessages) return;
+
+    const currentUsername = chatContainer.getAttribute("data-username");
+    // If the sender is not the current chat user, ignore the message (will be loaded from DB on the click)
+    if (sender !== currentUsername) return;
 
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", type);
