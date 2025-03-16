@@ -2,10 +2,16 @@ const cooldownTime = 7000; // 7 seconds
 const lastReloadTime = parseInt(localStorage.getItem("lastReloadTime") || "0", 10);
 
 function updateCountdown() {
+    const lastReloadTime = parseInt(localStorage.getItem("lastReloadTime") || "0", 10);
+    const cooldownTime = 7000; // 7 seconds
     const now = Date.now();
     const timeLeft = cooldownTime - (now - lastReloadTime);
     const remainingSeconds = Math.max(0, Math.ceil(timeLeft / 1000));
-    document.getElementById("countdown").textContent = remainingSeconds + " seconds";
+    
+    const countdownElement = document.getElementById("countdown");
+    if (!countdownElement) return; // Safety check in case element doesn't exist
+    
+    countdownElement.textContent = remainingSeconds + " seconds";
 
     if (remainingSeconds <= 0) {
         // Reset counter and clear start time

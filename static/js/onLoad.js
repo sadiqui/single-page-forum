@@ -58,17 +58,17 @@ function Routing() {
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
         tabBar.innerHTML = tabBarHTML;
-        SetupTabListeners()
+        SetupTabListeners();
     } else if (path.startsWith("/post")) {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
         if (postId) {
-            postFound = true;
             LoadPostPage(postId);
         } else {
-            postFound = false;
             LoadNotFoundPage();
         }
+    } else if (path.startsWith("/cooldown")) {
+        cooldownRenderer();
     } else {
         LoadNotFoundPage();
     }
