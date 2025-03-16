@@ -81,8 +81,6 @@ function DropDownMenu() {
 /**********************
 * Scroll to the top
 ***********************/
-// Event delegation solve the issue of
-// having the script loaded before the button
 document.body.addEventListener("click", (event) => {
     if (event.target.closest(".back-to-top")) {
         window.scrollTo({ top: 0, behavior: "smooth" });

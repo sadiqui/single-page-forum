@@ -79,7 +79,7 @@ function LoadTheme() {
     });
 }
 
-// Used in ShowLoggedInNav()
+// Used to handle position of the theme toggle button
 function togglePosition() {
     const toggle = document.querySelector(".theme-toggle");
     if (!toggle) return;

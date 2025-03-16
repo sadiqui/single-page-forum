@@ -47,9 +47,6 @@ async function loadMessages(selectedUsername, profilePic) {
             chatInput.style.height = "auto";
             if (isMobile() || event.shiftKey) {
                 // Nothing
-                event.preventDefault();
-                chatInput.value += "\n";
-                chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Adjust height
             } else {
                 // Desktop Enter (without Shift) -> Send message
                 event.preventDefault();

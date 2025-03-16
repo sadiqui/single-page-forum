@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 )
 
 // Represents the incoming request to send a message.
@@ -89,7 +88,7 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
 	for i := len(reverseOrder) - 1; i >= 0; i-- {
 		messages = append(messages, reverseOrder[i])
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(messages)
 }
@@ -116,52 +115,4 @@ func GetUserByUsername(username string) (*User, error) {
 	}
 
 	return &user, nil
-}
-
-// Handles inserting a new message into the database.
-func SendMessage(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method Not Allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	currentUser, err := GetUser(r)
-	if err != nil {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	var req MessagePayload
-	err = json.NewDecoder(r.Body).Decode(&req)
-	if err != nil || req.Receiver == "" || req.Content == "" {
-		http.Error(w, "Invalid request payload", http.StatusBadRequest)
-		return
-	}
-
-	receiver, err := GetUserByUsername(req.Receiver)
-	if err != nil {
-		http.Error(w, "Receiver not found", http.StatusNotFound)
-		return
-	}
-
-	query := "INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)"
-	result, err := DB.Exec(query, currentUser.ID, receiver.ID, req.Content)
-	if err != nil {
-		http.Error(w, "Failed to send message", http.StatusInternalServerError)
-		return
-	}
-
-	messageID, _ := result.LastInsertId()
-
-	// Populate newMessage with the sender's and receiver's usernames.
-	newMessage := Message{
-		ID:        int(messageID),
-		Sender:    currentUser.Username, // assuming currentUser has a Username field
-		Receiver:  receiver.Username,
-		Content:   req.Content,
-		CreatedAt: time.Now(),
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(newMessage)
 }

@@ -40,6 +40,7 @@ async function CheckSession() {
                 checkNotificationCount();
                 connectNotificationsWS();
                 connectUsersWS()
+                connectMessagesWS() 
             }
         } else {
             ShowloginSignup();

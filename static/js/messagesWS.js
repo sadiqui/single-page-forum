@@ -1,0 +1,47 @@
+function connectMessagesWS() {
+    const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+    const wsUrl = `${protocol}://${window.location.host}/ws/messages`;
+    ws = new WebSocket(wsUrl);
+
+    ws.onopen = () => {
+        console.log("Messages WebSocket connected!");
+    };
+
+    ws.onmessage = (event) => {
+        try {
+            const msg = JSON.parse(event.data);
+            // Append the received message to the chat UI
+            appendMessage(msg.content, "received");
+        } catch (e) {
+            console.error("Error parsing message:", e);
+        }
+    };
+
+    ws.onclose = () => {
+        console.warn("Messages WebSocket closed. Reconnecting in 3 seconds...");
+        setTimeout(connectMessagesWS, 3000);
+    };
+
+    ws.onerror = (err) => {
+        console.error("Messages WebSocket error:", err);
+    };
+}
+
+function appendMessage(content, type) {
+    const chatMessages = document.getElementById("chatMessages");
+    if (!chatMessages) return;
+
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message", type);
+
+    // For received messages, optionally display sender's name
+    let senderHtml = "";
+
+    messageElement.innerHTML = `
+      <p>${senderHtml}${content}</p>
+      <span class="message-time">${formatTime(new Date())}</span>
+  `;
+
+    chatMessages.appendChild(messageElement);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
