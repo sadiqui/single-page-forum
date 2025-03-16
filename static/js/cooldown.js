@@ -57,16 +57,28 @@ function cooldownRenderer() {
             <p>Time remaining: <span id="countdown"></span></p>
         </div>
     `;
-    
-    // Intercept navigation attempts during cooldown
-    // window.addEventListener('click', interceptNavigation, true);
-    // window.addEventListener('submit', interceptNavigation, true);
-    
-    // Load the cooldown counter logic
-    // const script = document.createElement('script');
-    // script.src = "../js/cooldownpage.js";
-    // document.body.appendChild(script);
 
-    // Start the countdown
-    updateCountdown();
+    // Prevent F5 and Ctrl+R without showing alerts
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "F5" || (e.ctrlKey && e.key === "r")) {
+            e.preventDefault();
+            return false;
+        }
+    });
+
+    // Use history API to prevent navigation with back/forward buttons
+    // history.pushState(null, "", window.location.href);
+    // window.addEventListener('popstate', function (event) {
+    //     history.pushState(null, "", window.location.href);
+    // });
+
+    // Disable right-click context menu that contains reload option
+    document.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+    });
+
+    // Load the cooldown counter logic
+    const script = document.createElement('script');
+    script.src = "../js/cooldownpage.js";
+    document.body.appendChild(script);
 }

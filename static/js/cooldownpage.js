@@ -1,6 +1,3 @@
-const cooldownTime = 7000; // 7 seconds
-const lastReloadTime = parseInt(localStorage.getItem("lastReloadTime") || "0", 10);
-
 function updateCountdown() {
     const lastReloadTime = parseInt(localStorage.getItem("lastReloadTime") || "0", 10);
     const cooldownTime = 7000; // 7 seconds
