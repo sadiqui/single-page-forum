@@ -1,12 +1,20 @@
 package server
 
 import (
+	"database/sql"
 	"encoding/json"
 	"net/http"
 	"sync"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
+
+type OnlineUserInfo struct {
+	Username   string    `json:"username"`
+	ProfilePic string    `json:"profile_pic"`
+	LastMsg    time.Time `json:"last_msg"` // Zero time if no conversation
+}
 
 // Track online users
 var (
@@ -23,7 +31,7 @@ func OnlineUsersWS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Extract user ID from session 
+	// Extract user ID from session
 	user, err := GetUser(r)
 	if err != nil {
 		conn.Close()
@@ -58,22 +66,53 @@ func BroadcastOnlineUsers() {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// For each connected user, build a custom list of online users that excludes their own entry.
+	// For each connected user, build a sorted list of online users (excluding themselves)
 	for recipientID, conn := range onlineUsers {
-		var users []map[string]string
+		var users []OnlineUserInfo
 		for userID := range onlineUsers {
 			if userID == recipientID {
-				// Skip the recipient's own information.
 				continue
 			}
-			username, profilePic := GetUsername(userID), GetUserProfilePic(userID)
-			users = append(users, map[string]string{
-				"username":    username,
-				"profile_pic": profilePic,
+			username := GetUsername(userID)
+			profilePic := GetUserProfilePic(userID)
+			lastMsg, err := GetLastConversationTime(recipientID, userID)
+			if err != nil {
+				lastMsg = time.Time{} // zero if error
+			}
+			users = append(users, OnlineUserInfo{
+				Username:   username,
+				ProfilePic: profilePic,
+				LastMsg:    lastMsg,
 			})
 		}
 
-		data, _ := json.Marshal(users)
+		data, err := json.Marshal(users)
+		if err != nil {
+			continue
+		}
 		conn.WriteMessage(websocket.TextMessage, data)
 	}
+}
+
+// Get the last message time between two users
+func GetLastConversationTime(userA, userB int) (time.Time, error) {
+	var timeStr sql.NullString
+	err := DB.QueryRow(`
+		SELECT MAX(created_at) FROM messages 
+		WHERE (sender_id = ? AND receiver_id = ?)
+		   OR (sender_id = ? AND receiver_id = ?)
+	`, userA, userB, userB, userA).Scan(&timeStr)
+	if err != nil {
+		return time.Time{}, err
+	}
+	if timeStr.Valid {
+		// Parse the returned string to time.Time using the appropriate layout.
+		// Adjust the layout if your datetime string is in a different format.
+		t, err := time.Parse("2006-01-02 15:04:05", timeStr.String)
+		if err != nil {
+			return time.Time{}, err
+		}
+		return t, nil
+	}
+	return time.Time{}, nil
 }

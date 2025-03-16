@@ -1,3 +1,4 @@
+let users = [];
 function connectUsersWS() {
     const protocol = (window.location.protocol === "https:") ? "wss" : "ws";
     const wsUrl = `${protocol}://${window.location.host}/ws/online-users`;
@@ -5,7 +6,7 @@ function connectUsersWS() {
     ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
-        const users = JSON.parse(event.data);
+        users = JSON.parse(event.data);
         RenderOnlineUsers(users);
     };
 
@@ -25,10 +26,7 @@ function RenderOnlineUsers(users) {
     // Clear content before updating
     onlineUsersContainer.innerHTML = "";
 
-    // Sort users alphabetically
-    if (Array.isArray(users)) {
-        users.sort((a, b) => a.username.localeCompare(b.username));
-    }
+    users = sortUsersByLastMsg(users);
 
     // Create header message
     const header = document.createElement("div");
@@ -82,4 +80,26 @@ function showOnlineUsers() {
     onlineUsersContainer.innerHTML = `<div id="onlineUsers" class="online-users"><span class="loading">Loading...</span></div>`;
 
     document.body.insertBefore(onlineUsersContainer, document.body.firstChild);
+}
+
+function sortUsersByLastMsg(users) {
+    return users.sort((a, b) => {
+        // Both have a valid lastMsg, convert to Date and compare.
+        if (a.last_msg && b.last_msg) {
+            const dateA = new Date(a.last_msg).getTime();
+            const dateB = new Date(b.last_msg).getTime();
+            if (dateA !== dateB) {
+                return dateB - dateA; // most recent first
+            }
+            // If same time, fallback to alphabetical order
+            return a.username.localeCompare(b.username);
+        }
+        console.log(a.last_msg, b.last_msg);
+        
+        // If only one has a last_msg, it comes first.
+        if (a.last_msg && !b.last_msg) return -1;
+        if (!a.last_msg && b.last_msg) return 1;
+        // If neither has a lastMsg, sort alphabetically.
+        return a.username.localeCompare(b.username);
+    });
 }
