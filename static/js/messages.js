@@ -40,13 +40,8 @@ async function loadMessages(selectedUsername, profilePic) {
             await fetchMoreMessages(selectedUsername, true);
         }
     });
-    
-    if (isMobile) {
-        document.getElementById("sendMessageBtn").addEventListener("touchend", () => sendMessage(selectedUsername));
-    } else {
-        document.getElementById("sendMessageBtn").addEventListener("click", () => sendMessage(selectedUsername));
-    }
 
+    document.getElementById("sendMessageBtn").addEventListener("click", () => sendMessage(selectedUsername));
     document.getElementById("chatInput").addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
             chatInput.style.height = "auto";
