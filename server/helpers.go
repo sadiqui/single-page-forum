@@ -14,10 +14,6 @@ import (
 func ParseAndExecute(w http.ResponseWriter, data any, filename string) {
 	tmpl, err := template.ParseFiles(filename)
 	if err != nil {
-		// if strings.HasSuffix(filename, "error.html") {
-		// 	ServeCloudError(w, data.(ErrorData), err)
-		// 	return
-		// }
 		ErrorHandler(w, http.StatusInternalServerError, "Something seems wrong, try again later!", "Internal Server Error!", err)
 		return
 	}
@@ -25,10 +21,6 @@ func ParseAndExecute(w http.ResponseWriter, data any, filename string) {
 	// Write to a temporary buffer instead of writing directly to w.
 	var buf bytes.Buffer
 	if err := tmpl.Execute(&buf, data); err != nil {
-		// if strings.HasSuffix(filename, "error.html") {
-		// 	ServeCloudError(w, data.(ErrorData), err)
-		// 	return
-		// }
 		ErrorHandler(w, http.StatusInternalServerError, "Something seems wrong, try again later!", "Internal Server Error!", err)
 		return
 	}
