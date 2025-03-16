@@ -170,5 +170,5 @@
 .msg-username {
     font-family: 'Zain';
     color: grey;
-    display: none;
+    /* display: none; */
 }
