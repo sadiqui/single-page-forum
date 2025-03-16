@@ -49,13 +49,14 @@ function cooldownRenderer() {
     // Remove any existing beforeunload listener
     window.removeEventListener("beforeunload", incrementReloadCount);
 
+    // Fetch the cooldown status from the server
     // Replace the body content
     document.body.innerHTML = `
-        <div id="cooldown-container">
-            <h1>Too Many Requests</h1></br>
-            <p>Please wait before accessing the page again.</p>
-            <p>Time remaining: <span id="countdown"></span></p>
-        </div>
+    <div id="cooldown-container">
+        <h1>Too Many Requests</h1></br>
+        <p>Please wait before accessing the page again.</p>
+        <p>Time remaining: <span id="countdown"></span></p>
+    </div>
     `;
 
     // Prevent F5 and Ctrl+R without showing alerts
@@ -66,19 +67,31 @@ function cooldownRenderer() {
         }
     });
 
-    // Use history API to prevent navigation with back/forward buttons
-    // history.pushState(null, "", window.location.href);
-    // window.addEventListener('popstate', function (event) {
-    //     history.pushState(null, "", window.location.href);
-    // });
-
     // Disable right-click context menu that contains reload option
     document.addEventListener('contextmenu', function (e) {
         e.preventDefault();
     });
 
-    // Load the cooldown counter logic
-    const script = document.createElement('script');
-    script.src = "../js/cooldownpage.js";
-    document.body.appendChild(script);
+    // Check with the server for cooldown status
+    fetch('/api/cooldown-status')
+        .then(response => response.json())
+        .then(data => {
+            // If server provides a timeRemaining, use it
+            if (data && data.timeRemaining) {
+                // Calculate when the cooldown started based on time remaining
+                const cooldownStartTime = Date.now() - ((7 - data.timeRemaining) * 1000);
+                localStorage.setItem("lastReloadTime", cooldownStartTime.toString());
+            }
+            // Load the cooldown counter logic
+            const script = document.createElement('script');
+            script.src = "../js/cooldownpage.js";
+            document.body.appendChild(script);
+        })
+        .catch(error => {
+            console.error('Error fetching cooldown status:', error);
+            // Fall back to local cooldown timing if server request fails
+            const script = document.createElement('script');
+            script.src = "../js/cooldownpage.js";
+            document.body.appendChild(script);
+        });
 }

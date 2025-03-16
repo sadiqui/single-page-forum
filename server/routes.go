@@ -13,12 +13,14 @@ func Routes() http.Handler {
 	// Allow 1 request per 20(x) microsecond
 	rl := NewRateLimiter(20 * time.Microsecond)
 
-	mux.HandleFunc("/", HomeHandler)
+	// Apply the cooldown middleware to all routes
+	mux.Handle("/", CooldownMiddleware(http.HandlerFunc(HomeHandler)))
 	mux.HandleFunc("/css/", FilesHandler)
 	mux.HandleFunc("/js/", FilesHandler)
 	mux.HandleFunc("/img/", FilesHandler)
 	mux.HandleFunc("/uploads/", FilesHandler)
 	// mux.HandleFunc("/cooldown", Cooldown)
+	mux.HandleFunc("/api/cooldown-status", CooldownStatusHandler)
 	mux.HandleFunc("/api/check-session", CheckSession)
 	mux.HandleFunc("/api/get-posts", GetPostsHandler)
 	mux.HandleFunc("/api/get-categories", GetCategoriesHandler)
