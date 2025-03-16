@@ -110,8 +110,9 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
 
             const messageElement = document.createElement("div");
             messageElement.classList.add("message", msg.sender === Username ? "sent" : "received");
+            let msgUsername = msg.sender === Username ? Username : msg.sender;
             messageElement.innerHTML = `
-                <p>${msg.content}</p>
+                <p><span class="msg-username">${msgUsername}: </span>${msg.content}</p>
                 <span class="message-time">${formatTime(msg.created_at)}</span>
             `;
 
@@ -182,7 +183,7 @@ async function sendMessage(receiver) {
         const messageElement = document.createElement("div");
         messageElement.className = "message sent";
         messageElement.innerHTML = `
-            <p>${messageContent}</p>
+            <p><span class="msg-username">${Username}: </span>${messageContent}</p>
             <span class="message-time">${formatTime(new Date())}</span>
         `;
         chatMessages.appendChild(messageElement);

@@ -166,3 +166,9 @@
     line-height: 1.4; /* Improve spacing */
     white-space: pre-wrap; /* Preserve line breaks visually */
 }
+
+.msg-username {
+    font-family: 'Zain';
+    color: grey;
+    display: none;
+}
