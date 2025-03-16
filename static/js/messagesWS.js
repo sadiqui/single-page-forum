@@ -34,11 +34,8 @@ function appendMessage(content, type) {
     const messageElement = document.createElement("div");
     messageElement.classList.add("message", type);
 
-    // For received messages, optionally display sender's name
-    let senderHtml = "";
-
     messageElement.innerHTML = `
-      <p>${senderHtml}${content}</p>
+      <p>${content}</p>
       <span class="message-time">${formatTime(new Date())}</span>
   `;
 

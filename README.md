@@ -1,6 +1,6 @@
 <h2 align="center">Forum</h2>
 
-Our project is a **web forum** designed to enhance user interaction and streamline content organization. Registered users can share posts with categorized tags, engage through likes and dislikes on both posts and comments, and easily navigate content with powerful filtering options. Built with **Go** for a fast and reliable backend, **SQLite** for lightweight yet robust data storage, and **Docker** for seamless deployment, this platform combines performance, simplicity, and scalability to deliver an exceptional user experience.
+Our project is a **web forum** designed to enhance user interaction and streamline content organization. Registered users can share posts with categorized tags, engage through likes and dislikes on both posts and comments, and easily navigate content with awesome filtering option. Built with **Go** for a fast and reliable backend, **SQLite** for lightweight yet robust data storage, and **Docker** for seamless deployment, this platform combines performance, simplicity, and scalability to deliver an exceptional user experience.
 
 For a live preview of the project please check the link:
 https://dwi.fly.dev/

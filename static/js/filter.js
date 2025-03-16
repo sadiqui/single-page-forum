@@ -6,7 +6,7 @@ async function FilterCategories() {
 
     const TAGS = await FetchCategories(tagFilterSection);
 
-    // // Show all suggestions on focus if input is empty
+    // Show all suggestions on focus if input is empty
     tagInput.addEventListener("focus", () => {
         if (!tagInput.value.trim()) {
             const availableTags = TAGS.filter((tag) => !selectedTags.includes(tag));
