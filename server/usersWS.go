@@ -13,7 +13,12 @@ import (
 type OnlineUserInfo struct {
 	Username   string    `json:"username"`
 	ProfilePic string    `json:"profile_pic"`
-	LastMsg    time.Time `json:"last_msg"` // Zero time if no conversation
+	LastMsg    time.Time `json:"last_msg"`
+}
+
+// Request struct for updating online users
+type UpdateUsersRequest struct {
+	Users []OnlineUserInfo `json:"users"`
 }
 
 // Track online users
@@ -115,4 +120,60 @@ func GetLastConversationTime(userA, userB int) (time.Time, error) {
 		return t, nil
 	}
 	return time.Time{}, nil
+}
+
+// Update Online Users Endpoint
+func UpdateOnlineUsers(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
+		return
+	}
+	var req UpdateUsersRequest
+
+	// Decode JSON request
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		JsonError(w, "Invalid request payload.", http.StatusBadRequest, err)
+		return
+	}
+
+	// Get the currently logged-in user
+	currentUser, err := GetUser(r)
+	if err != nil {
+		JsonError(w, "Unauthorized.", http.StatusUnauthorized, err)
+		return
+	}
+
+	// Update each user's LastMsg field
+	for i, user := range req.Users {
+		userID := GetUserID(user.Username) // Fetch user ID based on username
+
+		// Get updated data
+		username := GetUsername(userID)
+		profilePic := GetUserProfilePic(userID)
+		lastMsg, err := GetLastConversationTime(currentUser.ID, userID)
+		if err != nil {
+			lastMsg = time.Time{} // Set to zero time if error occurs
+		}
+
+		// Assign updated info back
+		req.Users[i] = OnlineUserInfo{
+			Username:   username,
+			ProfilePic: profilePic,
+			LastMsg:    lastMsg,
+		}
+	}
+
+	// Respond with updated user list
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(req.Users)
+}
+
+// Helper function to get user ID from username
+func GetUserID(username string) int {
+	var userID int
+	err := DB.QueryRow("SELECT id FROM users WHERE username = ?", username).Scan(&userID)
+	if err != nil {
+		return 0 // Return 0 if user not found
+	}
+	return userID
 }

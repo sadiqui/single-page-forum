@@ -1,4 +1,5 @@
 let users = [];
+
 function connectUsersWS() {
     const protocol = (window.location.protocol === "https:") ? "wss" : "ws";
     const wsUrl = `${protocol}://${window.location.host}/ws/online-users`;
@@ -26,14 +27,13 @@ function RenderOnlineUsers(users) {
     // Clear content before updating
     onlineUsersContainer.innerHTML = "";
 
-    users = sortUsersByLastMsg(users);
-
     // Create header message
     const header = document.createElement("div");
     header.className = "online-users-header";
 
     if (users && users.length > 0) {
         header.innerHTML = `Say hello (${users.length} online)`;
+        users = sortUsers(users);
     } else {
         header.innerHTML = "No one is connected! 🥹<br><br>Enjoy the silence... or invite your friends!";
     }
@@ -62,7 +62,12 @@ function RenderOnlineUsers(users) {
         userElement.addEventListener("click", () => {
             const changeTab = document.querySelector('.tab-btn[data-tab="messages"]');
             if (changeTab) {
-                changeTab.click();
+                document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+                changeTab.classList.add("active");
+                tabName = "messages";
+                window.removeEventListener('scroll', handleScroll);
+                window.removeEventListener('scroll', handleProfileScroll);
+                tagFilterSection.style.display = "none";
             }
             loadMessages(user.username, user.profile_pic);
         });
@@ -82,7 +87,7 @@ function showOnlineUsers() {
     document.body.insertBefore(onlineUsersContainer, document.body.firstChild);
 }
 
-function sortUsersByLastMsg(users) {
+function sortUsers(users) {
     return users.sort((a, b) => {
         // Both have a valid lastMsg, convert to Date and compare.
         if (a.last_msg && b.last_msg) {
@@ -94,8 +99,7 @@ function sortUsersByLastMsg(users) {
             // If same time, fallback to alphabetical order
             return a.username.localeCompare(b.username);
         }
-        console.log(a.last_msg, b.last_msg);
-        
+
         // If only one has a last_msg, it comes first.
         if (a.last_msg && !b.last_msg) return -1;
         if (!a.last_msg && b.last_msg) return 1;

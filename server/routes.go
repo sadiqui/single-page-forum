@@ -40,6 +40,7 @@ func Routes() http.Handler {
 	mux.HandleFunc("/api/get-messages", GetMessages)
 	mux.HandleFunc("/api/send-message", SendMessage)
 	mux.HandleFunc("/ws/messages", MessageWebSocket)
+	mux.HandleFunc("/api/update-online-users", UpdateOnlineUsers)
 
 	// Rate Limiting (Auth & Content Creation)
 	mux.Handle("/api/login", rl.Middleware(http.HandlerFunc(LoginHandler)))

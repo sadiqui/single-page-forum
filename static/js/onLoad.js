@@ -141,7 +141,7 @@ function LoadTabContent(tab) {
         } else if (tab === "messages") {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('scroll', handleProfileScroll);
-            // messagesRenderer(offset);
+            loadLastConversation();
         } else if (tab === "settings") {
             // settingsRenderer();
         }

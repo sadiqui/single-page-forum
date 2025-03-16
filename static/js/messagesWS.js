@@ -3,10 +3,6 @@ function connectMessagesWS() {
     const wsUrl = `${protocol}://${window.location.host}/ws/messages`;
     ws = new WebSocket(wsUrl);
 
-    ws.onopen = () => {
-        console.log("Messages WebSocket connected!");
-    };
-
     ws.onmessage = (event) => {
         try {
             const msg = JSON.parse(event.data);
@@ -35,9 +31,9 @@ function appendMessage(content, type) {
     messageElement.classList.add("message", type);
 
     messageElement.innerHTML = `
-      <p>${content}</p>
-      <span class="message-time">${formatTime(new Date())}</span>
-  `;
+        <p>${content}</p>
+        <span class="message-time">${formatTime(new Date())}</span>
+    `;
 
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
