@@ -17,7 +17,7 @@ async function loadMessages(selectedUsername, profilePic) {
             <p class="loading-text">Loading messages...</p>
         </div>
         <div id="chatInputContainer">
-            <input type="text" id="chatInput" placeholder="Type a message...">
+            <textarea id="chatInput" placeholder="Type a message..." rows="1" maxlength="600"></textarea>
             <button id="sendMessageBtn">
                 <img src="../img/send.svg" alt="Send">
             </button>
@@ -42,9 +42,20 @@ async function loadMessages(selectedUsername, profilePic) {
     });
 
     document.getElementById("sendMessageBtn").addEventListener("click", () => sendMessage(selectedUsername));
-    document.getElementById("chatInput").addEventListener("keypress", (event) => {
-        if (event.key === "Enter") sendMessage(selectedUsername);
+    document.getElementById("chatInput").addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+            if (!event.shiftKey) {
+                event.preventDefault(); // Prevent new line
+                sendMessage(selectedUsername);
+            }
+        }
     });
+    // Adjust the textarea height automatically
+    chatInput.addEventListener("input", () => {
+        chatInput.style.height = "auto";
+        chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Limit max height
+    });
+
 }
 
 async function fetchMoreMessages(selectedUsername, prepend = false) {
@@ -74,7 +85,7 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
         }
 
         const messageBatch = document.createDocumentFragment();
-        const wrapper = document.createElement("div"); 
+        const wrapper = document.createElement("div");
         wrapper.classList.add("message-batch"); // Ensure batch messages are properly stacked
 
         fetched.forEach(msg => {
@@ -138,6 +149,19 @@ async function sendMessage(receiver) {
         });
         if (!res.ok) throw new Error("Failed to send message");
 
+        // Get today's formatted date using formatDate on current date
+        const todayStr = formatDate(new Date());
+
+        // If globalLastDate is not "Today", then we need to insert a date separator
+        if (globalLastDate !== todayStr) {
+            const dateSep = document.createElement("div");
+            dateSep.className = "chat-date-separator";
+            dateSep.textContent = todayStr;
+            chatMessages.appendChild(dateSep);
+            globalLastDate = todayStr;
+        }
+
+        // Build the new sent message element
         const messageElement = document.createElement("div");
         messageElement.className = "message sent";
         messageElement.innerHTML = `

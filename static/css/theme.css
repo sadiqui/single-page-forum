@@ -43,6 +43,9 @@
     --navBar-shadow: rgba(0, 0, 0, 0.1);
     --navMenu-shadow: rgba(0, 0, 0, 0.05);
 
+    --msgreceived: greenyellow;
+    --msgtxt : rgb(37, 37, 37);
+    --msgsent: rgb(199, 217, 240);
 
     /*** Reds ***/
     --noscript-bg: #fcf0f0;
@@ -123,6 +126,10 @@
     --notif-shadow: rgba(0, 0, 0, 0.25);
     --navBar-shadow: rgba(0, 0, 0, 0.15);
     --navMenu-shadow: rgba(0, 0, 0, 0.08);
+
+    --msgreceived: greenyellow;
+    --msgtxt : rgb(37, 37, 37);
+    --msgsent: rgb(141, 186, 238);
 
     /*** Reds ***/
     --noscript-bg: #3b2b2b;

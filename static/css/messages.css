@@ -4,7 +4,7 @@
     flex-direction: column;
     width: 90%;
     max-width: 500px;
-    height: 500px;
+    height: 550px;
     background: var(--white);
     border-radius: 15px;
     box-shadow: 0 4px 10px var(--navBar-shadow);
@@ -71,8 +71,8 @@
 /* Sent Messages (Blue, Right) */
 .sent {
     align-self: flex-end;
-    background: rgb(199, 217, 240);
-    color: var(--content-grey);
+    background: var(--msgsent);
+    color: var(--msgtxt);
     border-bottom-right-radius: 5px;
     text-align: left;
     margin-top: 8px;
@@ -81,8 +81,8 @@
 /* Received Messages (White, Left) */
 .received {
     align-self: flex-start;
-    background: greenyellow;
-    color: var(--content-grey);
+    background: var(--msgreceived);
+    color: var(--msgtxt);
     border-bottom-left-radius: 5px;
     text-align: left;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -92,7 +92,7 @@
 /* Message Timestamp */
 .message-time {
     font-size: 0.7rem;
-    color: var(--content-grey);
+    color: var(--msgtxt);
     position: relative;
     top: 5px;
 }
@@ -145,4 +145,11 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+}
+
+#chatInput {
+    resize: none; 
+    overflow-y: auto; 
+    max-height: 150px;
+    font-family: "Roboto";
 }
