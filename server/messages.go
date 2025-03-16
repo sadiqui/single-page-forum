@@ -7,12 +7,6 @@ import (
 	"net/http"
 )
 
-// Represents the incoming request to send a message.
-type MessagePayload struct {
-	Receiver string `json:"receiver"`
-	Content  string `json:"content"`
-}
-
 const messagesLimit = 20
 
 // Returns all messages exchanged between the logged-in user and a selected user.

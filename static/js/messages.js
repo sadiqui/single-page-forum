@@ -145,8 +145,11 @@ async function sendMessage(receiver) {
     chatInput.style.height = "auto";
     const chatMessages = document.getElementById("chatMessages");
     const inputField = document.getElementById("chatInput");
-    const messageContent = inputField.value.trim();
-    if (!messageContent) return;
+    let messageContent = inputField.value.trim();
+    if (!messageContent) {
+        inputField.value = "";
+        return;
+    } 
 
     // Remove "Start the conversation" message if it exists
     const startConversation = chatMessages.querySelector(".no-messages");
@@ -172,6 +175,9 @@ async function sendMessage(receiver) {
             globalLastDate = todayStr;
         }
 
+        const data = await res.json()
+        messageContent = data.content;
+
         // Build the new sent message element
         const messageElement = document.createElement("div");
         messageElement.className = "message sent";
@@ -183,8 +189,9 @@ async function sendMessage(receiver) {
         updateOnlineUsers()
         inputField.value = "";
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    } catch (err) {
-        console.error("Error sending message:", err);
+    } catch (err) {   
+        console.warn("Failed to send message:", err);     
+        DisplayError("chatErrMsg", inputField, "Failed to send message: err");
     }
 }
 

@@ -117,6 +117,13 @@
     border-radius: 20px;
     font-size: 1rem;
     outline: none;
+    /* Hide scrollbar */
+    scrollbar-width: none;      /* Firefox */
+    -ms-overflow-style: none;   /* Internet Explorer & Edge */
+}
+
+#chatInput::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari */
 }
 
 /* Send Button */

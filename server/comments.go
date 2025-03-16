@@ -86,7 +86,7 @@ func processComment(payload *CommentPayload, user *User) error {
 		return fmt.Errorf("failed to add comments: %w", err)
 	}
 
-	// Get the post's owner
+	// Get the post's owner (to notify)
 	var ownerID int
 	err = DB.QueryRow(`SELECT user_id FROM posts WHERE id = ?`, payload.PostID).Scan(&ownerID)
 	if err != nil {

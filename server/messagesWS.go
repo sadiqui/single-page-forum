@@ -2,7 +2,10 @@ package server
 
 import (
 	"encoding/json"
+	"html"
 	"net/http"
+	"regexp"
+	"strings"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -78,8 +81,17 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		Receiver string `json:"receiver"`
 		Content  string `json:"content"`
 	}
+
+	// Limit the size of the request body to 8 KB
+	r.Body = http.MaxBytesReader(w, r.Body, 8000)
 	if err := json.NewDecoder(r.Body).Decode(&msgPayload); err != nil {
 		JsonError(w, "Invalid request", http.StatusBadRequest, err)
+		return
+	}
+
+	msgPayload.Content = processMsg(msgPayload.Content)
+	if msgPayload.Content == "" {
+		JsonError(w, "can't send empty message", http.StatusBadRequest, err)
 		return
 	}
 
@@ -88,7 +100,6 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 		JsonError(w, "User not found", http.StatusNotFound, err)
 		return
 	}
-
 
 	// Store message in DB
 	_, err = DB.Exec(`INSERT INTO messages (sender_id, receiver_id, content) VALUES (?, ?, ?)`,
@@ -102,5 +113,21 @@ func SendMessage(w http.ResponseWriter, r *http.Request) {
 	BroadcastMessage(user.ID, receiver.ID, msgPayload.Content)
 
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Message sent successfully"))
+	json.NewEncoder(w).Encode(map[string]string{
+		"msg":     "Message sent successfully",
+		"content": msgPayload.Content,
+	})
+}
+
+// Validates and sanitizes messages
+func processMsg(content string) string {
+	// Trim spaces and escape HTML
+	content = strings.TrimSpace(content)
+	content = html.EscapeString(content)
+
+	// Remove more than three consecutive new lines to just two
+	re := regexp.MustCompile(`(\r\n|\r|\n){3,}`)
+	content = re.ReplaceAllString(content, "\n\n")
+
+	return content
 }
