@@ -22,14 +22,14 @@ var (
 // Functions to set up OAuth callback URLs.
 func getGithubReURL() string {
 	if os.Getenv("FLY_APP_NAME") != "" {
-		return "https://web-based-forum.fly.dev/auth/callback?provider=github"
+		return "https://dwi.fly.dev/auth/callback?provider=github"
 	}
 	return fmt.Sprintf("https://localhost:%s/auth/callback?provider=github", Port)
 }
 
 func getGoogleReURL() string {
 	if os.Getenv("FLY_APP_NAME") != "" {
-		return "https://web-based-forum.fly.dev/auth/callback?provider=google"
+		return "https://dwi.dev/auth/callback?provider=google"
 	}
 	return fmt.Sprintf("https://localhost:%s/auth/callback?provider=google", Port)
 }
