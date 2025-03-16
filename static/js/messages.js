@@ -42,12 +42,16 @@ async function loadMessages(selectedUsername, profilePic) {
     });
 
     document.getElementById("sendMessageBtn").addEventListener("click", () => sendMessage(selectedUsername));
+    document.getElementById("sendMessageBtn").addEventListener("touchend", () => sendMessage(selectedUsername));
     document.getElementById("chatInput").addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
-            if (event.shiftKey) {
-                // Allow default behavior (new line when Shift+Enter is pressed)
+            if (isMobile() || event.shiftKey) {
+                event.preventDefault();
+                chatInput.value += "\n";
+                chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Adjust height
             } else {
-                event.preventDefault(); // Prevent new line
+                // Desktop Enter (without Shift) -> Send message
+                event.preventDefault();
                 sendMessage(selectedUsername);
             }
         }
@@ -57,7 +61,6 @@ async function loadMessages(selectedUsername, profilePic) {
         chatInput.style.height = "auto"; // Reset height
         chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Limit max height
     });
-
 }
 
 async function fetchMoreMessages(selectedUsername, prepend = false) {
@@ -89,11 +92,17 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
         const messageBatch = document.createDocumentFragment();
         const wrapper = document.createElement("div");
         wrapper.classList.add("message-batch"); // Ensure batch messages are properly stacked
-
+        
+        let i = 1;
         fetched.forEach(msg => {
             const msgDate = formatDate(msg.created_at);
-
-            if (msgDate !== globalLastDate) {
+            if (i === 1) {
+                const dateSep = document.createElement("div");
+                dateSep.className = "chat-date-separator";
+                dateSep.textContent = msgDate;
+                wrapper.appendChild(dateSep);
+                globalLastDate = msgDate;
+            } else if (msgDate !== globalLastDate) {
                 const dateSep = document.createElement("div");
                 dateSep.className = "chat-date-separator";
                 dateSep.textContent = msgDate;
@@ -109,6 +118,7 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
             `;
 
             wrapper.appendChild(messageElement);
+            i++
         });
 
         messageBatch.appendChild(wrapper);
@@ -194,4 +204,9 @@ function formatDate(dateString) {
 function formatTime(dateString) {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
+// Detect if user is on mobile
+function isMobile() {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 }

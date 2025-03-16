@@ -264,3 +264,7 @@
 :root.dark-mode .github-btn:hover {
     background-color: #4c4e50;
 }
+
+:root.dark-mode .chat-profile-pic {
+    border: 2px solid var(--border-grey);
+}
