@@ -13,7 +13,7 @@ FROM alpine:latest
 # Update package lists and install bash
 RUN apk update && apk add bash
 # For flyctl deploy
-ENV PORT 8080
+ENV PORT=8080
 
 WORKDIR /app
 COPY --from=builder /app/forum .
