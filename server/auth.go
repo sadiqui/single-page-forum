@@ -29,7 +29,7 @@ func getGithubReURL() string {
 
 func getGoogleReURL() string {
 	if os.Getenv("FLY_APP_NAME") != "" {
-		return "https://dwi.dev/auth/callback?provider=google"
+		return "https://dwi.fly.dev/auth/callback?provider=google"
 	}
 	return fmt.Sprintf("https://localhost:%s/auth/callback?provider=google", Port)
 }
