@@ -76,7 +76,7 @@ function FocusOnField(errMsg) {
 
 function LoadNotFoundPage() {
     // Fetch page content dynamically, similar to "display: block";
-    fetch("https://gist.githubusercontent.com/kinoz01/6fed8332121b3be5ba6bb957a3498f88/raw/ccb167fe7f7e94f9317a56b3774cf7451be4c62b/gistfile1.txt")
+    fetch("https://gist.githubusercontent.com/kinoz01/6fed8332121b3be5ba6bb957a3498f88/raw/b1b48f0603d11c734be3de70f27f56f255048a76/gistfile1.txt")
         .then(response => {
             if (!response.ok) {
                 throw new Error("Failed to fetch content");
