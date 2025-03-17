@@ -54,11 +54,11 @@ async function CheckSession() {
 }
 
 // Redirect user to home when on signup/login page 
-async function HomeRedirect() {
-    if (window.location.pathname !== "/") {
-        window.location.href = "/";
-    }
-}
+// async function HomeRedirect() {
+//     if (window.location.pathname !== "/") {
+//         window.location.href = "/";
+//     }
+// }
 
 async function Routing() {
     const path = window.location.pathname;
