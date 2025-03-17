@@ -38,10 +38,11 @@ func Initialise() bool {
 
 // Set environments variables.
 func initialiseEnv() {
-	// In localhost or local container
+	// Only in localhost or local container
 	if os.Getenv("FLY_APP_NAME") == "" {
 		SetEnv()
 	}
+	// In all environments
 	Port = os.Getenv("PORT")
 	GithubClientSecret = os.Getenv("GITHUB_CLIENT_SECRET")
 	GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")

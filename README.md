@@ -1,6 +1,6 @@
-<h2 align="center">Forum</h2>
+<h2 align="center">Real Time Forum</h2>
 
-Our project is a **web forum** designed to enhance user interaction and streamline content organization. Registered users can share posts with categorized tags, engage through likes and dislikes on both posts and comments, and easily navigate content with awesome filtering option. Built with **Go** for a fast and reliable backend, **SQLite** for lightweight yet robust data storage, and **Docker** for seamless deployment, this platform combines performance, simplicity, and scalability to deliver an exceptional user experience.
+This project is a **web forum** designed to enhance user interaction and streamline content organization. Registered users can share posts with categorized tags, engage through likes and dislikes on both posts and comments, and easily navigate content with awesome filtering option. It also functions as a **SPA that promotes private messages and real-time events**, ensuring seamless communication. Built with **Go** for a fast and reliable backend, **SQLite** for lightweight yet robust data storage, and **Docker** for seamless deployment, this platform combines performance, simplicity, and scalability to deliver an exceptional user experience.
 
 For a live preview of the project please check the link:
 https://dwi.fly.dev/
@@ -22,8 +22,8 @@ https://excalidraw.com/#json=aaPfOnBdAFyYjrF4KL7Gp,qf57RNVURw8aO1VGdsyJZg
 
 Using a terminal, clone and navigate to the repository:
 
-`git clone https://github.com/sadiqui/web-based-forum`  
-`cd web-based-forum`
+`git clone https://github.com/sadiqui/real-time-forum`  
+`cd real-time-forum`
 
 Then, you can run the application either locally or using Docker, access on localhost.
 
