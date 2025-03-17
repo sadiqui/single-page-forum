@@ -36,6 +36,7 @@ function RenderPosts(posts, offset, truncate = 300) {
 
         FetchReactions(post.id, postDiv, "post")
     });
+    RedirectToProfile()
     longTagNames()
 }
 
@@ -135,8 +136,6 @@ function RenderPost(post, postDiv, single = "") {
         // Now fetch the user's comments for this post
         getUserComments(post.id);
     }
-
-    RedirectToProfile()
 }
 
 // This function will be called for each post when you're on the "comments" tab.

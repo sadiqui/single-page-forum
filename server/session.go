@@ -1,12 +1,18 @@
 package server
 
 import (
+	"database/sql"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/gofrs/uuid"
 )
+
+type CheckUser struct {
+	Exists bool `json:"exists"`
+}
 
 // Checks whether the user has a valid session.
 func CheckSession(w http.ResponseWriter, r *http.Request) {
@@ -99,4 +105,33 @@ func CreateSession(w http.ResponseWriter, user *User) error {
 
 	http.SetCookie(w, cookie)
 	return nil
+}
+
+// Quickly check if the user is valid.
+func CheckUserHandler(w http.ResponseWriter, r *http.Request) {
+	// Ensure it's a GET request
+	if r.Method != http.MethodGet {
+		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
+		return
+	}
+
+	// Get user ID from query params
+	userID := r.URL.Query().Get("user_id")
+	if userID == "" {
+		JsonError(w, "Missing user_id parameter", http.StatusBadRequest, nil)
+		return
+	}
+
+	// Check if user exists in the database
+	var exists bool
+	err := DB.QueryRow("SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)", userID).Scan(&exists)
+	if err != nil && err != sql.ErrNoRows {
+		JsonError(w, "Database error", http.StatusInternalServerError, err)
+		return
+	}
+
+	// Send JSON response
+	response := CheckUser{Exists: exists}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }

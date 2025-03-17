@@ -1,5 +1,16 @@
 function loadLastConversation() {
     updateOnlineUsers().then(() => {
+        if (!users || users.length === 0) {
+            const dynamicContent = document.getElementById("content");
+
+            dynamicContent.innerHTML = `
+                <div id="emptyChatimg">
+                    <img src="../img/empty-chat.png" alt="Empty chat">
+                    <p>No users online</p>
+                </div>
+            `;
+            return;
+        }
         if (users.length > 0) {
             const firstUser = users[0]; // Get first user in the sorted list
             loadMessages(firstUser.username, firstUser.profile_pic);
@@ -7,6 +18,7 @@ function loadLastConversation() {
     });
 }
 
+// 
 async function updateOnlineUsers() {
     try {
         const response = await fetch("/api/update-online-users", {

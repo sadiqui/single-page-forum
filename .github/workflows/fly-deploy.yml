@@ -24,7 +24,6 @@ jobs:
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
         run: |
-            flyctl auth token
             flyctl secrets set GOOGLE_OAUTH_CLIENT_ID=${{ secrets.GOOGLE_OAUTH_CLIENT_ID }} --app dwi
             flyctl secrets set GOOGLE_OAUTH_CLIENT_SECRET=${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }} --app dwi
             flyctl secrets set GHUB_OAUTH_CLIENT_ID=${{ secrets.GHUB_OAUTH_CLIENT_ID }} --app dwi

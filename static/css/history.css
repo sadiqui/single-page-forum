@@ -28,7 +28,7 @@
     /* Keep some spacing at bottom just in case */
     margin-bottom: 2rem;
     min-height: 400px;
-    margin-top: 150px;
+    margin-top: 180px;
 }
 
 @media (max-width: 600px) {

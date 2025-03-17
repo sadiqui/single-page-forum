@@ -17,14 +17,27 @@ function RedirectToProfile() {
                 const username = usernameElement.childNodes[0]?.nodeValue?.trim();
                 if (!username) return;
 
-                console.log(username);
-
                 // Construct the custom profile URL
                 const customURL = `/profile?user=${encodeURIComponent(username)}`;
-return
+
                 // Redirect to the custom profile page
                 window.location.href = customURL;
-                console.log("Redirecting to:", customURL);
             });
         });
+}
+
+// Quickly check if user exists.
+async function checkUser(id) {
+    try {
+        const res = await fetch(`/api/check-user?user_id=${encodeURIComponent(id)}`);
+        if (!res.ok) {            
+            return false;
+        } else {
+            return true;
+        }
+    } catch (err) {
+        console.warn(err);
+        PopError("Something went wrong")
+        return false;
+    }
 }

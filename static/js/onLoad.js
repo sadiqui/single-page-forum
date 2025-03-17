@@ -1,5 +1,5 @@
 // Launch once the DOM is loaded to dynamically insert elements
-document.addEventListener("DOMContentLoaded", async () => {    
+document.addEventListener("DOMContentLoaded", async () => {
     document.body.insertAdjacentHTML("beforeend", socialForm);
     LoadTheme();
     if (sessionStorage.getItem("socialModalShown") === null || sessionStorage.getItem("socialModalShown") === "false") {
@@ -35,12 +35,12 @@ async function CheckSession() {
                 Username = data.username;
                 ProfilePic = data.profile_pic;
                 ShowLoggedInNav(data.username, data.profile_pic);
-                showOnlineUsers()             
+                showOnlineUsers()
                 Routing();
                 checkNotificationCount();
                 connectNotificationsWS();
                 connectUsersWS()
-                connectMessagesWS() 
+                connectMessagesWS()
             }
         } else {
             ShowloginSignup();
@@ -61,7 +61,7 @@ async function HomeRedirect() {
 }
 
 async function Routing() {
-    const path = window.location.pathname;    
+    const path = window.location.pathname;
     if (path === "/") {
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
@@ -70,7 +70,7 @@ async function Routing() {
     } else if (path.startsWith("/post")) {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
-        if (postId) {            
+        if (postId) {
             const exists = await checkPost(postId);
             if (exists) {
                 LoadPostPage(postId);
@@ -80,9 +80,22 @@ async function Routing() {
         } else {
             LoadNotFoundPage();
         }
-    } else if (path === "/cooldown") {        
+    } else if (path.startsWith("/profile")) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get("user");
+        if (userId) {
+            const exists = await checkUser(userId);
+            if (exists) {
+                LoadProfilePage(userId);
+            } else {
+                LoadNotFoundPage();
+            }
+        } else {
+            LoadNotFoundPage();
+        }
+    } else if (path === "/cooldown") {
         cooldownRenderer();
-    } else {        
+    } else {
         LoadNotFoundPage();
     }
 }
