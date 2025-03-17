@@ -38,15 +38,11 @@ func Initialise() bool {
 
 // Set environments variables.
 func initialiseEnv() {
-	Port = os.Getenv("PORT")
-	if os.Getenv("FLY_APP_NAME") != "" {
-		GithubClientSecret = os.Getenv("GITHUB_CLIENT_SECRET")
-		GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
-		GithubClientID = os.Getenv("GITHUB_CLIENT_ID")
-		GoogleClientID = os.Getenv("GOOGLE_CLIENT_ID")
-		return
+	// In localhost or local container
+	if os.Getenv("FLY_APP_NAME") == "" {
+		SetEnv()
+		Port = os.Getenv("PORT")
 	}
-	SetEnv()
 	GithubClientSecret = os.Getenv("GITHUB_CLIENT_SECRET")
 	GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	GithubClientID = os.Getenv("GITHUB_CLIENT_ID")
@@ -73,7 +69,7 @@ func initialisePort() bool {
 	return false
 }
 
-// Open the JSON file and unmarshal it's content into CloudLinks struct.
+// Open the JSON file and unmarshal its content into CloudLinks struct.
 func initialiseLinks() {
 	content, err := os.ReadFile("./server/cloudLinks.json")
 	if err != nil {

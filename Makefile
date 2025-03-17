@@ -5,6 +5,7 @@ go:
 	go run main.go
 
 # Build and run the Docker container
+# [WARNING] don't set PORT in .env
 docker:
 	PORT=$$(go run main.go -print-port) && \
 	docker build --build-arg PORT=$$PORT -t forum . && \
