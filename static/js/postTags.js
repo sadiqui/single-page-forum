@@ -159,7 +159,7 @@ async function FetchCategories(formElem) {
 //             method: "POST",
 //             headers: {
 //                 "content-type": "application/json",
-//                 cookie: "session_token:KinoTan_n session token"
+//                  cookie: "session_token:KinoTan_n session token"
 //             },
 //             body: JSON.stringify({
 //                 "categories": ["cat1", "cat2", "cat3"]

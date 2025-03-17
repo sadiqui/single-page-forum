@@ -277,9 +277,9 @@ const tabBarHTML = `
             <img src="../img/home.svg" alt="Home">
             <span class="tab-txt">Home</span>
         </button>
-        <button class="tab-btn" data-tab="history">
-            <img src="../img/history.png" alt="History">
-            <span class="tab-txt">History</span>
+        <button class="tab-btn" data-tab="profile">
+            <img src="../img/profile.png" alt="profile">
+            <span class="tab-txt">Profile</span>
         </button>
         <button class="tab-btn" data-tab="notifs">
             <img src="../img/notifs.png" alt="Notifs">
@@ -288,6 +288,10 @@ const tabBarHTML = `
         <button class="tab-btn" data-tab="messages">
             <img src="../img/messages.png" alt="Messages">
             <span class="tab-txt">Messages</span>
+        </button>
+        <button class="tab-btn" data-tab="history">
+            <img src="../img/history.png" alt="History">
+            <span class="tab-txt">History</span>
         </button>
         <button class="tab-btn" data-tab="settings">
             <img src="../img/settings.svg" alt="Settings">

@@ -7,7 +7,9 @@ function connectUsersWS() {
     ws = new WebSocket(wsUrl);
 
     ws.onmessage = (event) => {
-        users = JSON.parse(event.data);
+        newUsers = JSON.parse(event.data);       
+        SatatusUpdate(newUsers);
+        users = newUsers;
         RenderOnlineUsers(users);
     };
 
@@ -107,4 +109,32 @@ function sortUsers(users) {
         // If neither has a lastMsg, sort alphabetically.
         return a.username.localeCompare(b.username);
     });
+}
+
+function SatatusUpdate(newUsers) {
+    const chatContainer = document.getElementById("chatContainer");
+    if (!chatContainer) return;
+    const currentUsername = chatContainer.getAttribute("data-username");
+    if (currentUsername) {
+        const isUserStillOnline = newUsers.some(user => user.username === currentUsername);
+        const wasUserOffline = !users.some(user => user.username === currentUsername); // return true if user doesn't exist in users (old list)
+        if (!isUserStillOnline) {
+            // Create a disconnect message div
+            const disconnectMessage = document.createElement("div");
+            disconnectMessage.className = "status-message";
+            disconnectMessage.textContent = `${currentUsername} disconnected`;
+    
+            // Append the message to the chat
+            chatMessages.appendChild(disconnectMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // scroll down
+        } else if (wasUserOffline) {
+            // User reconnected
+            const reconnectMessage = document.createElement("div");
+            reconnectMessage.className = "status-message";
+            reconnectMessage.textContent = `${currentUsername} is back online`;
+
+            chatMessages.appendChild(reconnectMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll down
+        }
+    }
 }

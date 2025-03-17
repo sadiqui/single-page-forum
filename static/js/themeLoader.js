@@ -60,13 +60,8 @@ function updatePassIcon() {
         const updateIcon = () => {
             const isHidden = passwordIcon.src.includes("hide");
             if (isDark) {
-                if (isAutofilled) {
-                    // Always using light icons with autofilled backgrounds
-                    passwordIcon.src = isHidden ? "../img/hide-light.png" : "../img/show-light.png";
-                } else {
-                    // Using dark icons otherwise
-                    passwordIcon.src = isHidden ? "../img/hide-dark.png" : "../img/show-dark.png";
-                }
+                // Using dark icons otherwise
+                passwordIcon.src = isHidden ? "../img/hide-dark.png" : "../img/show-dark.png";
             } else {
                 // Light mode always uses light icons
                 passwordIcon.src = isHidden ? "../img/hide-light.png" : "../img/show-light.png";

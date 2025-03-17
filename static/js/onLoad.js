@@ -44,11 +44,19 @@ async function CheckSession() {
             }
         } else {
             ShowloginSignup();
+            HomeRedirect();
             imageUploaded("profilePic");
         }
     } catch (err) {
         console.log(err);
         PopError("Something went wrong.");
+    }
+}
+
+// redirect user to home  
+async function HomeRedirect() {
+    if (window.location.pathname !== "/") {
+        window.location.href = "/";
     }
 }
 
@@ -148,6 +156,7 @@ function LoadTabContent(tab) {
             window.removeEventListener('scroll', handleHistoryScroll);
             loadLastConversation();
         } else if (tab === "profile") {
+            profileRenderer(Username);
             // profileRenderer();
         }
 
