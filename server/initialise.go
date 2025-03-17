@@ -41,8 +41,8 @@ func initialiseEnv() {
 	// In localhost or local container
 	if os.Getenv("FLY_APP_NAME") == "" {
 		SetEnv()
-		Port = os.Getenv("PORT")
 	}
+	Port = os.Getenv("PORT")
 	GithubClientSecret = os.Getenv("GITHUB_CLIENT_SECRET")
 	GoogleClientSecret = os.Getenv("GOOGLE_CLIENT_SECRET")
 	GithubClientID = os.Getenv("GITHUB_CLIENT_ID")
