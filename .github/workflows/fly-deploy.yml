@@ -20,11 +20,12 @@ jobs:
       #     export FLYCTL_INSTALL="/home/runner/.fly"
       #     export PATH="$FLYCTL_INSTALL/bin:$PATH"
 
+      - name: Set Fly.io Secrets
+        run: |
+          flyctl secrets set GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}"
+          flyctl secrets set GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}"
+          flyctl secrets set GITHUB_CLIENT_ID="${{ secrets.GHUB_OAUTH_CLIENT_ID }}"
+          flyctl secrets set GITHUB_CLIENT_SECRET="${{ secrets.GHUB_OAUTH_CLIENT_SECRET}}"
+
       - name: Deploy to Fly.io
-        env:
-          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-          GOOGLE_OAUTH_CLIENT_ID: ${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}
-          GOOGLE_OAUTH_CLIENT_SECRET: ${{ secrets.GOOGLE_OAUTH_CLIENT_SECRET }}
-          GHUB_OAUTH_CLIENT_ID: ${{ secrets.GHUB_OAUTH_CLIENT_ID }}
-          GHUB_OAUTH_CLIENT_SECRET: ${{ secrets.GHUB_OAUTH_CLIENT_SECRET }}
         run: flyctl deploy --remote-only
