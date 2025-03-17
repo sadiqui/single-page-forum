@@ -12,17 +12,6 @@ function historyRenderer(username) {
                 <div class="profile-image">
                     <img src="../uploads/${ProfilePic}"
                         alt="Profile Picture" />
-                        <!-- Label for uploading a new picture -->
-                        <label for="profilePic" class="edit-btn">
-                            <img src="../img/camera.svg" alt="Change Profile Picture" />
-                        </label>
-
-                        <!-- Hidden file input -->
-                        <input
-                            type="file"
-                            id="profilePic"
-                            accept="image/*"
-                        />
                 </div>
                 <div class="profileUsername username">${username}</div>
                 <nav class="history-tab-bar">

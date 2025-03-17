@@ -147,8 +147,8 @@ function LoadTabContent(tab) {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('scroll', handleHistoryScroll);
             loadLastConversation();
-        } else if (tab === "settings") {
-            // settingsRenderer();
+        } else if (tab === "profile") {
+            // profileRenderer();
         }
 
         // Animate opacity from 0 to 1 smoothly
