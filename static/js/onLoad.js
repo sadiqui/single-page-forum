@@ -44,7 +44,7 @@ async function CheckSession() {
             }
         } else {
             ShowloginSignup();
-            HomeRedirect();
+            //HomeRedirect();
             imageUploaded("profilePic");
         }
     } catch (err) {
