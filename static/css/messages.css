@@ -70,6 +70,8 @@
 
 .message p {
     white-space: pre-wrap; 
+    font-size: 1em;
+    font-family: 'Inter';
 }
 
 /* Sent Messages (Blue, Right) */
@@ -167,8 +169,25 @@
     white-space: pre-wrap; /* Preserve line breaks visually */
 }
 
+/* Addin Username to chat messages */
 .msg-username {
     font-family: 'Zain';
-    color: grey;
+    color: rgb(102, 102, 102);
     /* display: none; */
+}
+
+:root.dark-mode .msg-username {
+    color: rgb(224, 224, 224);
+}
+
+.sender {
+    align-self: flex-end;
+}
+
+.reciever {
+    align-self: flex-start;
+}
+
+.new-sent {
+    margin-top: -10px;
 }

@@ -110,13 +110,18 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
 
             const messageElement = document.createElement("div");
             messageElement.classList.add("message", msg.sender === Username ? "sent" : "received");
-            let msgUsername = msg.sender === Username ? Username : msg.sender;
+
+            const msgUsername = document.createElement("div");
+            msgUsername.classList.add("msg-username", msg.sender === Username ? "sender" : "receiver");
+            msgUsername.innerHTML = msg.sender === Username ? Username : msg.sender;
+            
             messageElement.innerHTML = `
-                <p><span class="msg-username">${msgUsername}: </span>${msg.content}</p>
+                <p>${msg.content}</p>
                 <span class="message-time">${formatTime(msg.created_at)}</span>
             `;
 
             wrapper.appendChild(messageElement);
+            wrapper.appendChild(msgUsername)
             i++
         });
 
@@ -150,7 +155,7 @@ async function sendMessage(receiver) {
     if (!messageContent) {
         inputField.value = "";
         return;
-    } 
+    }
 
     // Remove "Start the conversation" message if it exists
     const startConversation = chatMessages.querySelector(".no-messages");
@@ -181,17 +186,22 @@ async function sendMessage(receiver) {
 
         // Build the new sent message element
         const messageElement = document.createElement("div");
+        const msgUsername = document.createElement("div");
+        msgUsername.className = "msg-username sender new-sent";
+        msgUsername.innerHTML = `${Username}`
+        
         messageElement.className = "message sent";
         messageElement.innerHTML = `
-            <p><span class="msg-username">${Username}: </span>${messageContent}</p>
+            <p>${messageContent}</p>
             <span class="message-time">${formatTime(new Date())}</span>
         `;
         chatMessages.appendChild(messageElement);
-        updateOnlineUsers()
+        chatMessages.appendChild(msgUsername);
+        updateOnlineUsers() // Reorder users
         inputField.value = "";
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    } catch (err) {   
-        console.warn("Failed to send message:", err);     
+    } catch (err) {
+        console.warn("Failed to send message:", err);
         DisplayError("chatErrMsg", inputField, "Failed to send message: err");
     }
 }

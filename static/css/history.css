@@ -1,22 +1,10 @@
 /****************************************************
-     * RESET & BASE STYLES
-****************************************************/
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-}
-
-
-/****************************************************
-            * MAIN CONTENT SECTION
+             MAIN CONTENT SECTION
 ****************************************************/
 .content-section {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    text-align: center;
 }
 
 @media (max-width: 600px) {
