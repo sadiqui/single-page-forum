@@ -19,6 +19,6 @@ WORKDIR /app
 COPY --from=builder /app/forum .
 COPY ./database /app/database
 COPY ./static /app/static
-COPY ./.env /app/.env
+# COPY ./.env /app/.env
 COPY ./tls /app/tls
 CMD ["./forum"]
