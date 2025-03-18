@@ -57,6 +57,7 @@ function cooldownRenderer() {
             <p>Time remaining: <span id="countdown"></span></p>
         </div>
     `;
+    document.body.style.backgroundColor = "#102030"
 
     // Prevent F5 and Ctrl+R without showing alerts
     document.addEventListener("keydown", function (e) {
@@ -67,12 +68,6 @@ function cooldownRenderer() {
             return false;
         }
     });
-
-    // Use history API to prevent navigation with back/forward buttons
-    // history.pushState(null, "", window.location.href);
-    // window.addEventListener('popstate', function (event) {
-    //     history.pushState(null, "", window.location.href);
-    // });
 
     // Disable right-click context menu that contains reload option
     document.addEventListener('contextmenu', function (e) {

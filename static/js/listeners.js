@@ -76,11 +76,14 @@ function LoginFormListener() {
 
 // Show signup/login form on load of page when no session.
 function ShowloginSignup() {
-    document.querySelector(".theme-toggle").style.top = "30px";
-    document.querySelector(".theme-toggle").style.left = "30px";
-    document.getElementById("authModal").classList.remove("hidden");
-    document.getElementById("loginContainer").classList.remove("hidden");
-    document.getElementById("signUpContainer").classList.add("hidden");
+    if (!window.location.pathname.startsWith("/cooldown")) {
+        document.querySelector(".theme-toggle").style.top = "30px";
+        document.querySelector(".theme-toggle").style.left = "30px";
+        document.getElementById("authModal").classList.remove("hidden");
+        document.getElementById("loginContainer").classList.remove("hidden");
+        document.getElementById("signUpContainer").classList.add("hidden");
+    }
+
     const maleBtn = document.getElementById("maleBtn");
     const femaleBtn = document.getElementById("femaleBtn");
     const genderInput = document.getElementById("genderInput");
@@ -96,8 +99,8 @@ function ShowloginSignup() {
         genderInput.value = gender; // Set hidden input value
     }
 
-    maleBtn.addEventListener("click", () => selectGender("male"));
-    femaleBtn.addEventListener("click", () => selectGender("female"));
+    maleBtn?.addEventListener("click", () => selectGender("male"));
+    femaleBtn?.addEventListener("click", () => selectGender("female"));
 }
 
 // Listen for inputs in Sign Up form and trigger sign-up operation.
