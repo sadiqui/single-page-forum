@@ -29,11 +29,17 @@
     font-family: 'Roboto', 'verdana', 'Arial Narrow Bold', sans-serif;
 }
 
-.username {
+.comment-item .username {
     display: flex;
     align-items: center;
     text-align: center;
     color: var(--dark-grey);
+    font-family: 'Zain';
+    font-size: 1.2rem;
+}
+
+.comment-item .username:hover {
+    color: var(--light-blue);
 }
 
 .comment-user-avatar {
