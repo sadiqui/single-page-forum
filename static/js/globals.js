@@ -195,7 +195,7 @@ const socialForm = `
     <!-- Close button -->
     <span id="closeSocialSignupModal" class="close-button">&times;</span>
     <h2>Complete Signup</h2>
-    <p>Please choose a username to complete your signup.</p>
+    <p>Please choose a username to complete your signup.</br>Click close button to cancel.</p>
     <form id="socialSignupForm" class="auth-form">
       <label for="socialSignupUsername">Username <span>*</span></label>
       <input type="text" id="socialSignupUsername" class="input-field" placeholder="Username" required>

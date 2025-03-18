@@ -15,8 +15,8 @@ function connectMessagesWS() {
     };
 
     ws.onclose = () => {
-        console.warn("Messages WebSocket closed. Reconnecting in 3 seconds...");
-        setTimeout(connectMessagesWS, 3000);
+        console.warn("Messages WebSocket closed. Reconnecting...");
+        setTimeout(connectMessagesWS, 8000);
     };
 
     ws.onerror = (err) => {

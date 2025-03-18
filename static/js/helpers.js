@@ -90,30 +90,30 @@ function welcomeMsg() {
 
 // Show social signup modal and Fetch signUp handler with the choosen username.
 function SocialSignUp() {
-    // If the "social_email" cookie exists, it means a social signup is pending.
-    if (getCookieValue("social_email")) {
-        // Hide the standard auth modal if visible.
-        const authModal = document.getElementById("authModal");
-        if (authModal) authModal.classList.add("hidden");
 
-        // Show the social signup modal.
-        const socialModal = document.getElementById("socialSignupModal");
-        if (socialModal) socialModal.classList.remove("hidden");
-        sessionStorage.setItem("socialModalShown", "true")
-    }
+    const authModal = document.getElementById("authModal");
+    // Hide the standard auth modal if visible.
+    if (authModal) authModal.classList.add("hidden");
+
+    // Show the social signup modal.
+    const socialModal = document.getElementById("socialSignupModal");
+    if (socialModal) socialModal.classList.remove("hidden");
 
     // Close button for social signup modal.
     const closeSocialBtn = document.getElementById("closeSocialSignupModal");
     if (closeSocialBtn) {
         closeSocialBtn.addEventListener("click", () => {
             const socialModal = document.getElementById("socialSignupModal");
-            if (socialModal) socialModal.classList.add("hidden");
+            if (socialModal) {
+                expireCookie("social_email");
+                window.location.reload();
+            }
         });
     }
 
     // Listen for social signup form submission.
     const socialSignupForm = document.getElementById("socialSignupForm");
-    if (socialSignupForm) {      
+    if (socialSignupForm) {
         socialSignupForm.addEventListener("submit", async (e) => {
             e.preventDefault();
             const usernameInput = document.getElementById("socialSignupUsername");
@@ -155,4 +155,9 @@ function getCookieValue(name) {
         }
     }
     return null;
+}
+
+// Expire a cookie.
+function expireCookie(name) {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
 }

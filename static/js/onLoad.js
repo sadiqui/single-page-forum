@@ -2,8 +2,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
     document.body.insertAdjacentHTML("beforeend", socialForm);
     LoadTheme();
-    if (sessionStorage.getItem("socialModalShown") === null || sessionStorage.getItem("socialModalShown") === "false") {
-        SocialSignUp();
+    // If the "social_email" cookie exists it means a social signup is pending.
+    if (getCookieValue("social_email")) {
+        SocialSignUp();  
+        return
     }
 
     try {
