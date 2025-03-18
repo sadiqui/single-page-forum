@@ -1,5 +1,5 @@
 let messageOffset = 0;
-const messageLimit = 20;
+const messageLimit = 10;
 let allLoaded = false;
 let isLoadingMore = false;
 let globalLastDate = null; // Tracks last date we inserted a separator
@@ -98,13 +98,7 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
         let i = 1;
         fetched.forEach(msg => {
             const msgDate = formatDate(msg.created_at);
-            if (i === 1) {
-                const dateSep = document.createElement("div");
-                dateSep.className = "chat-date-separator";
-                dateSep.textContent = msgDate;
-                wrapper.appendChild(dateSep);
-                globalLastDate = msgDate;
-            } else if (msgDate !== globalLastDate) {
+            if (msgDate !== globalLastDate) {
                 const dateSep = document.createElement("div");
                 dateSep.className = "chat-date-separator";
                 dateSep.textContent = msgDate;

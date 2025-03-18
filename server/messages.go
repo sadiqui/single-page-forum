@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-const messagesLimit = 20
+const messagesLimit = 10
 
 // Returns all messages exchanged between the logged-in user and a selected user.
 func GetMessages(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +53,7 @@ func GetMessages(w http.ResponseWriter, r *http.Request) {
         JOIN users u2 ON m.receiver_id = u2.id
         WHERE ((m.sender_id = ? AND m.receiver_id = ?)
             OR (m.sender_id = ? AND m.receiver_id = ?))
-        ORDER BY m.created_at DESC
+        ORDER BY m.id DESC
         LIMIT ? OFFSET ?
     `
 	rows, err := DB.Query(query,
