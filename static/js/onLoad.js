@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     LoadTheme();
     // If the "social_email" cookie exists it means a social signup is pending.
     if (getCookieValue("social_email")) {
-        SocialSignUp();  
+        SocialSignUp();
         return
     }
 
@@ -57,15 +57,13 @@ async function CheckSession() {
 
 async function Routing() {
     const path = window.location.pathname;
-    console.log(path);
     if (path === "/") {
-        console.log("aaaaaaaaaaaaaaaaaa");
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
         tabBar.innerHTML = tabBarHTML;
-        tabName= "home"
+        tabName = "home";
         SetupTabListeners();
-    } else if (path === "/post") {        
+    } else if (path === "/post") {
         window.removeEventListener('scroll', handleScroll);
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
@@ -84,9 +82,9 @@ async function Routing() {
         const username = urlParams.get("user");
         if (username) {
             const exists = await checkUser(username);
-            if (exists) {                
+            if (exists) {
                 LoadProfilePage(username);
-            } else {                
+            } else {
                 LoadNotFoundPage();
             }
         } else {
@@ -186,28 +184,24 @@ function LoadTabContent(tab) {
     }, 100); // Matches fade-out duration
 }
 
-// [To be tested]
-// Handle back navigation per authentication state
+// Handle navigation per authentication state
 window.addEventListener("popstate", async () => {
     try {
         const res = await fetch("/api/check-session");
         if (res.ok) {
             const data = await res.json();
+            // Allow normal navigation
             if (data.loggedIn) {
-                Routing(); // Allow normal navigation
+                Routing();
                 return;
             }
-        } else {
-            // Force user to stay on "/"
-            history.replaceState(null, "", "/");
         }
     } catch (err) {
         console.error("Error checking session:", err);
-        history.replaceState(null, "", "/");
     }
 });
 
-// Serve single post from home without refresh
+// Serve single post when clicking his title, without refresh
 document.addEventListener("click", (event) => {
     // Get HTML <a> tag
     const link = event.target.closest(".post-header-link");
@@ -223,5 +217,6 @@ document.addEventListener("click", (event) => {
 
     // Remove home-specific elements
     document.querySelector("#tagFilterSection").style.display = "none";
-    document.querySelector(".tab-bar").style.display = "none";
+    const tabBar = document.querySelector(".tab-bar");
+    if (tabBar) { tabBar.style.display = "none"; }
 });

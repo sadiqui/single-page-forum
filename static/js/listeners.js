@@ -76,7 +76,7 @@ function LoginFormListener() {
 
 // Show signup/login form on load of page when no session.
 function ShowloginSignup() {
-    if (!window.location.pathname.startsWith("/cooldown")) {
+    if (window.location.pathname !== "/cooldown") {
         document.querySelector(".theme-toggle").style.top = "30px";
         document.querySelector(".theme-toggle").style.left = "30px";
         document.getElementById("authModal").classList.remove("hidden");

@@ -2,12 +2,17 @@
 // if clearFirst we first remove content inside it.
 function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
-    if (window.location.pathname.startsWith("/profile")) {
+    if (window.location.pathname === "/profile") {
         postsContainer = document.getElementById("profileDynamicContent");
     } else if (tabName === "history") {
         postsContainer = document.getElementById("historyDynamicContent");
     } else if (tabName === "home") {
         postsContainer = document.getElementById("content");
+    }
+
+    // No need for further logic
+    if (!postsContainer) {
+        return;
     }
 
     // If offset = 0 clear the container
@@ -30,13 +35,16 @@ function RenderPosts(posts, offset, truncate = 300) {
 
         // e.g. single-post click
         postDiv.addEventListener("click", (e) => {
-            if (e.target.closest(".reaction-buttons") || e.target.closest(".post-title") || e.target.closest(".user-avatar") || e.target.closest(".username-select")) return;
+            if (e.target.closest(".reaction-buttons") ||
+                e.target.closest(".post-title") ||
+                e.target.closest(".user-avatar") ||
+                e.target.closest(".username-select")) return;
             // Then go to single post
-            // window.location.href = `/post?post_id=${post.id}`;
             document.querySelector("#tagFilterSection").style.display = "none";
-            document.querySelector(".tab-bar").style.display = "none";
             history.pushState(null, "", `/post?post_id=${post.id}`);
-            Routing();           
+            const tabBar = document.querySelector(".tab-bar");
+            if (tabBar) { tabBar.style.display = "none"; }
+            Routing();
         });
 
         FetchReactions(post.id, postDiv, "post")
