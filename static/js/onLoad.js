@@ -29,6 +29,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // Fetch the logged in user from session cookie.
 async function CheckSession() {
+    if (window.location.pathname === "/cooldown") return
     try {
         const res = await fetch("/api/check-session");
         if (res.ok) {

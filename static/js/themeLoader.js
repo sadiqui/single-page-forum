@@ -43,18 +43,18 @@ function updatePassIcon() {
         if (!passwordIcon || !passwordInput) return;
 
         // Function to check autofill status thoroughly
-        const isAutofilled = () => {
-            // Multiple detection methods
-            return passwordInput.matches(":-webkit-autofill") ||
-                window.getComputedStyle(passwordInput).backgroundColor.includes("#e8f0fe");
-        };
+        // const isAutofilled = () => {          
+        //      // Multiple detection methods
+        //     return passwordInput.matches(":-webkit-autofill") ||
+        //         window.getComputedStyle(passwordInput).backgroundColor.includes("#e8f0fe");
+        // };
 
-        // Able submit button when fields are autofilled
-        if (isAutofilled) {
-            submitButton.forEach((button) => {
-                button.classList.remove("disabled");
-            })
-        }
+        // // // Able submit button when fields are autofilled
+        // if (isAutofilled) {            
+        //     submitButton.forEach((button) => {
+        //         button.classList.remove("disabled");
+        //     })
+        // }
 
         // Function to update icon based on mode and autofill state
         const updateIcon = () => {
