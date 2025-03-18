@@ -36,14 +36,14 @@ function appendMessage(sender, content, type) {
     messageElement.classList.add("message", type);
 
     const msgUsername = document.createElement("div");
-    msgUsername.classList.add("msg-username", msg.sender === Username ? "sender" : "receiver");
-    msgUsername.innerHTML = msg.sender === Username ? Username : msg.sender;
+    msgUsername.classList.add("msg-username", "receiver");
+    msgUsername.innerHTML = sender 
 
     messageElement.innerHTML = `
         <p>${content}</p>
         <span class="message-time">${formatTime(new Date())}</span>
     `;
-
+    msgUsername.style.marginTop = "-10px"
     chatMessages.appendChild(messageElement);
     chatMessages.appendChild(msgUsername)
     chatMessages.scrollTop = chatMessages.scrollHeight;
