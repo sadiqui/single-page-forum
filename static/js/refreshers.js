@@ -46,7 +46,7 @@ window.addEventListener("pageshow", async (e) => {
                     .then(() => {
                         historyOffset += HistoryLimit;
                     })
-            } else if (window.location.pathname === "/") {
+            } else if (window.location.pathname === "/" && currentTab === "home") {
                 offset = 0;
                 LoadPosts(offset, selectedTags.join(",")).then(() => {
                     offset += HomeLimit;

@@ -2,7 +2,9 @@
 // if clearFirst we first remove content inside it.
 function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
-    if (tabName === "history") {
+    if (window.location.pathname.startsWith("/profile")) {
+        postsContainer = document.getElementById("profileDynamicContent");
+    } else if (tabName === "history") {
         postsContainer = document.getElementById("historyDynamicContent");
     } else if (tabName === "home") {
         postsContainer = document.getElementById("content");
@@ -120,7 +122,7 @@ function RenderPost(post, postDiv, single = "") {
         titleLink.removeAttribute("href");
         titleLink.style.pointerEvents = "none";
     }
-    
+
     AttachReactionListeners(post.id, postDiv, "post")
     FetchCommentsCount(post.id, postDiv)
     updateTagIcons()

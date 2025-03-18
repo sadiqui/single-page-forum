@@ -14,9 +14,6 @@ function homeRenderer() {
 }
 
 async function LoadPosts(offset = 0, tagsStr = "") {
-    if (tabName === "history" ) {
-        return
-    }
     try {
         let url = `/api/get-posts?offset=${offset}`;
         if (tagsStr) {
@@ -31,6 +28,15 @@ async function LoadPosts(offset = 0, tagsStr = "") {
             return;
         }
         const posts = await res.json();
+
+        if ((!posts || posts.length === 0) && offset === 0) {
+            postsContainer = document.getElementById("content");
+            postsContainer.innerHTML = `<div id="emptyTabimg">
+            <img src="../img/empty-chat.png" alt="Empty chat">
+                <p>No posts found!</p>
+            </div>`;
+            return;
+        }
 
         // If offset == 0, we assume we're refreshing from start
         RenderPosts(posts, offset);
@@ -72,3 +78,4 @@ function handleScroll() {
             });
     }
 }
+

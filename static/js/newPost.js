@@ -52,14 +52,14 @@ async function HandleNewPost(e, categories, clearTags) {
             document.querySelector(".upload-text").textContent = "Upload Image (optional)";
             clearTags;
 
-            if (currentHistoryeTab == "posts") {
+            if (currentHistoryTab == "posts") {
                 historyOffset = 0;
                 fetchUserPosts(historyOffset)
                     .then(() => {
                         historyOffset += HistoryLimit;
                     })
             }
-            if (window.location.pathname === "/") {
+            if (window.location.pathname === "/" && tabName === "home") {            
                 offset = 0;
                 LoadPosts(offset, selectedTags.join(",")).then(() => {
                     offset += HomeLimit;

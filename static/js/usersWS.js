@@ -88,6 +88,7 @@ function showOnlineUsers() {
     document.body.insertBefore(onlineUsersContainer, document.body.firstChild);
 }
 
+// Sort users by last message date.
 function sortUsers(users) {
     return users.sort((a, b) => {
         // Both have a valid lastMsg, convert to Date and compare.

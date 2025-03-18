@@ -12,6 +12,17 @@ function historyRenderer(username) {
                 <div class="profile-image">
                     <img src="../uploads/${ProfilePic}"
                         alt="Profile Picture" />
+                        <!-- Label for uploading a new picture -->
+                        <label for="profilePic" class="edit-btn">
+                            <img src="../img/camera.svg" alt="Change Profile Picture" />
+                        </label>
+
+                        <!-- Hidden file input -->
+                        <input
+                            type="file"
+                            id="profilePic"
+                            accept="image/*"
+                        />
                 </div>
                 <div class="profileUsername username">${username}</div>
                 <nav class="history-tab-bar">
@@ -127,7 +138,10 @@ async function fetchLikedPosts(historyOffset, reaction) {
 
         const posts = await res.json();
         if ((!posts || posts.length == 0) && historyOffset == 0) {
-            dynamicContent.innerHTML = `No ${reaction}d posts!`
+            dynamicContent.innerHTML = `<div id="emptyTabimg">
+            <img src="../img/empty-chat.png" alt="Empty chat">
+                <p>No ${reaction}d posts!</p>
+            </div>`
             return
         }
 
@@ -150,7 +164,10 @@ async function fetchUserPosts(historyOffset) {
 
         const posts = await res.json();
         if ((!posts || posts.length == 0) && historyOffset == 0) {
-            dynamicContent.innerHTML = "No posts yet!"
+            dynamicContent.innerHTML = `<div id="emptyTabimg">
+            <img src="../img/empty-chat.png" alt="Empty chat">
+                <p>No posts yet!</p>
+            </div>`
             return
         }
         RenderPosts(posts, historyOffset, 100);
@@ -172,7 +189,10 @@ async function fetchCommentedPosts(historyOffset) {
 
         const posts = await res.json();
         if ((!posts || posts.length == 0) && historyOffset == 0) {
-            dynamicContent.innerHTML = "No comments yet!"
+            dynamicContent.innerHTML = `<div id="emptyTabimg">
+            <img src="../img/empty-chat.png" alt="Empty chat">
+                <p>No comments yet!</p>
+            </div>`
             return
         }
         RenderPosts(posts, historyOffset, 100);
@@ -275,10 +295,10 @@ function SetupImageUpdate() {
 
             // Re-render dynamic content
             setTimeout(() => { // (used to show comments image when changed)
+                historyOffset = 0;
                 const scrollPos = window.scrollY;
                 window.scrollTo(0, scrollPos);
                 conditionalTabs(scrollPos);
-                historyOffset = 0;
             }, 1000);
         } catch (err) {
             console.error("Network error:", err);

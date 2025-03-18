@@ -24,6 +24,10 @@ async function loadMessages(selectedUsername, profilePic) {
         </div>
       </div>
     `;
+    RedirectToChatProfile()
+    if (window.location.pathname.startsWith("/profile") || window.location.pathname.startsWith("/post")) {
+        document.getElementById("chatContainer").style.marginTop = "100px";
+    }
 
     messageOffset = 0;
     allLoaded = false;

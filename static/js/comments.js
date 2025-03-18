@@ -47,7 +47,7 @@ function RenderComments(comments, isLoadMore) {
             <p class="comment-meta">
                 <div class="username">
                     <img src="../uploads/${profilePic}" alt="User Avatar" class="comment-user-avatar">
-                    ${comment.username}
+                    <span class="username-select">${comment.username}</span>
                     <span class="time-ago" data-timestamp="${comment.created_at}">&nbsp• ${timeAgo(comment.created_at)}</span>
                 </div>
             </p>
@@ -73,6 +73,7 @@ function RenderComments(comments, isLoadMore) {
         FetchReactions(comment.id, commentEl, "comment")
         AttachReactionListeners(comment.id, commentEl, "comment")
     })
+    RedirectToProfile();
 }
 
 async function AddComment(postID, content) {

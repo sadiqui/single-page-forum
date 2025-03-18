@@ -85,6 +85,7 @@ async function FetchFullPost(id) {
         } else {
             const post = await res.json();
             RenderPost(post, postDiv, "single");
+            RedirectToProfile()
             longTagNames();
         }
     } catch (err) {

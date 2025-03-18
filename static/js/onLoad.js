@@ -46,7 +46,6 @@ async function CheckSession() {
             }
         } else {
             ShowloginSignup();
-            //HomeRedirect();
             imageUploaded("profilePic");
         }
     } catch (err) {
@@ -54,13 +53,6 @@ async function CheckSession() {
         PopError("Something went wrong.");
     }
 }
-
-// Redirect user to home when on signup/login page 
-// async function HomeRedirect() {
-//     if (window.location.pathname !== "/") {
-//         window.location.href = "/";
-//     }
-// }
 
 async function Routing() {
     const path = window.location.pathname;
@@ -84,12 +76,12 @@ async function Routing() {
         }
     } else if (path.startsWith("/profile")) {
         const urlParams = new URLSearchParams(window.location.search);
-        const userId = urlParams.get("user");
-        if (userId) {
-            const exists = await checkUser(userId);
-            if (exists) {
-                LoadProfilePage(userId);
-            } else {
+        const username = urlParams.get("user");
+        if (username) {
+            const exists = await checkUser(username);
+            if (exists) {                
+                LoadProfilePage(username);
+            } else {                
                 LoadNotFoundPage();
             }
         } else {
@@ -170,9 +162,6 @@ function LoadTabContent(tab) {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('scroll', handleHistoryScroll);
             loadLastConversation();
-        } else if (tab === "profile") {
-            profileRenderer(Username);
-            // profileRenderer();
         }
 
         // Animate opacity from 0 to 1 smoothly

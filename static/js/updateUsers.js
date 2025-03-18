@@ -18,7 +18,7 @@ function loadLastConversation() {
     });
 }
 
-// 
+// Update the online users list (resort them).
 async function updateOnlineUsers() {
     try {
         const response = await fetch("/api/update-online-users", {

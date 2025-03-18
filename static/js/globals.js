@@ -286,12 +286,8 @@ const tabBarHTML = `
             <span class="tab-txt">Messages</span>
         </button>
         <button class="tab-btn" data-tab="history">
-            <img src="../img/history.png" alt="History">
-            <span class="tab-txt">History</span>
-        </button>
-        <button class="tab-btn" data-tab="settings">
-            <img src="../img/settings.svg" alt="Settings">
-            <span class="tab-txt">Settings</span>
+            <img src="../img/activity.png" alt="Activity">
+            <span class="tab-txt">Activty</span>
         </button>
     </nav>
 `;

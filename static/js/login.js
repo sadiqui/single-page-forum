@@ -17,7 +17,7 @@ async function HandleLogin(e, loginCred, loginPassword) {
             const errData = await res.json()
             DisplayError("loginErrorMsg", e.target, errData.msg);
         } else {
-            window.location.reload();
+            window.location.href = "/";
         }
     } catch (err) {
         DisplayError("loginErrorMsg", e.target, "Network error occurred");

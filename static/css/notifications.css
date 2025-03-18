@@ -45,6 +45,7 @@
     border-bottom: 1px solid var(--border-white);
     transition: background 0.2s ease-in-out, opacity 0.3s ease-in-out;
     opacity: 1;
+    cursor: pointer;
 }
 
 .notification-item:hover {

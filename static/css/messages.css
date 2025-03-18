@@ -215,7 +215,7 @@
 }
 
 #emptyChatimg img {
-    width: 200px; /* Adjust image size */
+    width: 200px; 
     max-width: 80%;
     opacity: 0.8;
 }
@@ -224,4 +224,16 @@
     font-size: 1.2rem;
     font-weight: bold;
     color: var(--light-grey); /* Use your theme color */
+}
+
+#chatUsername, .chat-profile-pic, .comment-user-avatar, .user-avatar {
+    cursor: pointer;
+}
+
+#chatUsername:hover {
+    color: var(--nav-btn);
+}
+
+:root.dark-mode #chatUsername:hover {
+    color: rgb(71, 71, 71)
 }

@@ -233,3 +233,7 @@
     border-color: #ccc;
     color: #ccc;
 }
+
+:root.dark-mode .post-input, .post-textarea {
+    border: 1px solid #dbdbdb
+}

@@ -122,7 +122,7 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 	}
 
 	rows, err := DB.Query(`
-		SELECT c.id, c.content, c.created_at, u.username
+		SELECT c.id, c.content, c.created_at, u.username, u.profile_pic
 		FROM comments c
 		JOIN users u ON c.user_id = u.id
 		WHERE c.post_id = ?
@@ -139,7 +139,7 @@ func GetComments(w http.ResponseWriter, r *http.Request) {
 	var comments []Comment
 	for rows.Next() {
 		var comment Comment
-		if err := rows.Scan(&comment.ID, &comment.Content, &comment.CreatedAt, &comment.Username); err != nil {
+		if err := rows.Scan(&comment.ID, &comment.Content, &comment.CreatedAt, &comment.Username, &comment.ProfilePic); err != nil {
 			fmt.Fprintln(w, err.Error())
 			continue
 		}

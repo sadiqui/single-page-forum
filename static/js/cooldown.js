@@ -40,10 +40,10 @@ window.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Reset if reload isn't within 7 seconds
+// Reset if reload isn't within 5 seconds
 setInterval(() => {
     localStorage.setItem("reloadCount", 0);
-}, 7000);
+}, 5000);
 
 function cooldownRenderer() {
     // Remove any existing beforeunload listener
