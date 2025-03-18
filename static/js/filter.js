@@ -47,6 +47,7 @@ async function FilterCategories() {
                     hideSuggestions();
 
                     offset = 0;
+                    endHomeFetch = false
                     // Load the first page with the new tags
                     LoadPosts(offset, selectedTags.join(",")).then(() => {
                         offset += HomeLimit;
@@ -79,6 +80,7 @@ async function FilterCategories() {
 
                 // When removing a tag, also reset offset=0
                 offset = 0;
+                endHomeFetch = false;
                 // Reload posts from scratch with updated tags
                 LoadPosts(offset, selectedTags.join(",")).then(() => {
                     offset += HomeLimit;

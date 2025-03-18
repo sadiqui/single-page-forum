@@ -237,3 +237,7 @@
 :root.dark-mode #chatUsername:hover {
     color: rgb(71, 71, 71)
 }
+
+.chat-profile-pic:hover, .comment-user-avatar:hover, .user-avatar:hover {
+    border: 2px solid var(--nav-btn);
+}

@@ -2,7 +2,7 @@ let profileOffset = 0;
 let profileIsLoading = false;
 let currentProfileTab = "";
 let ProfileLimit = 10;
-let endProfileFtech = false;
+let endProfileFetch = false;
 
 // Change click behaviour on username/image under posts.
 function RedirectToProfile() {
@@ -140,6 +140,7 @@ function SetupProfileTabListeners(profile) {
     const tabButtons = document.querySelectorAll(".profile-tab-btn");
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
+            endProfileFetch = false
             // remove active from all
             tabButtons.forEach(btn => btn.classList.remove("active"));
             this.classList.add("active");
@@ -180,7 +181,7 @@ function SetupProfileTabListeners(profile) {
 // Fetch user posts
 async function fetchProfilePosts(offset, username) {    
     const container = document.getElementById("profileDynamicContent");
-    if (!container || endProfileFtech) return;
+    if (!container || endProfileFetch) return;
 
     try {
         // If username not passed in arguments, we might keep track in some global or from profile object
@@ -204,7 +205,7 @@ async function fetchProfilePosts(offset, username) {
             return;
         }
         if (!posts || posts.length === 0) {
-            endProfileFtech = true
+            endProfileFetch = true
             return
         }
 

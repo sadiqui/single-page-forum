@@ -65,13 +65,16 @@ async function AddReaction(ID, reactionType, postOrComm, type) {
         // Re-fetch the new counts + userReaction
         FetchReactions(ID, postOrComm, type)
         if (currentHistoryTab == "liked") {
+            endHistoryFetch = false
             historyOffset = 0;
             fetchLikedPosts(historyOffset, "like")
                 .then(() => {
                     historyOffset += HistoryLimit;
                 })
         }
+        
         if (currentHistoryTab == "disliked") {
+            endHistoryFetch = false
             historyOffset = 0;
             fetchLikedPosts(historyOffset, "dislike")
                 .then(() => {

@@ -2,9 +2,11 @@ let selectedTags = []; // Global array of current tags
 let offset = 0;
 let isLoading = false;
 let lastScrollY = window.scrollY;
+let endHomeFetch = false
 
 function homeRenderer() { 
     offset = 0;
+    endHomeFetch = false;
     // Initial load of unfiltered posts
     LoadPosts(offset).then(() => {
         offset += HomeLimit;
@@ -14,6 +16,7 @@ function homeRenderer() {
 }
 
 async function LoadPosts(offset = 0, tagsStr = "") {
+    if (endHomeFetch) return
     try {
         let url = `/api/get-posts?offset=${offset}`;
         if (tagsStr) {
@@ -36,6 +39,10 @@ async function LoadPosts(offset = 0, tagsStr = "") {
                 <p>No posts found!</p>
             </div>`;
             return;
+        }
+        if (!posts || posts.length === 0) {
+            endHomeFetch = true
+            return
         }
 
         // If offset == 0, we assume we're refreshing from start
@@ -68,10 +75,6 @@ function handleScroll() {
         LoadPosts(offset, selectedTags.join(","))
             .then(() => {
                 offset += HomeLimit;
-            })
-            .catch((err) => {
-                console.log(err);
-                PopError("Something went wrong");
             })
             .finally(() => {
                 isLoading = false;

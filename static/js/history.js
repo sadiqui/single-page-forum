@@ -1,7 +1,8 @@
-let currentHistoryTab = ""; // or "liked"...
+let currentHistoryTab = "";
 let historyOffset = 0;
 // Loading flag to prevent overlapping fetches (throttle)
 let historyisLoading = false;
+let endHistoryFetch = false;
 
 function historyRenderer(username) {
     const dynamicContent = document.getElementById("content");
@@ -61,6 +62,7 @@ function SetupHistoryTabListeners() {
 
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
+            endHistoryFetch = false;
             const scrollPos = window.scrollY; // Save current click scroll position
 
             // Remove active class from all buttons
@@ -128,9 +130,10 @@ function conditionalTabs(scrollPos) {
 
 
 /* -------------------------------
-        FETCH LIKED/Disliked POSTS
+    FETCH LIKED/Disliked POSTS
 ----------------------------------*/
 async function fetchLikedPosts(historyOffset, reaction) {
+    if (endHistoryFetch) return
     const dynamicContent = document.getElementById("historyDynamicContent");
     try {
         const res = await fetch(`/api/user-liked-posts?offset=${historyOffset}&reaction=${reaction}`);
@@ -142,6 +145,10 @@ async function fetchLikedPosts(historyOffset, reaction) {
             <img src="../img/empty-chat.png" alt="Empty chat">
                 <p>No ${reaction}d posts!</p>
             </div>`
+            return
+        }
+        if (!posts || posts.length == 0) {            
+            endHistoryFetch = true
             return
         }
 
@@ -156,6 +163,7 @@ async function fetchLikedPosts(historyOffset, reaction) {
    FETCH USER POSTS
 -------------------------*/
 async function fetchUserPosts(historyOffset) {
+    if (endHistoryFetch) return
     const dynamicContent = document.getElementById("historyDynamicContent");
 
     try {
@@ -170,6 +178,10 @@ async function fetchUserPosts(historyOffset) {
             </div>`
             return
         }
+        if (!posts || posts.length == 0) {
+            endHistoryFetch = true
+            return
+        }
         RenderPosts(posts, historyOffset, 100);
     } catch (err) {
         console.error(err);
@@ -181,6 +193,7 @@ async function fetchUserPosts(historyOffset) {
    FETCH Commented POSTS
 ---------------------------*/
 async function fetchCommentedPosts(historyOffset) {
+    if (endHistoryFetch) return
     const dynamicContent = document.getElementById("historyDynamicContent");
 
     try {
@@ -193,6 +206,10 @@ async function fetchCommentedPosts(historyOffset) {
             <img src="../img/empty-chat.png" alt="Empty chat">
                 <p>No comments yet!</p>
             </div>`
+            return
+        }
+        if (!posts || posts.length == 0) {
+            endHistoryFetch = true
             return
         }
         RenderPosts(posts, historyOffset, 100);

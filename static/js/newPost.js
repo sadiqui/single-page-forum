@@ -54,6 +54,7 @@ async function HandleNewPost(e, categories, clearTags) {
 
             if (currentHistoryTab == "posts") {
                 historyOffset = 0;
+                endHistoryFetch = false;
                 fetchUserPosts(historyOffset)
                     .then(() => {
                         historyOffset += HistoryLimit;
@@ -61,6 +62,7 @@ async function HandleNewPost(e, categories, clearTags) {
             }
             if (window.location.pathname === "/" && tabName === "home") {            
                 offset = 0;
+                endHomeFetch = false
                 LoadPosts(offset, selectedTags.join(",")).then(() => {
                     offset += HomeLimit;
                 });

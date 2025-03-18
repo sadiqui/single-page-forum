@@ -30,9 +30,9 @@ function RefreshCommentsCounts() {
 window.addEventListener("pageshow", async (e) => {
     preLoadTheme()
     // The page was restored from BFCache
-    if (e.persisted) { 
+    if (e.persisted) {
         // User loggedout and he's trying to get back to profile.
-        if  (window.location.href.includes("profile") && localStorage.getItem("loggedOut") === "true") {
+        if (window.location.href.includes("profile") && localStorage.getItem("loggedOut") === "true") {
             window.location.href = "/";
             localStorage.removeItem("loggedOut");
         }
@@ -42,12 +42,14 @@ window.addEventListener("pageshow", async (e) => {
         if (localStorage.getItem("postCreated") === "true") {
             if (currentHistoryTab == "posts") {
                 historyOffset = 0;
+                endHistoryFetch = false;
                 fetchUserPosts(historyOffset)
                     .then(() => {
                         historyOffset += HistoryLimit;
                     })
             } else if (window.location.pathname === "/" && currentTab === "home") {
                 offset = 0;
+                endHomeFetch = false;
                 LoadPosts(offset, selectedTags.join(",")).then(() => {
                     offset += HomeLimit;
                 });
@@ -55,7 +57,7 @@ window.addEventListener("pageshow", async (e) => {
             localStorage.removeItem("postCreated"); // clear the marker
         }
         // update liked posts when: click post dislike navigate back
-        if (localStorage.getItem("reactionUpdated") === "true" && currentHistoryTab == "liked") {         
+        if (localStorage.getItem("reactionUpdated") === "true" && currentHistoryTab == "liked") {
             historyOffset = 0;
             fetchLikedPosts(historyOffset, "like")
                 .then(() => {
@@ -63,7 +65,7 @@ window.addEventListener("pageshow", async (e) => {
                 })
             localStorage.removeItem("reactionUpdated"); // clear the marker
         }
-        if (localStorage.getItem("reactionUpdated") === "true" && currentHistoryTab == "disliked") {         
+        if (localStorage.getItem("reactionUpdated") === "true" && currentHistoryTab == "disliked") {
             historyOffset = 0;
             fetchLikedPosts(historyOffset, "dislike")
                 .then(() => {
