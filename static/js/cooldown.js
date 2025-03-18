@@ -60,7 +60,9 @@ function cooldownRenderer() {
 
     // Prevent F5 and Ctrl+R without showing alerts
     document.addEventListener("keydown", function (e) {
-        if (e.key === "F5" || (e.ctrlKey && e.key === "r")) {
+        if (e.key === "F5" ||
+            (e.ctrlKey && e.key === "r") ||
+            (e.metaKey && e.key === "r")) {
             e.preventDefault();
             return false;
         }

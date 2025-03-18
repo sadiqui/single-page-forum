@@ -38,12 +38,12 @@ async function CheckSession() {
                 Username = data.username;
                 ProfilePic = data.profile_pic;
                 ShowLoggedInNav(data.username, data.profile_pic);
-                showOnlineUsers()
+                showOnlineUsers();
                 Routing();
                 checkNotificationCount();
                 connectNotificationsWS();
-                connectUsersWS()
-                connectMessagesWS()
+                connectUsersWS();
+                connectMessagesWS();
             }
         } else {
             ShowloginSignup();
@@ -57,12 +57,16 @@ async function CheckSession() {
 
 async function Routing() {
     const path = window.location.pathname;
+    console.log(path);
     if (path === "/") {
+        console.log("aaaaaaaaaaaaaaaaaa");
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
         tabBar.innerHTML = tabBarHTML;
+        tabName= "home"
         SetupTabListeners();
-    } else if (path.startsWith("/post")) {
+    } else if (path === "/post") {        
+        window.removeEventListener('scroll', handleScroll);
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
         if (postId) {
@@ -75,7 +79,7 @@ async function Routing() {
         } else {
             LoadNotFoundPage();
         }
-    } else if (path.startsWith("/profile")) {
+    } else if (path === "/profile") {
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get("user");
         if (username) {
@@ -181,3 +185,43 @@ function LoadTabContent(tab) {
         requestAnimationFrame(fadeIn); // Start fade-in effect
     }, 100); // Matches fade-out duration
 }
+
+// [To be tested]
+// Handle back navigation per authentication state
+window.addEventListener("popstate", async () => {
+    try {
+        const res = await fetch("/api/check-session");
+        if (res.ok) {
+            const data = await res.json();
+            if (data.loggedIn) {
+                Routing(); // Allow normal navigation
+                return;
+            }
+        } else {
+            // Force user to stay on "/"
+            history.replaceState(null, "", "/");
+        }
+    } catch (err) {
+        console.error("Error checking session:", err);
+        history.replaceState(null, "", "/");
+    }
+});
+
+// Serve single post from home without refresh
+document.addEventListener("click", (event) => {
+    // Get HTML <a> tag
+    const link = event.target.closest(".post-header-link");
+    if (!link) return;
+
+    // Extract the URL
+    event.preventDefault();
+    const url = link.getAttribute("href");
+
+    // Update URL and load post dynamically
+    history.pushState(null, "", url);
+    Routing();
+
+    // Remove home-specific elements
+    document.querySelector("#tagFilterSection").style.display = "none";
+    document.querySelector(".tab-bar").style.display = "none";
+});

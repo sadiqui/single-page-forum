@@ -241,34 +241,3 @@ function imageUploaded(id) {
         }
     });
 }
-
-// Hide social OAuth buttons if necessary env variables aren't available.
-function CheckOAuth() {
-    fetch('/api/social-check')
-        .then(response => response.json())
-        .then(data => {
-            const googleBtns = document.querySelectorAll('.google-btn');
-            const githubBtns = document.querySelectorAll('.github-btn');
-            const socialLoginDivs = document.querySelectorAll('.social-login');
-            const separatorDivs = document.querySelectorAll('.separator');
-
-            // If Google isn't configured, hide all Google buttons
-            if (!data.hasGoogle) {
-                googleBtns.forEach(btn => btn.style.display = 'none');
-            }
-
-            // If GitHub isn't configured, hide all GitHub buttons
-            if (!data.hasGithub) {
-                githubBtns.forEach(btn => btn.style.display = 'none');
-            }
-
-            // If neither Google nor GitHub is configured, hide social login sections
-            if (!data.hasGoogle && !data.hasGithub) {
-                socialLoginDivs.forEach(div => div.style.display = 'none');
-                separatorDivs.forEach(div => div.style.display = 'none');
-            }
-        })
-        .catch(error => {
-            console.error('Error checking OAuth:', error);
-        });
-}

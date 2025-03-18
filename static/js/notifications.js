@@ -57,7 +57,11 @@ async function notifsRenderer() {
             // Make notification clickable (navigates to post page)
             notifElement.addEventListener("click", function (event) {
                 if (!event.target.classList.contains("notif-close")) {
-                    window.location.href = `/post?post_id=${notif.post_id}`;
+                    // window.location.href = `/post?post_id=${notif.post_id}`;
+                    document.querySelector("#tagFilterSection").style.display = "none";
+                    history.pushState(null, "", `/post?post_id=${notif.post_id}`);
+                    document.querySelector(".tab-bar").style.display = "none";
+                    Routing();
                 }
             });
 

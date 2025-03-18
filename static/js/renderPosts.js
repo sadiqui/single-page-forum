@@ -24,16 +24,19 @@ function RenderPosts(posts, offset, truncate = 300) {
         postDiv.classList.add("post-card");
         postDiv.setAttribute("data-id", post.id);
 
-        post.content = truncateContent(post.content, truncate)
-
-        RenderPost(post, postDiv)
+        post.content = truncateContent(post.content, truncate);
+        RenderPost(post, postDiv);
         postsContainer.appendChild(postDiv);
 
         // e.g. single-post click
         postDiv.addEventListener("click", (e) => {
             if (e.target.closest(".reaction-buttons") || e.target.closest(".post-title") || e.target.closest(".user-avatar") || e.target.closest(".username-select")) return;
             // Then go to single post
-            window.location.href = `/post?post_id=${post.id}`;
+            // window.location.href = `/post?post_id=${post.id}`;
+            document.querySelector("#tagFilterSection").style.display = "none";
+            document.querySelector(".tab-bar").style.display = "none";
+            history.pushState(null, "", `/post?post_id=${post.id}`);
+            Routing();           
         });
 
         FetchReactions(post.id, postDiv, "post")
