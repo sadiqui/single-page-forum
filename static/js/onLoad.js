@@ -57,6 +57,15 @@ async function CheckSession() {
 
 async function Routing() {
     const path = window.location.pathname;
+    if (path !== "/") {
+        const tagFilterSection = document.getElementById("tagFilterSection");
+        if (tagFilterSection) {
+            tagFilterSection.style.display = "none";
+        }
+        const tabBar = document.querySelector(".tab-bar")
+        if (tabBar) tabBar.style.display = "none";
+        window.removeEventListener('scroll', handleScroll);
+    }
     if (path === "/") {
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
@@ -64,7 +73,7 @@ async function Routing() {
         tabName = "home";
         SetupTabListeners();
     } else if (path === "/post") {
-        window.removeEventListener('scroll', handleScroll);
+        currentHistoryTab = "";
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
         if (postId) {
@@ -78,6 +87,7 @@ async function Routing() {
             LoadNotFoundPage();
         }
     } else if (path === "/profile") {
+        currentHistoryTab = "";
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get("user");
         if (username) {

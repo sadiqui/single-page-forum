@@ -137,7 +137,7 @@ function RenderPost(post, postDiv, single = "") {
     AttachReactionListeners(post.id, postDiv, "post")
     FetchCommentsCount(post.id, postDiv)
     updateTagIcons()
-    if (currentHistoryTab == "comments") {
+    if (currentHistoryTab == "comments" && window.location.pathname === "/") {
         // Create a container for *this user's* comments
         const userCommentsContainer = document.createElement("div");
         userCommentsContainer.id = `userComments-${post.id}`;

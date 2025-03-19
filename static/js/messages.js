@@ -95,7 +95,6 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
         const wrapper = document.createElement("div");
         wrapper.classList.add("message-batch"); // Ensure batch messages are properly stacked
 
-        let i = 1;
         fetched.forEach(msg => {
             const msgDate = formatDate(msg.created_at);
             if (msgDate !== globalLastDate) {
@@ -120,7 +119,6 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
 
             wrapper.appendChild(messageElement);
             wrapper.appendChild(msgUsername)
-            i++
         });
 
         messageBatch.appendChild(wrapper);

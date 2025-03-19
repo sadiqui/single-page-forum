@@ -59,7 +59,7 @@ async function notifsRenderer() {
                 if (!event.target.classList.contains("notif-close")) {
                     document.querySelector("#tagFilterSection").style.display = "none";
                     history.pushState(null, "", `/post?post_id=${notif.post_id}`);
-                    document.querySelector(".tab-bar").style.display = "none";
+                    // document.querySelector(".tab-bar").style.display = "none";
                     Routing();
                 }
             });

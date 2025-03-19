@@ -26,11 +26,9 @@ function RedirectToProfile() {
                 const username = usernameElement.childNodes[0]?.nodeValue?.trim();
                 if (!username) return;
 
-                // Construct the custom profile URL
-                const customURL = `/profile?user=${encodeURIComponent(username)}`;
-
                 // Redirect to the profile page
-                window.location.href = customURL;
+                history.pushState(null, "", `/profile?user=${encodeURIComponent(username)}`);
+                Routing()
             });
         });
 }
