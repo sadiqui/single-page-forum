@@ -21,7 +21,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         NewPostListener();
         imageUploaded("formPostImage");
         CheckOAuth();
-
     } catch (err) {
         console.log(err);
     }
@@ -66,6 +65,9 @@ async function Routing() {
         if (tabBar) tabBar.style.display = "none";
         window.removeEventListener('scroll', handleScroll);
     }
+    if (path === "/post" || path === "/profile") {
+        window.removeEventListener('scroll', handleHistoryScroll);
+    }
     if (path === "/") {
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
@@ -90,7 +92,8 @@ async function Routing() {
         currentHistoryTab = "";
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get("user");
-        if (username) {
+
+        if (username) {         
             const exists = await checkUser(username);
             if (exists) {
                 LoadProfilePage(username);
@@ -158,7 +161,7 @@ function LoadTabContent(tab) {
     setTimeout(() => {
         // Load new content based on tab
         if (tab === "home") {
-            window.addEventListener('scroll', handleHistoryScroll);
+            window.removeEventListener('scroll', handleHistoryScroll);
             currentHistoryTab = "";
             clearTagFilter();
             homeRenderer();
@@ -191,7 +194,7 @@ function LoadTabContent(tab) {
         }
 
         requestAnimationFrame(fadeIn); // Start fade-in effect
-    }, 100); // Matches fade-out duration
+    }, 100); // fade out
 }
 
 // Handle navigation per authentication state

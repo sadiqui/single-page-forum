@@ -52,12 +52,22 @@ async function HandleNewPost(e, categories, clearTags) {
             document.querySelector(".upload-text").textContent = "Upload Image (optional)";
             clearTags;
 
-            if (currentHistoryTab == "posts") {
+            if (window.location.pathname === "/" && currentHistoryTab == "posts") {
                 historyOffset = 0;
                 endHistoryFetch = false;
                 fetchUserPosts(historyOffset)
                     .then(() => {
                         historyOffset += HistoryLimit;
+                    })
+            }
+            if (window.location.pathname === "/profile" && currentProfileTab == "profile-posts") {
+                profileOffset = 0;
+                endProfileFetch = false;
+                const urlParams = new URLSearchParams(window.location.search);
+                const username = urlParams.get("user");
+                fetchProfilePosts(profileOffset, username)
+                    .then(() => {
+                        profileOffset += ProfileLimit;
                     })
             }
             if (window.location.pathname === "/" && tabName === "home") {            

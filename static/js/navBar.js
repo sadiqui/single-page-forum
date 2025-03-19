@@ -12,9 +12,9 @@ function ShowLoggedInNav(username, profilePicture) {
     const navbar = document.querySelector(".navbar");
     if (!navbar) return;
     navbar.innerHTML = `
-    <a href="/" class="logo-link">
+    <div class="logo-link">
         <img src="/img/logo.svg" alt="Forum Logo" class="logo-img" />
-    </a>
+    </div>
     <div class="avatar-menu">
         <img 
             src="../uploads/${profilePicture}" 
@@ -23,12 +23,24 @@ function ShowLoggedInNav(username, profilePicture) {
         />
         <ul class="dropdown-menu hidden">
             <li class="dropdown-header">${username}</li>
-            <li id="profile"><a href="/profile?user=${username}">Profile</a></li>
+            <li id="profile"><a href="#">Profile</a></li>
             <li id="createPost"><a href="#">Create Post</a></li>
             <li id="logoutBtn"><a href="#">Logout<i class="fas fa-sign-out-alt" style="margin-left: 8px;"></i></a></li>
         </ul>
     </div>
     `;
+
+    document.querySelector("#profile").addEventListener("click", (e) => {
+        e.preventDefault
+        history.pushState(null, "", `/profile?user=${encodeURIComponent(username)}`);
+        Routing()
+    })
+    
+    document.querySelector(".logo-link").addEventListener("click", (e) => {
+        e.preventDefault
+        history.pushState(null, "", "/");
+        Routing()
+    })
 
     // Floating add button + back to top button
     document.getElementById("fabAddPost")?.classList.remove("hidden");

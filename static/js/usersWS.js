@@ -11,11 +11,6 @@ function connectUsersWS() {
         RenderOnlineUsers(users);
     };
 
-    ws.onclose = () => {
-        console.warn("WebSocket closed. Reconnecting...");
-        setTimeout(connectUsersWS, 8000); // Auto-reconnect
-    };
-
     ws.onerror = (err) => console.error("WebSocket error:", err);
 }
 

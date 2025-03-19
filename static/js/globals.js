@@ -7,7 +7,7 @@ let tabName = "home";
 
 const Nav = `
 <nav class="navbar">
-    <a href="/" class="logo-link">
+    <a href="#" class="logo-link">
         <img
             src="../img/logo.svg"
             alt="Forum Logo"

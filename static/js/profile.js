@@ -3,6 +3,7 @@ let profileIsLoading = false;
 let currentProfileTab = "";
 let ProfileLimit = 10;
 let endProfileFetch = false;
+let scrollProfile;
 
 // Change click behaviour on username/image under posts.
 function RedirectToProfile() {
@@ -52,10 +53,8 @@ function RedirectToChatProfile() {
                 if (!username) return;
 
                 // Construct the custom profile URL
-                const customURL = `/profile?user=${encodeURIComponent(username)}`;
-
-                // Redirect to the profile page
-                window.location.href = customURL;
+                history.pushState(null, "", `/profile?user=${encodeURIComponent(username)}`);
+                Routing()
             });
         });
 }
@@ -125,11 +124,11 @@ function RenderProfile(profile) {
         </div>
     `;
 
+    // Add the scroll listener (for infinite posts loading)  
+    window.addEventListener("scroll", handleProfileScroll, { passive: true })
+
     // Setup tab listeners
     SetupProfileTabListeners(profile);
-
-    // Add the scroll listener (for infinite posts loading)
-    window.addEventListener("scroll", () => handleProfileScroll(profile.username), { passive: true });
 }
 
 
@@ -158,13 +157,11 @@ function SetupProfileTabListeners(profile) {
                     </div>
                 `;
             } else if (currentProfileTab === "profile-posts") {
-                // reset offset
                 profileOffset = 0;
                 profileIsLoading = false;
                 dynamicContent.innerHTML = `<p>Loading ${profile.username}'s posts...</p>`;
-                fetchProfilePosts(profileOffset, profile.username).finally(() => {
-                    // optional
-                });
+
+                fetchProfilePosts(profileOffset, profile.username)
             }
         });
     });
@@ -177,7 +174,7 @@ function SetupProfileTabListeners(profile) {
 }
 
 // Fetch user posts
-async function fetchProfilePosts(offset, username) {    
+async function fetchProfilePosts(offset, username) {
     const container = document.getElementById("profileDynamicContent");
     if (!container || endProfileFetch) return;
 
@@ -223,7 +220,10 @@ async function fetchProfilePosts(offset, username) {
 
 // Check scroll position on each "scroll" event.
 // If close to bottom, load more posts (lazy loading).
-function handleProfileScroll(username) {
+function handleProfileScroll() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get("user");
+
     // If we're already loading, skip
     if (profileIsLoading) return;
 
@@ -239,7 +239,7 @@ function handleProfileScroll(username) {
             fetchProfilePosts(profileOffset, username)
                 .then(() => {
                     profileOffset += ProfileLimit;
-                })           
+                })
                 .finally(() => {
                     profileIsLoading = false;
                 });

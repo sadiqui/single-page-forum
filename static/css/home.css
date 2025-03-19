@@ -673,3 +673,7 @@ body {
     font-weight: bold;
     color: var(--light-grey);
 }
+
+.logo-link {
+    cursor: pointer;
+}
