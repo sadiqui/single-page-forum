@@ -166,23 +166,20 @@ func GetUsername(userID int) string {
 	err := DB.QueryRow("SELECT username FROM users WHERE id = ?", userID).Scan(&username)
 	if err != nil {
 		fmt.Println("Error fetching username:", err)
-		return "Unknown" // Fallback value
+		return "JohnDoe" // Fallback value
 	}
 	return username
 }
 
 // fetches a user's profile picture from the database.
 func GetUserProfilePic(userID int) string {
-	var profilePic sql.NullString // Allows NULL handling
+	var profilePic string // Allows NULL handling
 	err := DB.QueryRow("SELECT profile_pic FROM users WHERE id = ?", userID).Scan(&profilePic)
 	if err != nil {
 		fmt.Println("Error fetching profile picture:", err)
 		return "avatar.webp" // Default profile picture
 	}
-	if profilePic.Valid {
-		return profilePic.String
-	}
-	return "avatar.webp" // If NULL, return default avatar
+	return profilePic
 }
 
 // Delete a single notification after confirming the user
