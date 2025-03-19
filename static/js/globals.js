@@ -1,3 +1,10 @@
+let HomeLimit = 10; // Posts on scroll load
+let HistoryLimit = 6;
+let NotifLimit = 15;
+let Username = "";
+let ProfilePic = "";
+let tabName = "home";
+
 const Nav = `
 <nav class="navbar">
     <a href="/" class="logo-link">
@@ -304,11 +311,3 @@ const Filter = `
             </div>
         </section> 
 `
-
-// Num of posts on each scroll load.
-let HomeLimit = 10;
-let HistoryLimit = 6;
-let NotifLimit = 15;
-let Username = "";
-let ProfilePic = "";
-let tabName = "home"

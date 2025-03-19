@@ -188,3 +188,15 @@
 .post-dialog {
     -ms-overflow-style: none;
 }
+
+/* Force autofill to have a suitable color style */
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important; /* Bg. */
+    -webkit-text-fill-color: #000 !important; /* Text */
+}
+
+/* For dark mode */
+:root.dark-mode input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #1f2a3a inset !important;
+    -webkit-text-fill-color: #fff !important;
+}

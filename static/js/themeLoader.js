@@ -42,21 +42,7 @@ function updatePassIcon() {
 
         if (!passwordIcon || !passwordInput) return;
 
-        // Function to check autofill status thoroughly
-        // const isAutofilled = () => {          
-        //      // Multiple detection methods
-        //     return passwordInput.matches(":-webkit-autofill") ||
-        //         window.getComputedStyle(passwordInput).backgroundColor.includes("#e8f0fe");
-        // };
-
-        // // // Able submit button when fields are autofilled
-        // if (isAutofilled) {            
-        //     submitButton.forEach((button) => {
-        //         button.classList.remove("disabled");
-        //     })
-        // }
-
-        // Function to update icon based on mode and autofill state
+        // Update icon based on mode
         const updateIcon = () => {
             const isHidden = passwordIcon.src.includes("hide");
             if (isDark) {
@@ -68,27 +54,12 @@ function updatePassIcon() {
             }
         };
 
-        // Update the DOM before checking the autofill state
-        passwordToggle.addEventListener("click", () => {
-            setTimeout(updateIcon, 10);
-        });
-
         updateIcon(); // Run initially
-
-        // Observe autofill & input changes with more attributes
-        const observer = new MutationObserver(updateIcon);
-        observer.observe(passwordInput, {
-            attributes: true,
-            attributeFilter: ["value", "style", "class"]
-        });
 
         // Enhanced event listeners
         passwordInput.addEventListener("focus", updateIcon);
         passwordInput.addEventListener("input", updateIcon);
         passwordInput.addEventListener("change", updateIcon);
         passwordInput.addEventListener("blur", updateIcon);
-
-        // Delayed check to catch autofill on page load
-        setTimeout(updateIcon, 100);
     });
 }
