@@ -230,3 +230,32 @@ document.addEventListener("click", (event) => {
     const tabBar = document.querySelector(".tab-bar");
     if (tabBar) { tabBar.style.display = "none"; }
 });
+
+// Serve profile from navbar menu, without any refresh
+// navbar takes time to load, so we observe DOM changes
+// attach event listener as soon as avatar-menu is added
+const observer = new MutationObserver((mutationsList, observer) => {
+    const avatarMenu = document.querySelector(".avatar-menu");
+    if (avatarMenu) {
+        // Attach the event listener
+        avatarMenu.addEventListener("click", (event) => {
+            // Get HTML <a> tag
+            const link = event.target.closest("#profile a");
+            if (!link) return;
+
+            // Extract the URL
+            event.preventDefault();
+            const url = link.getAttribute("href");
+
+            // Update URL and load profile dynamically
+            history.pushState(null, "", url);
+            Routing();
+        });
+
+        // Stop observing once the element is found
+        observer.disconnect();
+    }
+});
+
+// Start observing the document for changes
+observer.observe(document.body, { childList: true, subtree: true });
