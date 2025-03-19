@@ -98,7 +98,7 @@
     list-style: none;
 }
 
-.dropdown-menu a {
+.dropdown-menu a, .profile-link {
     text-decoration: none;
     color: var(--content-grey);
     font-size: 0.875rem;
@@ -110,20 +110,22 @@
     transition: background-color 0.15s ease, color 0.15s ease;
 }
 
-.dropdown-menu a:hover {
+.dropdown-menu a:hover, .profile-link:hover {
     background-color: var(--nav-menu-hvr);
     color: var(--dark-grey);
 }
 
-.dropdown-menu a i {
+.dropdown-menu a i, .profile-link {
     font-size: 1rem;
     color: var(--content-grey);
     transition: color 0.15s ease;
 }
 
-.dropdown-menu a:hover i {
+.dropdown-menu a:hover i, .profile-link:hover{
     color: var(--grey-mr);
 }
+
+
 
 /* ------------- Floating "+" Button ------------- */
 .fab, .back-to-top{
@@ -189,7 +191,7 @@
         transform: translateX(-60%);
     }
 
-    .dropdown-menu a {
+    .dropdown-menu a, .profile-link {
         font-size: 0.8rem;
     }
 
