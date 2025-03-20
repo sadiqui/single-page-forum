@@ -120,6 +120,7 @@ async function clearAllNotifications() {
         const notifContainer = document.getElementById("notifContainer");
         notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
         removeNotificationBadge()
+
     } catch (err) {
         console.error("Failed to clear notifications:", err);
     }

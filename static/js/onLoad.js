@@ -39,7 +39,6 @@ async function CheckSession() {
                 ShowLoggedInNav(data.username, data.profile_pic);
                 showOnlineUsers();
                 Routing();
-                checkNotificationCount();
                 connectNotificationsWS();
                 connectUsersWS();
                 connectMessagesWS();
@@ -55,6 +54,7 @@ async function CheckSession() {
 }
 
 async function Routing() {
+    checkNotificationCount();
     const path = window.location.pathname;
     if (path !== "/") {
         const tagFilterSection = document.getElementById("tagFilterSection");

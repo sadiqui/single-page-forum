@@ -45,7 +45,6 @@ function RenderOnlineUsers(users) {
         const userElement = document.createElement("div");
         userElement.className = "online-user";
 
-        // Set inner HTML without inline event handlers
         userElement.innerHTML = `
             <div class="online-user-link">
                 <img src="../uploads/${user.profile_pic || 'avatar.webp'}" alt="${user.username}" class="online-user-avatar">
@@ -57,7 +56,7 @@ function RenderOnlineUsers(users) {
         userElement.addEventListener("click", () => {
             const changeTab = document.querySelector('.tab-btn[data-tab="messages"]');
             if (changeTab) {
-                // Cant use click() (content will be overriden by Loadlastconversation), so manually change tab
+                // Can't use click() (content will be overriden by Loadlastconversation), so manually change tab
                 document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
                 changeTab.classList.add("active");
                 tabName = "messages";
