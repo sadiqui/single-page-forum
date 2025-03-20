@@ -3,19 +3,26 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/gorilla/websocket"
 )
 
 var (
-	clients   = make(map[int]map[*websocket.Conn]bool) // UserID -> Set of WebSocket connections
-	mutex     = sync.Mutex{}                           // Protects concurrent access
+	clients = make(map[int]map[*websocket.Conn]bool) // UserID -> Set of WebSocket connections
+	mutex   = sync.Mutex{}                           // Protects concurrent access
 )
 
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
-		return true // Allow all origins
+		// Check if we are running on Fly.io (deployed environment)
+		if os.Getenv("FLY_APP_NAME") != "" {
+			origin := "https://dwi.fly.dev"
+			return r.Header.Get("Origin") == origin
+		}
+		// Allow all origins when running locally
+		return true
 	},
 }
 
