@@ -160,12 +160,6 @@
     color: white;
 }
 
-:root.dark-mode .post-card {
-    background-color: rgb(65, 65, 75);
-    /* rgb(65, 65, 65) */
-    border: 1px solid rgb(105, 105, 105);
-}
-
 :root.dark-mode .post-label,
 :root.dark-mode .post-input,
 :root.dark-mode .post-textarea,
@@ -220,10 +214,6 @@
 
 :root.dark-mode .comment-content {
     color: var(--content-grey);
-}
-
-:root.dark-mode .container {
-    background-color: rgb(65, 65, 75);
 }
 
 :root.dark-mode #commentContent {

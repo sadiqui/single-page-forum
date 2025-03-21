@@ -125,8 +125,6 @@
     color: var(--grey-mr);
 }
 
-
-
 /* ------------- Floating "+" Button ------------- */
 .fab, .back-to-top{
     position: fixed;

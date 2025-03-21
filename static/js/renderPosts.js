@@ -4,7 +4,7 @@ function RenderPosts(posts, offset, truncate = 300) {
     let postsContainer = ""
     if (window.location.pathname === "/profile") {
         postsContainer = document.getElementById("profileDynamicContent");
-    } else if (tabName === "history") {
+    } else if (tabName === "activity") {
         postsContainer = document.getElementById("historyDynamicContent");
     } else if (tabName === "home") {
         postsContainer = document.getElementById("content");

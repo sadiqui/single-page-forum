@@ -22,9 +22,7 @@ function connectNotificationsWS() {
 function insertWSNotification(notif) {
     // If container doesn't exist, create it
     let notifContainer = document.getElementById("notifContainer");
-    if (!notifContainer) {
-        return
-    }
+    if (!notifContainer) { return; }
 
     // Create the notification element
     const notifElement = document.createElement("div");

@@ -51,7 +51,7 @@ function historyRenderer(username) {
     SetupHistoryTabListeners();
     SetupImageUpdate();
     // Listen for scroll => infinite loading
-    if (tabName === "history") {
+    if (tabName === "activity") {
         window.addEventListener("scroll", handleHistoryScroll, { passive: true });
     }
 }
@@ -142,7 +142,7 @@ async function fetchLikedPosts(historyOffset, reaction) {
         const posts = await res.json();
         if ((!posts || posts.length == 0) && historyOffset == 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
-            <img src="../img/empty-chat.png" alt="Empty chat">
+            <img src="../img/empty-chat.png" alt="No posts">
                 <p>No ${reaction}d posts!</p>
             </div>`
             return
@@ -173,7 +173,7 @@ async function fetchUserPosts(historyOffset) {
         const posts = await res.json();
         if ((!posts || posts.length == 0) && historyOffset == 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
-            <img src="../img/empty-chat.png" alt="Empty chat">
+            <img src="../img/empty-chat.png" alt="No posts">
                 <p>No posts yet!</p>
             </div>`
             return
@@ -203,7 +203,7 @@ async function fetchCommentedPosts(historyOffset) {
         const posts = await res.json();
         if ((!posts || posts.length == 0) && historyOffset == 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
-            <img src="../img/empty-chat.png" alt="Empty chat">
+            <img src="../img/empty-chat.png" alt="No comments">
                 <p>No comments yet!</p>
             </div>`
             return

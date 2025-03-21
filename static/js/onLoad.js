@@ -166,7 +166,7 @@ function LoadTabContent(tab) {
             clearTagFilter();
             homeRenderer();
             FilterCategories();
-        } else if (tab === "history") {
+        } else if (tab === "activity") {
             window.removeEventListener('scroll', handleScroll);
             historyRenderer(Username);
         } else if (tab === "notifs") {

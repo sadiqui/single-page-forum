@@ -1,6 +1,7 @@
 let notifOffset = 0; // Offset for pagination
 let notifLoading = false; // Prevents multiple fetches
 let notifications = []; // Global notifications array
+let notifContainer = document.getElementById("notifContainer");
 
 async function notifsRenderer() {
     if (notifLoading) return;
@@ -9,7 +10,6 @@ async function notifsRenderer() {
     const dynamicContent = document.getElementById("content");
 
     // Create or select the notification container
-    let notifContainer = document.getElementById("notifContainer");
     if (!notifContainer) {
         notifContainer = document.createElement("div");
         notifContainer.id = "notifContainer";
@@ -25,13 +25,16 @@ async function notifsRenderer() {
         const data = await res.json();
         notifications = data;
 
-        if (notifications.length !== 0) { addClearAllButton(); }
+        if (notifications.length !== 0) {
+            addClearAllButton();
+        } else {
+            // Before adding (first) notif, remove empty content box
+            const emptyContent = document.getElementById("emptyChatimg");
+            if (emptyContent) { emptyContent.remove(); }
+        }
 
         // If no notifications and first load, show message
-        if (notifications.length === 0 && notifOffset === 0) {
-            notifContainer.innerHTML = "<p class='no-notifications'>No notification right now.</p>";
-            return;
-        }
+        if (notifications.length === 0 && notifOffset === 0) { noNotification(); }
 
         // Remove "No new notifications" message if notifications exist
         const emptyMsg = document.querySelector(".no-notifications");
@@ -115,10 +118,10 @@ async function clearAllNotifications() {
             notif.style.opacity = "0";
             setTimeout(() => notif.remove(), 300);
         });
-        const notifContainer = document.getElementById("notifContainer");
-        notifContainer.innerHTML = "<p class='no-notifications'>No notification right now.</p>";
-        setTimeout(() => { removeClearAllButton(); }, 70);
+
+        noNotification();
         removeNotificationBadge();
+        setTimeout(() => removeClearAllButton(), 300);
 
     } catch (err) {
         console.error("Failed to clear notifications:", err);
@@ -126,10 +129,9 @@ async function clearAllNotifications() {
 }
 
 function checkEmptyNotifications() {
-    const notifContainer = document.getElementById("notifContainer");
     if (document.querySelectorAll(".notification-item").length === 0) {
-        notifContainer.innerHTML = "<p class='no-notifications'>No notification right now.</p>";
-        removeNotificationBadge()
+        noNotification();
+        removeNotificationBadge();
     }
 }
 
@@ -217,4 +219,15 @@ function removeNotificationBadge() {
 function removeClearAllButton() {
     const clearBtn = document.getElementById("clearAllNotifications");
     if (clearBtn) { clearBtn.remove(); }
+}
+
+function noNotification() {
+    const dynamicContent = document.getElementById("content");
+    if (notifContainer) { notifContainer.remove(); }
+    dynamicContent.innerHTML = `
+    <div id="emptyChatimg">
+        <img src="../img/empty-chat.png" alt="No notification">
+        <p>No notification right now</p>
+    </div>
+    `;
 }

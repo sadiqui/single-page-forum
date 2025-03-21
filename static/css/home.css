@@ -8,6 +8,7 @@
     padding: 0;
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
+    scrollbar-color: var(--light-blue) var(--body-bg);
 }
 
 body {
@@ -611,11 +612,6 @@ body {
 }
 
 /* ======= Dark Mode Support ======= */
-:root.dark-mode .tab-bar {
-    background: #3a3f4b;
-    box-shadow: 0 4px 10px var(--notif-shadow);
-}
-
 :root.dark-mode .tab-btn {
     color: var(--light-grey);
 }

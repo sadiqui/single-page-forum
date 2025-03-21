@@ -292,7 +292,7 @@ const tabBarHTML = `
             <img src="../img/messages.png" alt="Messages">
             <span class="tab-txt">Messages</span>
         </button>
-        <button class="tab-btn" data-tab="history">
+        <button class="tab-btn" data-tab="activity">
             <img src="../img/activity.svg" alt="Activity">
             <span class="tab-txt">Activity</span>
         </button>
