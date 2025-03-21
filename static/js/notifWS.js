@@ -45,7 +45,8 @@ function insertWSNotification(notif) {
     // Click to navigate to post
     notifElement.addEventListener("click", function (event) {
         if (!event.target.classList.contains("notif-close")) {
-            window.location.href = `/post?post_id=${notif.post_id}`;
+            history.pushState(null, "", `/post?post_id=${encodeURIComponent(notif.post_id)}`);
+            Routing()
         }
     });
 

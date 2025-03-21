@@ -9,6 +9,7 @@ function connectMessagesWS() {
             // Append the received message to the chat UI
             appendMessage(msg.sender, msg.content);
             updateOnlineUsers()
+            NotifyMsg(msg.sender);
         } catch (e) {
             console.error("Error parsing message:", e);
         }
@@ -34,7 +35,7 @@ function appendMessage(sender, content) {
 
     const msgUsername = document.createElement("div");
     msgUsername.classList.add("msg-username", "receiver");
-    msgUsername.innerHTML = sender 
+    msgUsername.innerHTML = sender
 
     messageElement.innerHTML = `
         <p>${content}</p>
@@ -45,3 +46,45 @@ function appendMessage(sender, content) {
     chatMessages.appendChild(msgUsername)
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
+// Notify user when message is sent.
+function NotifyMsg(sender) {
+    if (tabName == "messages") return
+    // Check if an existing notification is present
+    let existingPopup = document.getElementById("msg-notification");
+    if (existingPopup) {
+        existingPopup.remove(); // Remove old popup before adding a new one
+    }
+
+    // Create the notification container
+    const notification = document.createElement("div");
+    notification.id = "msg-notification";
+    notification.classList.add("message-popup");
+    notification.textContent = `${sender} sent you a message`;
+
+    notification.addEventListener("click", () => {
+        const changeTab = document.querySelector('.tab-btn[data-tab="messages"]');
+        if (changeTab) {
+            changeTab.click()
+        } else {
+            history.pushState(null, "", `/`);
+            Routing()
+            document.querySelector('.tab-btn[data-tab="messages"]').click()
+        }
+    })
+
+    // Append to body
+    document.body.appendChild(notification);
+
+    // Trigger fade-in animation
+    setTimeout(() => {
+        notification.classList.add("show");
+    }, 100);
+
+    // Auto-remove after 4 seconds
+    setTimeout(() => {
+        notification.classList.remove("show");
+        setTimeout(() => notification.remove(), 500); // Smooth fade-out
+    }, 4000);
+}
+
