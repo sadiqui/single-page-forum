@@ -9,6 +9,7 @@ function connectNotificationsWS() {
         // Insert into the notifContainer
         insertWSNotification(notif);
         addNotificationBadge();
+        addClearAllButton();
     };
 
     ws.onerror = (err) => {

@@ -237,7 +237,7 @@ document.addEventListener("click", (event) => {
 // Serve profile from navbar menu, without any refresh
 // navbar takes time to load, so we observe DOM changes
 // attach event listener as soon as avatar-menu is added
-const observer = new MutationObserver((mutationsList, observer) => {
+const profileObserver = new MutationObserver((mutationsList, observer) => {
     const avatarMenu = document.querySelector(".avatar-menu");
     if (avatarMenu) {
         // Attach the event listener
@@ -261,4 +261,4 @@ const observer = new MutationObserver((mutationsList, observer) => {
 });
 
 // Start observing the document for changes
-observer.observe(document.body, { childList: true, subtree: true });
+profileObserver.observe(document.body, { childList: true, subtree: true });

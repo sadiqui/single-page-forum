@@ -117,8 +117,7 @@ error-msg {
     cursor: pointer;
     text-align: center;
     margin: 20px auto;
-    /* Center the button horizontally */
-    margin-top: 80px;
+    margin-top: 40px;
     letter-spacing: 0.5px;
 }
 

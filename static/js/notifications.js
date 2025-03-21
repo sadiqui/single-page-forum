@@ -1,5 +1,6 @@
 let notifOffset = 0; // Offset for pagination
 let notifLoading = false; // Prevents multiple fetches
+let notifications = []; // Global notifications array
 
 async function notifsRenderer() {
     if (notifLoading) return;
@@ -21,14 +22,14 @@ async function notifsRenderer() {
         const res = await fetch(`/api/get-notifications?offset=${notifOffset}`);
         if (!res.ok) throw new Error("Failed to load notifications");
 
-        const notifications = await res.json();
+        const data = await res.json();
+        notifications = data;
 
-        // Attach "Clear All" button if notifications exist
-        attachClearAllButton();
+        if (notifications.length !== 0) { addClearAllButton(); }
 
         // If no notifications and first load, show message
         if (notifications.length === 0 && notifOffset === 0) {
-            notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
+            notifContainer.innerHTML = "<p class='no-notifications'>No notification right now.</p>";
             return;
         }
 
@@ -67,11 +68,8 @@ async function notifsRenderer() {
             // Close button event listener (Removes from UI & Backend with fade effect)
             notifElement.querySelector(".notif-close").addEventListener("click", async (event) => {
                 event.stopPropagation(); // Prevent navigating to post
-
                 const notifID = notifElement.getAttribute("data-notif-id"); // Get notification ID
-
-                // Remove from backend
-                await deleteNotification(notifID);
+                await deleteNotification(notifID); // Remove from backend
 
                 // Fade-out effect then remove
                 notifElement.style.opacity = "0";
@@ -91,7 +89,7 @@ async function notifsRenderer() {
     }
 }
 
-function attachClearAllButton() {
+function addClearAllButton() {
     let clearAllBtn = document.getElementById("clearAllNotifications");
 
     if (!clearAllBtn) {
@@ -118,8 +116,9 @@ async function clearAllNotifications() {
             setTimeout(() => notif.remove(), 300);
         });
         const notifContainer = document.getElementById("notifContainer");
-        notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
-        removeNotificationBadge()
+        notifContainer.innerHTML = "<p class='no-notifications'>No notification right now.</p>";
+        setTimeout(() => { removeClearAllButton(); }, 70);
+        removeNotificationBadge();
 
     } catch (err) {
         console.error("Failed to clear notifications:", err);
@@ -129,7 +128,7 @@ async function clearAllNotifications() {
 function checkEmptyNotifications() {
     const notifContainer = document.getElementById("notifContainer");
     if (document.querySelectorAll(".notification-item").length === 0) {
-        notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
+        notifContainer.innerHTML = "<p class='no-notifications'>No notification right now.</p>";
         removeNotificationBadge()
     }
 }
@@ -211,8 +210,11 @@ function removeNotificationBadge() {
     const notifTab = document.querySelector('.tab-btn[data-tab="notifs"]');
     if (notifTab) {
         const badge = notifTab.querySelector('.notification-badge');
-        if (badge) {
-            badge.remove();
-        }
+        if (badge) { badge.remove(); }
     }
+}
+
+function removeClearAllButton() {
+    const clearBtn = document.getElementById("clearAllNotifications");
+    if (clearBtn) { clearBtn.remove(); }
 }

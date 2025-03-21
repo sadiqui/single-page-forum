@@ -115,20 +115,20 @@
 #chatInput {
     flex: 1;
     padding: 10px;
+    padding-left: 15px;
     border: none;
     border-radius: 20px;
     font-size: 1rem;
     outline: none;
-    /* Hide scrollbar */
+    /* Hide scrollbar on Firefox */
     scrollbar-width: none;
-    /* Firefox */
+    /* Internet Explorer & older Edge */
     -ms-overflow-style: none;
-    /* Internet Explorer & Edge */
 }
 
+/* Chrome, Safari, and newer Edge */
 #chatInput::-webkit-scrollbar {
     display: none;
-    /* Chrome, Safari */
 }
 
 /* Send Button */
@@ -144,6 +144,10 @@
     width: 28px;
     height: 28px;
     transition: transform 0.2s;
+}
+
+:root.dark-mode #sendMessageBtn img {
+    filter: invert(1);
 }
 
 #sendMessageBtn:hover img {
