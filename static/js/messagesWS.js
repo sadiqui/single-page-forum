@@ -49,7 +49,11 @@ function appendMessage(sender, content) {
 
 // Notify user when message is sent.
 function NotifyMsg(sender) {
-    if (tabName == "messages") return
+    if (tabName == "messages") {
+        const currentUsername = chatContainer.getAttribute("data-username");
+        // If the sender is the current chat user
+        if (sender === currentUsername) return;
+    }
     // Check if an existing notification is present
     let existingPopup = document.getElementById("msg-notification");
     if (existingPopup) {
