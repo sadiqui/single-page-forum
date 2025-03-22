@@ -6,10 +6,15 @@ function connectNotificationsWS() {
 
     ws.onmessage = (event) => {
         const notif = JSON.parse(event.data);
-        // Insert into the notifContainer
-        insertWSNotification(notif);
-        addNotificationBadge();
-        addClearAllButton();
+        // Check if this is a deletion message
+        if (notif.action === "delete") {
+            handleDeletionNotification(notif);
+        } else {
+            // Regular notification
+            insertWSNotification(notif);
+            addNotificationBadge();
+            addClearAllButton();
+        }
     };
 
     ws.onerror = (err) => {
@@ -53,11 +58,10 @@ function insertWSNotification(notif) {
         event.stopPropagation();
         const notifID = notifElement.getAttribute("data-notif-id");
         await deleteNotification(notifID);
-        notifElement.remove();
+        notifElement.style.opacity = "0";
+        setTimeout(() => { notifElement.remove(); }, 300);
 
-        if (document.querySelectorAll(".notification-item").length === 0) {
-            notifContainer.innerHTML = "<p class='no-notifications'>No Notices Right Now.</p>";
-        }
+        if (document.querySelectorAll(".notification-item").length === 0) { noNotification(); }
     });
 
     // Insert at the top of the container (newest first)
@@ -77,4 +81,24 @@ function createNotifContainer() {
         dynamicContent.appendChild(notifContainer);
         notifContainer.addEventListener("scroll", handleNotifScroll, { passive: true });
     }
+}
+
+// Delete contradictory notification from UI
+// Reaction change for same user/actor/post
+function handleDeletionNotification(deletion) {
+    // Find any notifications matching the criteria to delete
+    const notifications = document.querySelectorAll(".notification-item");
+    
+    notifications.forEach(notif => {
+        const postId = notif.getAttribute("data-post-id");
+        
+        // Check if this notification matches deletion criteria
+        // (We know it's from the same actor and for the same post)
+        if (postId == deletion.post_id) {
+            // Get the notification type from the message content or add a data attribute
+            // For simplicity, we simply remove the notification if it matches the post
+            notif.style.opacity = "0";
+            setTimeout(() => { notif.remove(); }, 300);
+        }
+    });
 }

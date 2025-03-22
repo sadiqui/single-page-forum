@@ -14,7 +14,6 @@ type User struct {
 	ProfilePic string `json:"profile_pic"`
 }
 
-// Post represents a forum post
 type Post struct {
 	ID         int        `json:"id"`
 	UserID     int        `json:"user_id"`
@@ -27,7 +26,6 @@ type Post struct {
 	Categories []Category `json:"categories,omitempty"`
 }
 
-// Post categories
 type Category struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
@@ -53,11 +51,20 @@ type Notification struct {
 	CreatedAt       time.Time `json:"created_at"`
 }
 
-// Message between two users.
+// Delete contradictory reaction notif
+// When like/dislike reaction change
+type NotificationDeletion struct {
+	UserID  int      `json:"user_id"`
+	ActorID int      `json:"actor_id"`
+	PostID  *int     `json:"post_id"`
+	Types   []string `json:"types"`
+	Action  string   `json:"action"` // "delete"
+}
+
 type Message struct {
-	ID         int       `json:"id"`
-	Sender   string       `json:"sender"`
-	Receiver string       `json:"receiver"`
-	Content    string    `json:"content"`
-	CreatedAt  time.Time `json:"created_at"`
+	ID        int       `json:"id"`
+	Sender    string    `json:"sender"`
+	Receiver  string    `json:"receiver"`
+	Content   string    `json:"content"`
+	CreatedAt time.Time `json:"created_at"`
 }

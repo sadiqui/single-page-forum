@@ -68,18 +68,29 @@ func NotificationSocket(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Function to notify a user when they receive a new notification
-func NotifyUser(notification Notification) {
+// Sends any data structure to WebSocket connection for a user
+func NotifyUserWithData(userID int, data interface{}) {
 	mutex.Lock()
 	defer mutex.Unlock()
 
-	// Send to all WebSocket connections for the user
-	for conn := range clients[notification.UserID] {
-		err := conn.WriteJSON(notification)
+	// Send to WebSocket connection for the user
+	for conn := range clients[userID] {
+		err := conn.WriteJSON(data)
 		if err != nil {
 			fmt.Println("Error sending WebSocket message:", err)
 			conn.Close()
-			delete(clients[notification.UserID], conn)
+			delete(clients[userID], conn)
 		}
 	}
+}
+
+// Notify when adding a notification
+func NotifyUser(notification Notification) {
+	NotifyUserWithData(notification.UserID, notification)
+}
+
+// Notify to remove contradictory notif from UI
+// Changes in like/dislike reaction for a post
+func NotifyUserOfDeletion(deletion NotificationDeletion) {
+	NotifyUserWithData(deletion.UserID, deletion)
 }

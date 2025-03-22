@@ -122,6 +122,19 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 	if reactionType == "like" || reactionType == "dislike" {
 		// Delete any existing like/dislike notification for this (owner, actor, post)
 
+		// First, send a WebSocket deletion notification
+		deletionNotif := NotificationDeletion{
+			UserID:  ownerID,
+			ActorID: actorID,
+			PostID:  postID,
+			Types:   []string{"like", "dislike"},
+			Action:  "delete",
+		}
+
+		// Notify user about deletions before performing the DB operation
+		NotifyUserOfDeletion(deletionNotif)
+
+		// Now delete from DB
 		_, err := DB.Exec(`
 			DELETE FROM notifications
 			WHERE user_id = ?
@@ -133,6 +146,8 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 			return fmt.Errorf("failed to delete old reaction notification: %w", err)
 		}
 	}
+
+	// Insert the new notification as before
 	_, err := DB.Exec(`
 		INSERT INTO notifications (user_id, actor_id, post_id, type)
 		VALUES (?, ?, ?, ?)
