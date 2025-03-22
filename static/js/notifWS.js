@@ -88,16 +88,16 @@ function createNotifContainer() {
 function handleDeletionNotification(deletion) {
     // Find any notifications matching the criteria to delete
     const notifications = document.querySelectorAll(".notification-item");
-    
+
     notifications.forEach(notif => {
         const postId = notif.getAttribute("data-post-id");
-        
-        // Check if this notification matches deletion criteria
-        // (We know it's from the same actor and for the same post)
-        if (postId == deletion.post_id) {
-            // Get the notification type from the message content or add a data attribute
-            // For simplicity, we simply remove the notification if it matches the post
-            notif.style.opacity = "0";
+        const notifContent = notif.querySelector(".notif-message").textContent;
+
+        // Check deletion criteria matching:
+        if ((postId == deletion.post_id) &&
+            (notifContent.includes("liked") ||
+                notifContent.includes("disliked"))) {
+            notif.style.opacity = "0"; // Fade out and remove
             setTimeout(() => { notif.remove(); }, 300);
         }
     });
