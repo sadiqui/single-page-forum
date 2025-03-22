@@ -468,13 +468,11 @@ body {
 /* List View: Fixed Size Without Distortion */
 .post-image-wrapper {
     display: block;
-    /* or flex if you want more control */
     margin-top: 1rem;
-    /* center horizontally if the parent width is narrower than the page */
-    max-width: 100%;
-    /* ensures it doesn't exceed the post-card width */
     text-align: center;
-    /* optional if you want direct centering of the content */
+    /* ensures it doesn't ex-
+    ceed the post-card width */
+    max-width: 100%;
 }
 
 /* The actual image */
@@ -649,17 +647,20 @@ body {
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 10px; /* Space between image and text */
+    gap: 10px;
+    /* Space between image and text */
     width: 100%;
     height: 100%;
-    min-height: 200px; /* Adjust based on layout */
-    color: var(--content-grey); /* Use theme color */
+    min-height: 200px;
+    /* Adjust based on layout */
+    color: var(--content-grey);
+    /* Use theme color */
     font-size: 1rem;
     margin-top: 80px;
 }
 
 #emptyTabimg img {
-    width: 200px; 
+    width: 200px;
     max-width: 80%;
     opacity: 0.8;
 }

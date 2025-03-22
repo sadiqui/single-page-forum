@@ -1,22 +1,15 @@
 let notifOffset = 0; // Offset for pagination
 let notifLoading = false; // Prevents multiple fetches
 let notifications = []; // Global notifications array
-let notifContainer = document.getElementById("notifContainer");
+const dynamicContent = document.getElementById("content");
 
+/*************************************
+*   Update UI on tab content' load   *
+**************************************/
 async function notifsRenderer() {
     if (notifLoading) return;
+    createNotifContainer();
     notifLoading = true;
-
-    const dynamicContent = document.getElementById("content");
-
-    // Create or select the notification container
-    if (!notifContainer) {
-        notifContainer = document.createElement("div");
-        notifContainer.id = "notifContainer";
-        notifContainer.className = "notifications-container";
-        dynamicContent.appendChild(notifContainer);
-        notifContainer.addEventListener("scroll", handleNotifScroll, { passive: true });
-    }
 
     try {
         const res = await fetch(`/api/get-notifications?offset=${notifOffset}`);
@@ -25,19 +18,14 @@ async function notifsRenderer() {
         const data = await res.json();
         notifications = data;
 
-        if (notifications.length !== 0) {
-            addClearAllButton();
-        } else {
-            // Before adding (first) notif, remove empty content box
-            const emptyContent = document.getElementById("emptyChatimg");
-            if (emptyContent) { emptyContent.remove(); }
+        if (notifications.length !== 0) { addClearAllButton(); }
+        if (notifications.length === 0 && notifOffset === 0) {
+            noNotification();
+            return;
         }
 
-        // If no notifications and first load, show message
-        if (notifications.length === 0 && notifOffset === 0) { noNotification(); }
-
-        // Remove "No new notifications" message if notifications exist
-        const emptyMsg = document.querySelector(".no-notifications");
+        // Remove "No notifications" message if notifications exist
+        const emptyMsg = document.getElementById("emptyChatimg");
         if (emptyMsg) emptyMsg.remove();
 
         // Render notifications inside the container
@@ -92,6 +80,9 @@ async function notifsRenderer() {
     }
 }
 
+/*************************************
+*       Clear All Button Logic       *
+**************************************/
 function addClearAllButton() {
     let clearAllBtn = document.getElementById("clearAllNotifications");
 
@@ -101,12 +92,14 @@ function addClearAllButton() {
         clearAllBtn.textContent = "Clear All";
         clearAllBtn.classList.add("clear-all-btn");
 
-        // Attach click event to the button
         clearAllBtn.addEventListener("click", clearAllNotifications);
-
-        // Append it to the container
-        document.getElementById("content").appendChild(clearAllBtn);
+        dynamicContent.appendChild(clearAllBtn);
     }
+}
+
+function removeClearAllButton() {
+    const clearBtn = document.getElementById("clearAllNotifications");
+    if (clearBtn) { clearBtn.remove(); }
 }
 
 async function clearAllNotifications() {
@@ -119,19 +112,23 @@ async function clearAllNotifications() {
             setTimeout(() => notif.remove(), 300);
         });
 
-        noNotification();
+        // Update the user interface
         removeNotificationBadge();
-        setTimeout(() => removeClearAllButton(), 300);
+        removeClearAllButton();
+        noNotification();
 
     } catch (err) {
         console.error("Failed to clear notifications:", err);
     }
 }
 
+/*************************************
+*          Helper functions          *
+**************************************/
 function checkEmptyNotifications() {
     if (document.querySelectorAll(".notification-item").length === 0) {
-        noNotification();
         removeNotificationBadge();
+        noNotification();
     }
 }
 
@@ -147,8 +144,6 @@ async function deleteNotification(notifID) {
 // Infinite Scroll for Notifications
 function handleNotifScroll() {
     const notifContainer = document.getElementById("notifContainer");
-
-    // Check if already loading notifications.
     if (notifLoading) return;
 
     // Calculate when to load more notifications.
@@ -160,8 +155,19 @@ function handleNotifScroll() {
     }
 }
 
+function noNotification() {
+    const dynamicContent = document.getElementById("content");
+    if (notifContainer) { notifContainer.remove(); }
+    dynamicContent.innerHTML = `
+    <div id="emptyChatimg">
+        <img src="../img/empty-chat.png" alt="No notification">
+        <p>No notification right now</p>
+    </div>
+    `;
+}
+
 /*************************************
-*     Notification Badge Logic
+*     Notification Badge Logic       *
 **************************************/
 // Check for new notification
 async function checkNotificationCount() {
@@ -214,20 +220,4 @@ function removeNotificationBadge() {
         const badge = notifTab.querySelector('.notification-badge');
         if (badge) { badge.remove(); }
     }
-}
-
-function removeClearAllButton() {
-    const clearBtn = document.getElementById("clearAllNotifications");
-    if (clearBtn) { clearBtn.remove(); }
-}
-
-function noNotification() {
-    const dynamicContent = document.getElementById("content");
-    if (notifContainer) { notifContainer.remove(); }
-    dynamicContent.innerHTML = `
-    <div id="emptyChatimg">
-        <img src="../img/empty-chat.png" alt="No notification">
-        <p>No notification right now</p>
-    </div>
-    `;
 }

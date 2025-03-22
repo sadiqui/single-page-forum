@@ -20,9 +20,8 @@ function connectNotificationsWS() {
 // This function inserts a single new notification object
 // into your existing #notifContainer DOM element.
 function insertWSNotification(notif) {
-    // If container doesn't exist, create it
-    let notifContainer = document.getElementById("notifContainer");
-    if (!notifContainer) { return; }
+    // Make sure there's container
+    createNotifContainer();
 
     // Create the notification element
     const notifElement = document.createElement("div");
@@ -65,6 +64,17 @@ function insertWSNotification(notif) {
     notifContainer.prepend(notifElement);
 
     // Remove "no notifications" message if present
-    const emptyMsg = document.querySelector(".no-notifications");
+    const emptyMsg = document.getElementById("emptyChatimg");
     if (emptyMsg) emptyMsg.remove();
+}
+
+function createNotifContainer() {
+    let notifContainer = document.getElementById("notifContainer");
+    if (!notifContainer) {
+        notifContainer = document.createElement("div");
+        notifContainer.id = "notifContainer";
+        notifContainer.className = "notifications-container";
+        dynamicContent.appendChild(notifContainer);
+        notifContainer.addEventListener("scroll", handleNotifScroll, { passive: true });
+    }
 }
