@@ -1,7 +1,7 @@
 let profileOffset = 0;
 let profileIsLoading = false;
 let currentProfileTab = "";
-let ProfileLimit = 10;
+let ProfileLimit = 6; // Consistent with activity tab
 let endProfileFetch = false;
 let scrollProfile;
 
@@ -175,46 +175,39 @@ function SetupProfileTabListeners(profile) {
 
 // Fetch user posts
 async function fetchProfilePosts(offset, username) {
-    const container = document.getElementById("profileDynamicContent");
-    if (!container || endProfileFetch) return;
+    const dynamicContent = document.getElementById("profileDynamicContent");
+    if (!dynamicContent || endProfileFetch) return;
 
     try {
-        // If username not passed in arguments, we might keep track in some global or from profile object
-        // but let's keep it a function param
-        const query = `/api/get-user-posts?offset=${offset}&username=${encodeURIComponent(username)}`
-
+        const query = `/api/get-user-posts?offset=${offset}&username=${encodeURIComponent(username)}`;
         const res = await fetch(query);
-        if (!res.ok) {
-            console.error("Failed to load user posts:", res.statusText);
-            return;
-        }
+
+        if (!res.ok) return;
         const posts = await res.json();
 
         // If offset=0 and no posts, show empty image
         if ((!posts || posts.length === 0) && offset === 0) {
-            container.innerHTML = `
-                <div id="emptyTabimg">
-                    <img src="../img/empty-chat.png" alt="Empty chat">
-                    <p>No posts yet!</p>
-                </div>`;
+            dynamicContent.innerHTML = `<div id="emptyTabimg">
+            <img src="../img/empty-chat.png" alt="No posts">
+                <p>No posts yet!</p>
+            </div>`;
             return;
         }
         if (!posts || posts.length === 0) {
-            endProfileFetch = true
-            return
+            endProfileFetch = true;
+            return;
         }
 
-        // If offset=0, replace the entire container first
+        // If offset=0, replace the entire dynamicContent first
         if (offset === 0) {
-            container.innerHTML = "";
+            dynamicContent.innerHTML = "";
         }
 
-        // If you have a RenderPosts function...
         RenderPosts(posts, offset, 100);
 
     } catch (err) {
         console.error("Error loading user posts:", err);
-        container.innerHTML = `<p>Error loading posts.</p>`;
+        dynamicContent.innerHTML = `<p>Error loading user posts.</p>`;
     }
 }
 

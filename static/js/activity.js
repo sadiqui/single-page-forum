@@ -1,5 +1,5 @@
 let currentHistoryTab = "";
-let historyOffset = 0;
+let activityOffset = 0;
 // Loading flag to prevent overlapping fetches (throttle)
 let historyisLoading = false;
 let endHistoryFetch = false;
@@ -73,7 +73,7 @@ function SetupHistoryTabListeners() {
 
             // Get the tab name
             currentHistoryTab = this.getAttribute("data-tab");
-            historyOffset = 0;
+            activityOffset = 0;
             historyisLoading = false;
 
             conditionalTabs(scrollPos)
@@ -100,10 +100,10 @@ function conditionalTabs(scrollPos) {
     setTimeout(() => {
         dynamicContent.innerHTML = "";
         const actions = {
-            liked: () => fetchLikedPosts(historyOffset, "like"),
-            disliked: () => fetchLikedPosts(historyOffset, "dislike"),
-            posts: () => fetchUserPosts(historyOffset),
-            comments: () => fetchCommentedPosts(historyOffset),
+            liked: () => fetchLikedPosts(activityOffset, "like"),
+            disliked: () => fetchLikedPosts(activityOffset, "dislike"),
+            posts: () => fetchUserPosts(activityOffset),
+            comments: () => fetchCommentedPosts(activityOffset),
         };
 
         if (actions[currentHistoryTab]) {
@@ -132,15 +132,15 @@ function conditionalTabs(scrollPos) {
 /* -------------------------------
     FETCH LIKED/Disliked POSTS
 ----------------------------------*/
-async function fetchLikedPosts(historyOffset, reaction) {
+async function fetchLikedPosts(activityOffset, reaction) {
     if (endHistoryFetch) return
     const dynamicContent = document.getElementById("historyDynamicContent");
     try {
-        const res = await fetch(`/api/user-liked-posts?offset=${historyOffset}&reaction=${reaction}`);
+        const res = await fetch(`/api/user-liked-posts?offset=${activityOffset}&reaction=${reaction}`);
         if (!res.ok) return;
 
         const posts = await res.json();
-        if ((!posts || posts.length == 0) && historyOffset == 0) {
+        if ((!posts || posts.length == 0) && activityOffset == 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
             <img src="../img/empty-chat.png" alt="No posts">
                 <p>No ${reaction}d posts!</p>
@@ -152,7 +152,7 @@ async function fetchLikedPosts(historyOffset, reaction) {
             return
         }
 
-        RenderPosts(posts, historyOffset, 100);
+        RenderPosts(posts, activityOffset, 100);
     } catch (err) {
         console.error(err);
         DisplayError("errMsg", dynamicContent, "Error loading posts.");
@@ -162,29 +162,32 @@ async function fetchLikedPosts(historyOffset, reaction) {
 /* -----------------------
    FETCH USER POSTS
 -------------------------*/
-async function fetchUserPosts(historyOffset) {
-    if (endHistoryFetch) return
+async function fetchUserPosts(activityOffset) {
     const dynamicContent = document.getElementById("historyDynamicContent");
+    if (!dynamicContent || endProfileFetch) return;
 
     try {
-        const res = await fetch(`/api/user-posts?offset=${historyOffset}`);
-        if (!res.ok) return;
+        const query = `/api/user-posts?offset=${activityOffset}`;
+        const res = await fetch(query);
 
+        if (!res.ok) return;
         const posts = await res.json();
-        if ((!posts || posts.length == 0) && historyOffset == 0) {
+
+        // If offset=0 and no posts, show empty image
+        if ((!posts || posts.length === 0) && activityOffset === 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
             <img src="../img/empty-chat.png" alt="No posts">
                 <p>No posts yet!</p>
-            </div>`
-            return
+            </div>`;
+            return;
         }
         if (!posts || posts.length == 0) {
-            endHistoryFetch = true
-            return
+            endHistoryFetch = true;
+            return;
         }
-        RenderPosts(posts, historyOffset, 100);
+        RenderPosts(posts, activityOffset, 100);
     } catch (err) {
-        console.error(err);
+        console.error("Error loading user posts:", err);
         DisplayError("errMsg", dynamicContent, "Error loading user posts.");
     }
 }
@@ -192,16 +195,16 @@ async function fetchUserPosts(historyOffset) {
 /*-------------------------
    FETCH Commented POSTS
 ---------------------------*/
-async function fetchCommentedPosts(historyOffset) {
+async function fetchCommentedPosts(activityOffset) {
     if (endHistoryFetch) return
     const dynamicContent = document.getElementById("historyDynamicContent");
 
     try {
-        const res = await fetch(`/api/user-commented-posts?offset=${historyOffset}`);
+        const res = await fetch(`/api/user-commented-posts?offset=${activityOffset}`);
         if (!res.ok) return;
 
         const posts = await res.json();
-        if ((!posts || posts.length == 0) && historyOffset == 0) {
+        if ((!posts || posts.length == 0) && activityOffset == 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
             <img src="../img/empty-chat.png" alt="No comments">
                 <p>No comments yet!</p>
@@ -212,7 +215,7 @@ async function fetchCommentedPosts(historyOffset) {
             endHistoryFetch = true
             return
         }
-        RenderPosts(posts, historyOffset, 100);
+        RenderPosts(posts, activityOffset, 100);
     } catch (err) {
         console.error(err);
         DisplayError("errMsg", dynamicContent, "Error loading user posts.");
@@ -236,33 +239,33 @@ function handleHistoryScroll() {
         historyisLoading = true;
 
         if (currentHistoryTab === "posts") {
-            fetchUserPosts(historyOffset)
+            fetchUserPosts(activityOffset)
                 .then(() => {
-                    historyOffset += HistoryLimit; // increment offset
+                    activityOffset += HistoryLimit; // increment offset
                 })
                 .finally(() => {
                     historyisLoading = false;
                 });
         } else if (currentHistoryTab === "liked") {
-            fetchLikedPosts(historyOffset, "like")
+            fetchLikedPosts(activityOffset, "like")
                 .then(() => {
-                    historyOffset += HistoryLimit;
+                    activityOffset += HistoryLimit;
                 })
                 .finally(() => {
                     historyisLoading = false;
                 });
         } else if (currentHistoryTab === "disliked") {
-            fetchLikedPosts(historyOffset, "dislike")
+            fetchLikedPosts(activityOffset, "dislike")
                 .then(() => {
-                    historyOffset += HistoryLimit;
+                    activityOffset += HistoryLimit;
                 })
                 .finally(() => {
                     historyisLoading = false;
                 });
         } else if (currentHistoryTab === "comments") {
-            fetchCommentedPosts(historyOffset)
+            fetchCommentedPosts(activityOffset)
                 .then(() => {
-                    historyOffset += HistoryLimit;
+                    activityOffset += HistoryLimit;
                 })
                 .finally(() => {
                     historyisLoading = false;
@@ -312,7 +315,7 @@ function SetupImageUpdate() {
 
             // Re-render dynamic content
             setTimeout(() => { // (used to show comments image when changed)
-                historyOffset = 0;
+                activityOffset = 0;
                 const scrollPos = window.scrollY;
                 window.scrollTo(0, scrollPos);
                 conditionalTabs(scrollPos);

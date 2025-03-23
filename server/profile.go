@@ -88,43 +88,41 @@ func CheckUserHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(CheckUser{Exists: exists})
 }
 
-// Handles fetching paginated posts for a specific user
+// Fetching paginated posts for a specific user.
+// It's needed for both profile and activity tab
 func GetUserPosts(w http.ResponseWriter, r *http.Request) {
-	// Ensure it's a GET request
 	if r.Method != http.MethodGet {
 		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
 		return
 	}
 
-	// Extract username from query params
-	username := r.URL.Query().Get("username")
-	if username == "" {
-		JsonError(w, "Missing username parameter", http.StatusBadRequest, nil)
+	user, err := GetUser(r)
+	if err != nil {
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
 		return
 	}
 
-	// Extract offset from query params (default to 0 if not provided)
-	offsetStr := r.URL.Query().Get("offset")
-	offset, err := strconv.Atoi(offsetStr)
+	// Read "offset" query param (default 0 if missing)
+	offsetParam := r.URL.Query().Get("offset")
+	offset, err := strconv.Atoi(offsetParam)
 	if err != nil {
 		offset = 0
 	}
 
-	// Query to get posts for the given user (join users to get username & profile_pic)
-	query := `
-		SELECT p.id, p.user_id, p.title, p.content, p.image, p.created_at, u.username, u.profile_pic
-		FROM posts p
-		JOIN users u ON p.user_id = u.id
-		WHERE u.username = ?
-		ORDER BY p.created_at DESC
-		LIMIT 10 OFFSET ?
-	`
-
-	rows, err := DB.Query(query, username, offset)
+	rows, err := DB.Query(`
+      	SELECT p.id, p.user_id, p.title, p.content, p.image, p.created_at, u.username, u.profile_pic
+      	FROM posts p
+      	JOIN users u ON p.user_id = u.id
+      	WHERE p.user_id = ?
+      	ORDER BY p.id DESC
+      	LIMIT ?
+      	OFFSET ?
+    `, user.ID, ProfileLimit, offset) // ProfileLImit = 6 (activity.go)
 	if err != nil {
-		JsonError(w, "Database error", http.StatusInternalServerError, err)
+		JsonError(w, "Failed to get user's posts", http.StatusInternalServerError, err)
 		return
 	}
+
 	defer rows.Close()
 
 	// Use the ScanRows helper function
@@ -134,7 +132,6 @@ func GetUserPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Return JSON response
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(posts)
 }

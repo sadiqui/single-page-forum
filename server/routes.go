@@ -25,21 +25,25 @@ func Routes() http.Handler {
 	mux.HandleFunc("/api/get-singlePost", SinglePostHandler)
 	mux.HandleFunc("/api/get-comments", GetComments)
 	mux.HandleFunc("/api/comments-count", GetCommentsCount)
+
 	mux.HandleFunc("/api/user-info", ProfileInfoHandler)
-	mux.HandleFunc("/api/user-posts", UserPosts)
+	mux.HandleFunc("/api/user-posts", GetUserPosts)
 	mux.HandleFunc("/api/user-liked-posts", LikedPosts)
 	mux.HandleFunc("/api/user-commented-posts", UserCommentedPosts)
 	mux.HandleFunc("/api/user-post-comments", GetUserPostComments)
 	mux.Handle("/api/update-profile-pic", rl.Middleware(http.HandlerFunc(UpdateProfilePic)))
+
 	mux.HandleFunc("/api/get-notifications", GetNotifications)
 	mux.Handle("/api/delete-notification", rl.Middleware(http.HandlerFunc(DeleteNotification)))
 	mux.Handle("/api/delete-all-notifications", rl.Middleware(http.HandlerFunc(DeleteAllNotifications)))
 	mux.HandleFunc("/ws/notifications", NotificationSocket)
+
 	mux.HandleFunc("/ws/online-users", OnlineUsersWS)
 	mux.HandleFunc("/api/get-messages", GetMessages)
 	mux.Handle("/api/send-message", rl.Middleware(http.HandlerFunc(SendMessage)))
 	mux.HandleFunc("/ws/messages", MessageWebSocket)
 	mux.Handle("/api/update-online-users", rl.Middleware(http.HandlerFunc(UpdateOnlineUsers)))
+
 	mux.HandleFunc("/api/check-user", CheckUserHandler)
 	mux.HandleFunc("/api/get-profile-info", GetProfileInfo)
 	mux.HandleFunc("/api/get-user-posts", GetUserPosts)
