@@ -6,11 +6,11 @@ function connectNotificationsWS() {
 
     ws.onmessage = (event) => {
         const notif = JSON.parse(event.data);
-        // Check if this is a deletion message
+        // Delete contradictory reaction
         if (notif.action === "delete") {
             handleDeletionNotification(notif);
         } else {
-            // Regular notification
+            // Add regular notification
             insertWSNotification(notif);
             addNotificationBadge();
             addClearAllButton();
@@ -48,8 +48,16 @@ function insertWSNotification(notif) {
     // Click to navigate to post
     notifElement.addEventListener("click", function (event) {
         if (!event.target.classList.contains("notif-close")) {
+            // Mark as read when clicked
+            const notifId = this.getAttribute('data-notif-id');
+            readNotificationIds.add(notifId);
+            this.classList.add('read');
+
             history.pushState(null, "", `/post?post_id=${encodeURIComponent(notif.post_id)}`);
-            Routing()
+            Routing();
+
+            // Check if all notifications are now read
+            checkIfAllNotificationsRead();
         }
     });
 

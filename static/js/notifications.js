@@ -2,6 +2,8 @@ let notifOffset = 0; // Offset for pagination
 let notifLoading = false; // Prevents multiple fetches
 let notifications = []; // Global notifications array
 const dynamicContent = document.getElementById("content");
+// Create a set to track read notification IDs
+const readNotificationIds = new Set();
 
 /*************************************
 *   Update UI on tab content' load   *
@@ -49,17 +51,30 @@ async function notifsRenderer() {
             // Make notification clickable (navigates to post page)
             notifElement.addEventListener("click", function (event) {
                 if (!event.target.classList.contains("notif-close")) {
+                    // Mark as read when clicked
+                    const notifId = this.getAttribute('data-notif-id');
+                    readNotificationIds.add(notifId);
+                    this.classList.add('read');
+
                     document.querySelector("#tagFilterSection").style.display = "none";
                     history.pushState(null, "", `/post?post_id=${notif.post_id}`);
-                    // document.querySelector(".tab-bar").style.display = "none";
                     Routing();
+
+                    // Check if all notifications are now read
+                    checkIfAllNotificationsRead();
                 }
             });
+
+            // Check read notifs and add 'read' class in each content load
+            const notifID = notifElement.getAttribute("data-notif-id");
+            if (readNotificationIds.has(notifID.toString())) {
+                markNotificationAsRead(notifElement); // Local storage
+                notifElement.classList.add('read'); // For CSS style
+            }
 
             // Close button event listener (Removes from UI & Backend with fade effect)
             notifElement.querySelector(".notif-close").addEventListener("click", async (event) => {
                 event.stopPropagation(); // Prevent navigating to post
-                const notifID = notifElement.getAttribute("data-notif-id"); // Get notification ID
                 await deleteNotification(notifID); // Remove from backend
 
                 // Fade-out effect then remove
@@ -125,13 +140,6 @@ async function clearAllNotifications() {
 /*************************************
 *          Helper functions          *
 **************************************/
-function checkEmptyNotifications() {
-    if (document.querySelectorAll(".notification-item").length === 0) {
-        removeNotificationBadge();
-        noNotification();
-    }
-}
-
 // API call to remove notification from backend
 async function deleteNotification(notifID) {
     try {
@@ -166,20 +174,45 @@ function noNotification() {
     `;
 }
 
+// Load read notifications from localStorage on page load
+window.addEventListener('DOMContentLoaded', () => {
+    const savedReadIds = JSON.parse(localStorage.getItem('readNotificationIds') || '[]');
+    savedReadIds.forEach(id => readNotificationIds.add(id));
+});
+
+// Save to localStorage whenever a notification is marked as read
+function markNotificationAsRead(notifElement) {
+    const notifId = notifElement.getAttribute('data-notif-id');
+    readNotificationIds.add(notifId);
+    
+    // Save to localStorage
+    localStorage.setItem('readNotificationIds', 
+        JSON.stringify([...readNotificationIds])
+    );
+    
+    checkIfAllNotificationsRead();
+}
+
 /*************************************
 *     Notification Badge Logic       *
 **************************************/
 // Check for new notification
 async function checkNotificationCount() {
     try {
-        const res = await fetch("/api/get-notifications?offset=0&limit=1"); // Fetch only one notification
+        const res = await fetch("/api/get-notifications?offset=0&limit=100"); // Fetch all notifications
         if (!res.ok) throw new Error("Failed to fetch notifications");
         const notifications = await res.json();
-        if (notifications.length > 0) {
-            // Notifications exist, show red dot
+
+        // Check if there are any unread notifications
+        const hasUnreadNotifications = notifications.some(notif =>
+            !readNotificationIds.has(notif.id.toString())
+        );
+
+        // Show red dot if there's any unread notif
+        if (hasUnreadNotifications) {
             addNotificationBadge();
         } else {
-            removeNotificationBadge()
+            removeNotificationBadge();
         }
     } catch (err) {
         console.error("Error fetching notifications:", err);
@@ -190,26 +223,24 @@ async function checkNotificationCount() {
 function addNotificationBadge() {
     // Select the notification tab button
     const notifTab = document.querySelector('.tab-btn[data-tab="notifs"]');
-    if (notifTab) {
-        // Prevent duplicate badges
-        if (!notifTab.querySelector('.notification-badge')) {
-            // Create the badge element
-            const badge = document.createElement('span');
-            badge.classList.add('notification-badge');
-            // Basic inline styling for a red circle
-            badge.style.cssText = `
-                position: absolute;
-                top: 5px;
-                right: 8px;
-                background-color: red;
-                width: 8px;
-                height: 8px;
-                border-radius: 50%;
+    // Prevent unnecessary or duplicate badges
+    if (notifTab && !notifTab.querySelector('.notification-badge')) {
+        // Create the badge element
+        const badge = document.createElement('span');
+        badge.classList.add('notification-badge');
+        // Basic inline styling for a red circle
+        badge.style.cssText = `
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            background-color: red;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
             `;
-            // Ensure the button is positioned relative to contain the badge
-            notifTab.style.position = 'relative';
-            notifTab.appendChild(badge);
-        }
+        // Ensure the button is positioned relative to contain the badge
+        notifTab.style.position = 'relative';
+        notifTab.appendChild(badge);
     }
 }
 
@@ -219,5 +250,29 @@ function removeNotificationBadge() {
     if (notifTab) {
         const badge = notifTab.querySelector('.notification-badge');
         if (badge) { badge.remove(); }
+    }
+}
+
+// Check if all currently visible notifications have been read
+function checkIfAllNotificationsRead() {
+    const allNotifications = document.querySelectorAll(".notification-item");
+    let allRead = true;
+
+    allNotifications.forEach(notif => {
+        const notifId = notif.getAttribute('data-notif-id');
+        if (!readNotificationIds.has(notifId)) {
+            allRead = false;
+        }
+    });
+
+    if (allRead) {
+        removeNotificationBadge();
+    }
+}
+
+function checkEmptyNotifications() {
+    if (document.querySelectorAll(".notification-item").length === 0) {
+        removeNotificationBadge();
+        noNotification();
     }
 }
