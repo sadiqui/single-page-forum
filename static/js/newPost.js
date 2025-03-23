@@ -53,11 +53,11 @@ async function HandleNewPost(e, categories, clearTags) {
             clearTags;
 
             if (window.location.pathname === "/" && currentHistoryTab == "posts") {
-                historyOffset = 0;
+                activityOffset = 0;
                 endHistoryFetch = false;
-                fetchUserPosts(historyOffset)
+                fetchUserPosts(activityOffset, "activityDynamicContent")
                     .then(() => {
-                        historyOffset += HistoryLimit;
+                        activityOffset += HistoryLimit;
                     })
             }
             if (window.location.pathname === "/profile" && currentProfileTab == "profile-posts") {
@@ -65,7 +65,7 @@ async function HandleNewPost(e, categories, clearTags) {
                 endProfileFetch = false;
                 const urlParams = new URLSearchParams(window.location.search);
                 const username = urlParams.get("user");
-                fetchProfilePosts(profileOffset, username)
+                fetchUserPosts(profileOffset, "profileDynamicContent")
                     .then(() => {
                         profileOffset += ProfileLimit;
                     })

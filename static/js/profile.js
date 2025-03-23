@@ -161,7 +161,7 @@ function SetupProfileTabListeners(profile) {
                 profileIsLoading = false;
                 dynamicContent.innerHTML = `<p>Loading ${profile.username}'s posts...</p>`;
 
-                fetchProfilePosts(profileOffset, profile.username)
+                fetchUserPosts(profileOffset, "profileDynamicContent");
             }
         });
     });
@@ -173,13 +173,15 @@ function SetupProfileTabListeners(profile) {
     }
 }
 
-// Fetch user posts
-async function fetchProfilePosts(offset, username) {
-    const dynamicContent = document.getElementById("profileDynamicContent");
+// Fetch user posts for both
+// profile and activity tab.
+async function fetchUserPosts(offset, content) {
+    // profileDynamicContent
+    const dynamicContent = document.getElementById(content);
     if (!dynamicContent || endProfileFetch) return;
 
     try {
-        const query = `/api/get-user-posts?offset=${offset}&username=${encodeURIComponent(username)}`;
+        const query = `/api/get-user-posts?offset=${offset}`;
         const res = await fetch(query);
 
         if (!res.ok) return;
@@ -199,15 +201,12 @@ async function fetchProfilePosts(offset, username) {
         }
 
         // If offset=0, replace the entire dynamicContent first
-        if (offset === 0) {
-            dynamicContent.innerHTML = "";
-        }
+        if (offset === 0) dynamicContent.innerHTML = "";
 
         RenderPosts(posts, offset, 100);
-
     } catch (err) {
         console.error("Error loading user posts:", err);
-        dynamicContent.innerHTML = `<p>Error loading user posts.</p>`;
+        DisplayError("errMsg", dynamicContent, "Error loading user posts.");
     }
 }
 
@@ -229,7 +228,7 @@ function handleProfileScroll() {
         // only if we're on the "profile-posts" tab
         if (currentProfileTab === "profile-posts") {
             profileIsLoading = true;
-            fetchProfilePosts(profileOffset, username)
+            fetchUserPosts(profileOffset, "profileDynamicContent")
                 .then(() => {
                     profileOffset += ProfileLimit;
                 })

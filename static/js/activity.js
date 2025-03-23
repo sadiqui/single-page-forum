@@ -44,7 +44,7 @@ function historyRenderer(username) {
                         <span class="history-tab-txt">Comments</span>
                     </button>
                 </nav>
-                <div id="historyDynamicContent"></div>
+                <div id="activityDynamicContent"></div>
             </div>
         </div>
     `;
@@ -89,7 +89,7 @@ function SetupHistoryTabListeners() {
 
 // Helper function, render according tab
 function conditionalTabs(scrollPos) {
-    const dynamicContent = document.getElementById("historyDynamicContent"); // Adjust based on your actual container
+    const dynamicContent = document.getElementById("activityDynamicContent"); // Adjust based on your actual container
 
     if (!dynamicContent) return; // Prevent errors if the element is missing
 
@@ -102,7 +102,7 @@ function conditionalTabs(scrollPos) {
         const actions = {
             liked: () => fetchLikedPosts(activityOffset, "like"),
             disliked: () => fetchLikedPosts(activityOffset, "dislike"),
-            posts: () => fetchUserPosts(activityOffset),
+            posts: () => fetchUserPosts(activityOffset, "activityDynamicContent"),
             comments: () => fetchCommentedPosts(activityOffset),
         };
 
@@ -134,7 +134,7 @@ function conditionalTabs(scrollPos) {
 ----------------------------------*/
 async function fetchLikedPosts(activityOffset, reaction) {
     if (endHistoryFetch) return
-    const dynamicContent = document.getElementById("historyDynamicContent");
+    const dynamicContent = document.getElementById("activityDynamicContent");
     try {
         const res = await fetch(`/api/user-liked-posts?offset=${activityOffset}&reaction=${reaction}`);
         if (!res.ok) return;
@@ -147,7 +147,7 @@ async function fetchLikedPosts(activityOffset, reaction) {
             </div>`
             return
         }
-        if (!posts || posts.length == 0) {            
+        if (!posts || posts.length == 0) {
             endHistoryFetch = true
             return
         }
@@ -159,45 +159,12 @@ async function fetchLikedPosts(activityOffset, reaction) {
     }
 }
 
-/* -----------------------
-   FETCH USER POSTS
--------------------------*/
-async function fetchUserPosts(activityOffset) {
-    const dynamicContent = document.getElementById("historyDynamicContent");
-    if (!dynamicContent || endProfileFetch) return;
-
-    try {
-        const query = `/api/user-posts?offset=${activityOffset}`;
-        const res = await fetch(query);
-
-        if (!res.ok) return;
-        const posts = await res.json();
-
-        // If offset=0 and no posts, show empty image
-        if ((!posts || posts.length === 0) && activityOffset === 0) {
-            dynamicContent.innerHTML = `<div id="emptyTabimg">
-            <img src="../img/empty-chat.png" alt="No posts">
-                <p>No posts yet!</p>
-            </div>`;
-            return;
-        }
-        if (!posts || posts.length == 0) {
-            endHistoryFetch = true;
-            return;
-        }
-        RenderPosts(posts, activityOffset, 100);
-    } catch (err) {
-        console.error("Error loading user posts:", err);
-        DisplayError("errMsg", dynamicContent, "Error loading user posts.");
-    }
-}
-
 /*-------------------------
    FETCH Commented POSTS
 ---------------------------*/
 async function fetchCommentedPosts(activityOffset) {
     if (endHistoryFetch) return
-    const dynamicContent = document.getElementById("historyDynamicContent");
+    const dynamicContent = document.getElementById("activityDynamicContent");
 
     try {
         const res = await fetch(`/api/user-commented-posts?offset=${activityOffset}`);
@@ -239,7 +206,7 @@ function handleHistoryScroll() {
         historyisLoading = true;
 
         if (currentHistoryTab === "posts") {
-            fetchUserPosts(activityOffset)
+            fetchUserPosts(activityOffset, "activityDynamicContent")
                 .then(() => {
                     activityOffset += HistoryLimit; // increment offset
                 })
