@@ -18,7 +18,7 @@ async function notifsRenderer() {
         const data = await res.json();
         notifications = data;
 
-        if (notifications.length !== 0) { addClearAllButton(); }
+        if (notifications.length !== 0) addClearAllButton();
         if (notifications.length === 0 && notifOffset === 0) {
             noNotification();
             return;
@@ -33,7 +33,7 @@ async function notifsRenderer() {
             const notifElement = document.createElement("div");
             notifElement.className = "notification-item";
             notifElement.setAttribute("data-post-id", notif.post_id);
-            notifElement.setAttribute("data-notif-id", notif.id); // Store notification ID
+            notifElement.setAttribute("data-notif-id", notif.id);
 
             // Add 'read' class if the notification is marked as read
             if (notif.read_status) notifElement.classList.add('read');
@@ -63,7 +63,7 @@ async function notifsRenderer() {
                 }
             });
 
-            // Close button event listener (Removes from UI & Backend with fade effect)
+            // Close button event listener (Removes from Backend & UI with fade effect)
             const notifID = notifElement.getAttribute("data-notif-id");
             notifElement.querySelector(".notif-close").addEventListener("click", async (event) => {
                 event.stopPropagation(); // Prevent navigating to post
@@ -81,7 +81,7 @@ async function notifsRenderer() {
         });
     } catch (err) {
         console.error("Error fetching notifications:", err);
-        notifContainer.innerHTML = "<p class='error-msg'>Something went wrong.</p>";
+        notifContainer.innerHTML = `<p class="error-msg">Something went wrong.</p>`;
     } finally {
         notifLoading = false;
     }
@@ -177,7 +177,7 @@ function handleNotifScroll() {
 }
 
 function noNotification() {
-    if (notifContainer) { notifContainer.remove(); }
+    if (notifContainer) notifContainer.remove();
     dynamicContent.innerHTML = `
     <div id="emptyChatimg">
         <img src="../img/empty-chat.png" alt="No notification">
@@ -260,15 +260,3 @@ function checkEmptyNotifications() {
         noNotification();
     }
 }
-
-// // Set up pollers and event listeners
-// function initNotifications() {
-//     // Initial check for notifications
-//     checkNotificationCount();
-    
-//     // Set up a poller to check for new notifications
-//     setInterval(checkNotificationCount, 60000); // Check every minute
-// }
-
-// // Initialize notifications when DOM is loaded
-// document.addEventListener('DOMContentLoaded', initNotifications);

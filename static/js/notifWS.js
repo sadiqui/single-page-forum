@@ -58,15 +58,18 @@ function insertWSNotification(notif) {
         }
     });
 
-    // Close button
+    // Close button event listener (Removes from Backend & UI with fade effect)
+    const notifID = notifElement.getAttribute("data-notif-id");
     notifElement.querySelector(".notif-close").addEventListener("click", async (event) => {
-        event.stopPropagation();
-        const notifID = notifElement.getAttribute("data-notif-id");
-        await deleteNotification(notifID);
-        notifElement.style.opacity = "0";
-        setTimeout(() => { notifElement.remove(); }, 300);
+        event.stopPropagation(); // Prevent navigating to post
+        await deleteNotification(notifID); // Remove from backend
 
-        if (document.querySelectorAll(".notification-item").length === 0) { noNotification(); }
+        // Fade-out effect then remove
+        notifElement.style.opacity = "0";
+        setTimeout(() => {
+            notifElement.remove();
+            checkEmptyNotifications();
+        }, 300);
     });
 
     // Insert at the top of the container (newest first)
