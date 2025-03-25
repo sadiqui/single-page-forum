@@ -75,11 +75,14 @@ function RenderOnlineUsers(users) {
 
 // Show online users container
 function showOnlineUsers() {
-    const onlineUsersContainer = document.createElement("div");
-    onlineUsersContainer.id = "onlineUsersContainer";
-    onlineUsersContainer.innerHTML = `<div id="onlineUsers" class="online-users"><span class="loading">Loading...</span></div>`;
+    // Check if the container already exists before creating
+    if (!document.getElementById("onlineUsersContainer")) {
+        const onlineUsersContainer = document.createElement("div");
+        onlineUsersContainer.id = "onlineUsersContainer";
+        onlineUsersContainer.innerHTML = `<div id="onlineUsers" class="online-users"><span class="loading">Loading...</span></div>`;
 
-    document.body.insertBefore(onlineUsersContainer, document.body.firstChild);
+        document.body.insertBefore(onlineUsersContainer, document.body.firstChild);
+    }
 }
 
 // Sort users by last message date.

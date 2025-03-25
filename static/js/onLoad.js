@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // If the "social_email" cookie exists it means a social signup is pending.
     if (getCookieValue("social_email")) {
         SocialSignUp();
-        return
+        return;
     }
 
     try {
@@ -58,9 +58,7 @@ async function Routing() {
     const path = window.location.pathname;
     if (path !== "/") {
         const tagFilterSection = document.getElementById("tagFilterSection");
-        if (tagFilterSection) {
-            tagFilterSection.style.display = "none";
-        }
+        if (tagFilterSection) tagFilterSection.style.display = "none";
         const tabBar = document.querySelector(".tab-bar")
         if (tabBar) tabBar.style.display = "none";
         window.removeEventListener('scroll', handleScroll);
@@ -72,7 +70,9 @@ async function Routing() {
         const tabBar = document.getElementById("tabBar");
         if (!tabBar) return;
         tabBar.innerHTML = tabBarHTML;
-        tabName = "home";
+        // Get the saved tab or default to home
+        const savedTab = localStorage.getItem('currentTab') || 'home';
+        tabName = savedTab;
         SetupTabListeners();
     } else if (path === "/post") {
         currentHistoryTab = "";
@@ -93,7 +93,7 @@ async function Routing() {
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get("user");
 
-        if (username) {         
+        if (username) {
             const exists = await checkUser(username);
             if (exists) {
                 LoadProfilePage(username);
@@ -113,11 +113,25 @@ async function Routing() {
 function SetupTabListeners() {
     const tabButtons = document.querySelectorAll(".tab-btn");
 
-    // Set "Home" as the default active tab on page load
-    const defaultTab = document.querySelector('.tab-btn[data-tab="home"]');
-    if (defaultTab) {
-        defaultTab.classList.add("active");
-        LoadTabContent("home"); // Load home content on start
+    // Check if there's a saved tab in localStorage
+    const savedTab = localStorage.getItem('currentTab') || 'home';
+
+    // Set the saved tab or default to home
+    const tabToActivate = document.querySelector(`.tab-btn[data-tab="${savedTab}"]`) ||
+        document.querySelector('.tab-btn[data-tab="home"]');
+
+    if (tabToActivate) {
+        // Remove active class from all buttons
+        tabButtons.forEach(btn => btn.classList.remove("active"));
+
+        // Add active class to the saved/default tab
+        tabToActivate.classList.add("active");
+
+        // Set the global tabName
+        tabName = savedTab;
+
+        // Load the content for the saved/default tab
+        LoadTabContent(savedTab);
     }
 
     tabButtons.forEach(button => {
@@ -131,6 +145,9 @@ function SetupTabListeners() {
             // Get the tab name
             tabName = this.getAttribute("data-tab");
 
+            // Save the current tab to localStorage
+            localStorage.setItem('currentTab', tabName);
+
             // Call function to change content
             LoadTabContent(tabName);
         });
@@ -141,15 +158,11 @@ function LoadTabContent(tab) {
     // If we're on the "home" tab, add the filter UI at the top (only once, when offset=0)
     if (tabName === "home") {
         const tagFilterSection = document.getElementById("tagFilterSection");
-        if (tagFilterSection) {
-            tagFilterSection.style.display = "block"; // Show the filter UI
-        }
+        if (tagFilterSection) tagFilterSection.style.display = "block";
     } else {
         // Hide the filter UI when not in "home" tab
         const tagFilterSection = document.getElementById("tagFilterSection");
-        if (tagFilterSection) {
-            tagFilterSection.style.display = "none";
-        }
+        if (tagFilterSection) tagFilterSection.style.display = "none";
     }
     const dynamicContent = document.getElementById("content");
 
@@ -188,31 +201,15 @@ function LoadTabContent(tab) {
             opacity += 0.2; // Increase opacity gradually
             dynamicContent.style.opacity = opacity;
 
-            if (opacity < 1) {
-                requestAnimationFrame(fadeIn); // Continue animation
-            }
+            if (opacity < 1) requestAnimationFrame(fadeIn); // Continue animation
         }
 
         requestAnimationFrame(fadeIn); // Start fade-in effect
     }, 100); // fade out
 }
 
-// Handle navigation per authentication state
-window.addEventListener("popstate", async () => {
-    try {
-        const res = await fetch("/api/check-session");
-        if (res.ok) {
-            const data = await res.json();
-            // Allow normal navigation
-            if (data.loggedIn) {
-                Routing();
-                return;
-            }
-        }
-    } catch (err) {
-        console.error("Error checking session:", err);
-    }
-});
+// Re-check authentication on navigation
+window.addEventListener("popstate", async () => { CheckSession(); });
 
 // Serve single post when clicking his title, without refresh
 document.addEventListener("click", (event) => {

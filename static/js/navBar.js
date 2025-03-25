@@ -31,15 +31,14 @@ function ShowLoggedInNav(username, profilePicture) {
     `;
 
     document.querySelector("#profile").addEventListener("click", (e) => {
-        e.preventDefault
         history.pushState(null, "", `/profile?user=${encodeURIComponent(username)}`);
-        Routing()
+        Routing();
     })
     
     document.querySelector(".logo-link").addEventListener("click", (e) => {
-        e.preventDefault
+        localStorage.removeItem('currentTab');
         history.pushState(null, "", "/");
-        Routing()
+        Routing();
     })
 
     // Floating add button + back to top button

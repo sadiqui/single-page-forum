@@ -182,10 +182,6 @@
     background-color: #67caf8;
 }
 
-/* :root.dark-mode .post-dialog {
-    background-color: #2e2e2e;
-} */
-
 :root.dark-mode .suggestion-item:hover {
     background-color: rgb(39, 197, 250);
 }

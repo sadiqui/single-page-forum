@@ -94,10 +94,7 @@ function createNotifContainer() {
 // Delete contradictory notification from UI
 // Reaction change for same user/actor/post
 function handleDeletionNotification(deletion) {
-    // Find any notifications matching the criteria to delete
-    const notifications = document.querySelectorAll(".notification-item");
-
-    notifications.forEach(notif => {
+    allNotifications.forEach(notif => {
         const postId = notif.getAttribute("data-post-id");
         const notifContent = notif.querySelector(".notif-message").textContent;
 
