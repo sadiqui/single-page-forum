@@ -37,7 +37,8 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
             a.profile_pic, 
             n.post_id, 
             n.type, 
-            n.created_at
+            n.created_at,
+			COALESCE(n.read_status, 0) AS read_status
         FROM notifications n
         JOIN users a ON n.actor_id = a.id
         WHERE n.user_id = ?
@@ -58,6 +59,7 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 			actorUN    string
 			profilePic string
 			postID     sql.NullInt64
+			readStatus int
 		)
 
 		if err := rows.Scan(
@@ -69,6 +71,7 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 			&postID,     // n.post_id
 			&n.Type,
 			&n.CreatedAt,
+			&readStatus,
 		); err != nil {
 			JsonError(w, "Failed to scan notification", http.StatusInternalServerError, err)
 			return
@@ -84,6 +87,7 @@ func GetNotifications(w http.ResponseWriter, r *http.Request) {
 		n.ActorUsername = actorUN
 		n.ActorProfilePic = profilePic
 		n.Message = buildNotification(n.Type)
+		n.ReadStatus = readStatus == 1 // Convert int to bool
 
 		notifs = append(notifs, n)
 	}
@@ -175,26 +179,92 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 	return err
 }
 
-// fetches a username from the database using the user ID.
-func GetUsername(userID int) string {
-	var username string
-	err := DB.QueryRow("SELECT username FROM users WHERE id = ?", userID).Scan(&username)
-	if err != nil {
-		fmt.Println("Error fetching username:", err)
-		return "JohnDoe" // Fallback value
+// MarkNotificationAsRead handles marking a notification as read
+func MarkNotificationAsRead(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
+		return
 	}
-	return username
+
+	user, err := GetUser(r)
+	if err != nil {
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
+		return
+	}
+
+	// Parse request body
+	var requestBody struct {
+		NotificationID string `json:"notification_id"`
+	}
+
+	if err := json.NewDecoder(r.Body).Decode(&requestBody); err != nil {
+		JsonError(w, "Invalid request body", http.StatusBadRequest, err)
+		return
+	}
+
+	// Check if the notification belongs to the user
+	var ownerID int
+	err = DB.QueryRow(`SELECT user_id FROM notifications WHERE id = ?`, requestBody.NotificationID).Scan(&ownerID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			JsonError(w, "Notification not found", http.StatusNotFound, nil)
+		} else {
+			JsonError(w, "Failed to query notification", http.StatusInternalServerError, err)
+		}
+		return
+	}
+
+	// Ensure user is the owner of the notification
+	if ownerID != user.ID {
+		JsonError(w, "Unauthorized action", http.StatusForbidden, nil)
+		return
+	}
+
+	// Update the notification to mark it as read
+	_, err = DB.Exec(`UPDATE notifications SET read_status = 1 WHERE id = ?`, requestBody.NotificationID)
+	if err != nil {
+		JsonError(w, "Failed to mark notification as read", http.StatusInternalServerError, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(`{"success": true, "message": "Notification marked as read"}`))
 }
 
-// fetches a user's profile picture from the database.
-func GetUserProfilePic(userID int) string {
-	var profilePic string // Allows NULL handling
-	err := DB.QueryRow("SELECT profile_pic FROM users WHERE id = ?", userID).Scan(&profilePic)
-	if err != nil {
-		fmt.Println("Error fetching profile picture:", err)
-		return "avatar.webp" // Default profile picture
+// GetUnreadNotificationCount returns the count of unread notifications for the user
+func GetUnreadNotificationCount(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
+		return
 	}
-	return profilePic
+
+	user, err := GetUser(r)
+	if err != nil {
+		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
+		return
+	}
+
+	// Query the database for unread notifications count
+	var count int
+	err = DB.QueryRow(`
+		SELECT COUNT(*) 
+		FROM notifications 
+		WHERE user_id = ? AND (read_status = 0 OR read_status IS NULL)
+	`, user.ID).Scan(&count)
+	if err != nil {
+		JsonError(w, "Failed to query notification count", http.StatusInternalServerError, err)
+		return
+	}
+
+	// Return the count as JSON
+	response := struct {
+		UnreadCount int `json:"unreadCount"`
+	}{
+		UnreadCount: count,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(response)
 }
 
 // Delete a single notification after confirming the user

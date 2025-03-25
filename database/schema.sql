@@ -86,6 +86,7 @@ CREATE TABLE
         actor_id INTEGER NOT NULL,
         post_id INTEGER DEFAULT NULL,
         type TEXT NOT NULL CHECK (type IN ('like', 'dislike', 'comment')),
+        read_status INTEGER DEFAULT 0,
         created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
         FOREIGN KEY (actor_id) REFERENCES users (id) ON DELETE CASCADE,

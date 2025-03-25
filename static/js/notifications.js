@@ -1,9 +1,7 @@
 let notifOffset = 0; // Offset for pagination
 let notifLoading = false; // Prevents multiple fetches
-let notifications = []; // Global notifications array
 const dynamicContent = document.getElementById("content");
-// Create a set to track read notification IDs
-const readNotificationIds = new Set();
+const allNotifications = document.querySelectorAll(".notification-item");
 
 /*************************************
 *   Update UI on tab content' load   *
@@ -37,6 +35,9 @@ async function notifsRenderer() {
             notifElement.setAttribute("data-post-id", notif.post_id);
             notifElement.setAttribute("data-notif-id", notif.id); // Store notification ID
 
+            // Add 'read' class if the notification is marked as read
+            if (notif.read_status) notifElement.classList.add('read');
+
             notifElement.innerHTML = `
                 <div class="notif-avatar">
                     <img src="../uploads/${notif.actor_profile_pic || 'avatar.webp'}" alt="User Avatar">
@@ -53,26 +54,17 @@ async function notifsRenderer() {
                 if (!event.target.classList.contains("notif-close")) {
                     // Mark as read when clicked
                     const notifId = this.getAttribute('data-notif-id');
-                    readNotificationIds.add(notifId);
+                    markNotificationAsRead(notifId);
                     this.classList.add('read');
 
                     document.querySelector("#tagFilterSection").style.display = "none";
                     history.pushState(null, "", `/post?post_id=${notif.post_id}`);
                     Routing();
-
-                    // Check if all notifications are now read
-                    checkIfAllNotificationsRead();
                 }
             });
 
-            // Check read notifs and add 'read' class in each content load
-            const notifID = notifElement.getAttribute("data-notif-id");
-            if (readNotificationIds.has(notifID.toString())) {
-                markNotificationAsRead(notifElement); // Local storage
-                notifElement.classList.add('read'); // For CSS style
-            }
-
             // Close button event listener (Removes from UI & Backend with fade effect)
+            const notifID = notifElement.getAttribute("data-notif-id");
             notifElement.querySelector(".notif-close").addEventListener("click", async (event) => {
                 event.stopPropagation(); // Prevent navigating to post
                 await deleteNotification(notifID); // Remove from backend
@@ -122,7 +114,7 @@ async function clearAllNotifications() {
         await fetch(`/api/delete-all-notifications`, { method: "DELETE" });
 
         // Fade out all notifications
-        document.querySelectorAll(".notification-item").forEach(notif => {
+        allNotifications.forEach(notif => {
             notif.style.opacity = "0";
             setTimeout(() => notif.remove(), 300);
         });
@@ -149,6 +141,27 @@ async function deleteNotification(notifID) {
     }
 }
 
+// API call to mark notification as read on the server
+async function markNotificationAsRead(notifID) {
+    try {
+        const response = await fetch(`/api/mark-notification-read`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ notification_id: notifID })
+        });
+        
+        if (!response.ok) {
+            throw new Error("Failed to mark notification as read");
+        }
+        
+        checkIfAllNotificationsRead();
+    } catch (err) {
+        console.error("Failed to mark notification as read:", err);
+    }
+}
+
 // Infinite Scroll for Notifications
 function handleNotifScroll() {
     const notifContainer = document.getElementById("notifContainer");
@@ -164,7 +177,6 @@ function handleNotifScroll() {
 }
 
 function noNotification() {
-    const dynamicContent = document.getElementById("content");
     if (notifContainer) { notifContainer.remove(); }
     dynamicContent.innerHTML = `
     <div id="emptyChatimg">
@@ -174,48 +186,24 @@ function noNotification() {
     `;
 }
 
-// Load read notifications from localStorage on page load
-window.addEventListener('DOMContentLoaded', () => {
-    const savedReadIds = JSON.parse(localStorage.getItem('readNotificationIds') || '[]');
-    savedReadIds.forEach(id => readNotificationIds.add(id));
-});
-
-// Save to localStorage whenever a notification is marked as read
-function markNotificationAsRead(notifElement) {
-    const notifId = notifElement.getAttribute('data-notif-id');
-    readNotificationIds.add(notifId);
-    
-    // Save to localStorage
-    localStorage.setItem('readNotificationIds', 
-        JSON.stringify([...readNotificationIds])
-    );
-    
-    checkIfAllNotificationsRead();
-}
-
 /*************************************
 *     Notification Badge Logic       *
 **************************************/
 // Check for new notification
 async function checkNotificationCount() {
     try {
-        const res = await fetch("/api/get-notifications?offset=0&limit=100"); // Fetch all notifications
-        if (!res.ok) throw new Error("Failed to fetch notifications");
-        const notifications = await res.json();
-
-        // Check if there are any unread notifications
-        const hasUnreadNotifications = notifications.some(notif =>
-            !readNotificationIds.has(notif.id.toString())
-        );
-
-        // Show red dot if there's any unread notif
-        if (hasUnreadNotifications) {
+        const res = await fetch("/api/get-unread-notification-count");
+        if (!res.ok) throw new Error("Failed to fetch notification count");
+        const data = await res.json();
+        
+        // Show red dot if there are unread notifications
+        if (data.unreadCount > 0) {
             addNotificationBadge();
         } else {
             removeNotificationBadge();
         }
     } catch (err) {
-        console.error("Error fetching notifications:", err);
+        console.error("Error fetching notification count:", err);
     }
 }
 
@@ -249,30 +237,38 @@ function removeNotificationBadge() {
     const notifTab = document.querySelector('.tab-btn[data-tab="notifs"]');
     if (notifTab) {
         const badge = notifTab.querySelector('.notification-badge');
-        if (badge) { badge.remove(); }
+        if (badge) badge.remove();
     }
 }
 
 // Check if all currently visible notifications have been read
 function checkIfAllNotificationsRead() {
-    const allNotifications = document.querySelectorAll(".notification-item");
     let allRead = true;
 
     allNotifications.forEach(notif => {
-        const notifId = notif.getAttribute('data-notif-id');
-        if (!readNotificationIds.has(notifId)) {
+        if (!notif.classList.contains('read')) {
             allRead = false;
         }
     });
 
-    if (allRead) {
-        removeNotificationBadge();
-    }
+    if (allRead) removeNotificationBadge();
 }
 
 function checkEmptyNotifications() {
-    if (document.querySelectorAll(".notification-item").length === 0) {
+    if (allNotifications.length === 0) {
         removeNotificationBadge();
         noNotification();
     }
 }
+
+// // Set up pollers and event listeners
+// function initNotifications() {
+//     // Initial check for notifications
+//     checkNotificationCount();
+    
+//     // Set up a poller to check for new notifications
+//     setInterval(checkNotificationCount, 60000); // Check every minute
+// }
+
+// // Initialize notifications when DOM is loaded
+// document.addEventListener('DOMContentLoaded', initNotifications);

@@ -8,35 +8,10 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"time"
 )
 
 // Num of posts on each scroll load in profile.
 var ProfileLimit = 6
-
-// Handle fetching user data
-func ProfileInfoHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodGet {
-		JsonError(w, "Method not allowed", http.StatusMethodNotAllowed, nil)
-		return
-	}
-
-	user, err := GetUser(r)
-	if err != nil {
-		JsonError(w, "Unauthorized", http.StatusUnauthorized, err)
-		return
-	}
-
-	var created time.Time
-	DB.QueryRow(`SELECT created_at FROM users WHERE id = ?`, user.ID).Scan(&created)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"email":      user.Email,
-		"username":   user.Username,
-		"created_at": created,
-	})
-}
 
 // Handler to Get the User's *Liked/disliked* Posts
 func LikedPosts(w http.ResponseWriter, r *http.Request) {

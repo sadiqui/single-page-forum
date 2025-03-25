@@ -50,14 +50,11 @@ function insertWSNotification(notif) {
         if (!event.target.classList.contains("notif-close")) {
             // Mark as read when clicked
             const notifId = this.getAttribute('data-notif-id');
-            readNotificationIds.add(notifId);
+            markNotificationAsRead(notifId);
             this.classList.add('read');
 
             history.pushState(null, "", `/post?post_id=${encodeURIComponent(notif.post_id)}`);
             Routing();
-
-            // Check if all notifications are now read
-            checkIfAllNotificationsRead();
         }
     });
 

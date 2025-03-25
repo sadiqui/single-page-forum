@@ -49,6 +49,7 @@ type Notification struct {
 	Type            string    `json:"type"`
 	Message         string    `json:"message"`
 	CreatedAt       time.Time `json:"created_at"`
+	ReadStatus      bool      `json:"read_status"`
 }
 
 // Delete contradictory reaction notif

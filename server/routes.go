@@ -30,7 +30,6 @@ func Routes() http.Handler {
 	mux.HandleFunc("/api/comments-count", GetCommentsCount)
 
 	// Routes for users data
-	mux.HandleFunc("/api/user-info", ProfileInfoHandler)
 	mux.HandleFunc("/api/user-liked-posts", LikedPosts)
 	mux.HandleFunc("/api/user-commented-posts", UserCommentedPosts)
 	mux.HandleFunc("/api/user-post-comments", GetUserPostComments)
@@ -42,6 +41,8 @@ func Routes() http.Handler {
 	// Routes for notifications
 	mux.Handle("/api/delete-notification", rl.Middleware(http.HandlerFunc(DeleteNotification)))
 	mux.Handle("/api/delete-all-notifications", rl.Middleware(http.HandlerFunc(DeleteAllNotifications)))
+	mux.Handle("/api/mark-notification-read", rl.Middleware(http.HandlerFunc(MarkNotificationAsRead)))
+	mux.HandleFunc("/api/get-unread-notification-count", GetUnreadNotificationCount)
 	mux.HandleFunc("/api/get-notifications", GetNotifications)
 	mux.HandleFunc("/ws/notifications", NotificationSocket)
 

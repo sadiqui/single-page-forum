@@ -3,6 +3,7 @@ package server
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 )
@@ -134,4 +135,28 @@ func GetUserPosts(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(posts)
+}
+
+// ********** User's helper functions ********** //
+
+// fetches a username from the database using the user ID.
+func GetUsername(userID int) string {
+	var username string
+	err := DB.QueryRow("SELECT username FROM users WHERE id = ?", userID).Scan(&username)
+	if err != nil {
+		fmt.Println("Error fetching username:", err)
+		return "JohnDoe" // Fallback value
+	}
+	return username
+}
+
+// fetches a user's profile picture from the database.
+func GetUserProfilePic(userID int) string {
+	var profilePic string // Allows NULL handling
+	err := DB.QueryRow("SELECT profile_pic FROM users WHERE id = ?", userID).Scan(&profilePic)
+	if err != nil {
+		fmt.Println("Error fetching profile picture:", err)
+		return "avatar.webp" // Default profile picture
+	}
+	return profilePic
 }
