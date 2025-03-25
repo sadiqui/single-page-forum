@@ -152,7 +152,7 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 	}
 
 	// Insert the new notification as before
-	_, err := DB.Exec(`
+	result, err := DB.Exec(`
 		INSERT INTO notifications (user_id, actor_id, post_id, type)
 		VALUES (?, ?, ?, ?)
 	`,
@@ -161,22 +161,34 @@ func InsertNotification(ownerID, actorID int, postID *int, reactionType string) 
 		postID,       // if nil, it will be NULL; see note below for SQLite
 		reactionType, // "like" or "dislike"
 	)
-
-	if err == nil {
-		// Fetch the latest notification and send via WebSocket
-		notification := Notification{
-			UserID:          ownerID,
-			ActorID:         actorID,
-			PostID:          postID,
-			Type:            reactionType,
-			Message:         buildNotification(reactionType),
-			ActorUsername:   GetUsername(actorID),
-			ActorProfilePic: GetUserProfilePic(actorID),
-			CreatedAt:       time.Now(),
-		}
-		NotifyUser(notification) // Send real-time WS update
+	if err != nil {
+		return err
 	}
-	return err
+
+	// Retrieve the last inserted ID
+	notificationID, err := result.LastInsertId()
+	if err != nil {
+		return fmt.Errorf("failed to retrieve notification ID: %w", err)
+	}
+
+	// Convert int64 to int
+	notifIDInt := int(notificationID)
+
+	// Fetch the latest notification and send via WebSocket
+	notification := Notification{
+		ID:              notifIDInt,
+		UserID:          ownerID,
+		ActorID:         actorID,
+		PostID:          postID,
+		Type:            reactionType,
+		Message:         buildNotification(reactionType),
+		ActorUsername:   GetUsername(actorID),
+		ActorProfilePic: GetUserProfilePic(actorID),
+		CreatedAt:       time.Now(),
+	}
+	NotifyUser(notification) // Send real-time WS update
+
+	return nil
 }
 
 // MarkNotificationAsRead handles marking a notification as read
