@@ -1,3 +1,5 @@
+// A global variable for all-notifications may lead to issues
+
 function connectNotificationsWS() {
     const protocol = (window.location.protocol === "https:") ? "wss" : "ws";
     const wsUrl = `${protocol}://${window.location.host}/ws/notifications`;
@@ -94,6 +96,7 @@ function createNotifContainer() {
 // Delete contradictory notification from UI
 // Reaction change for same user/actor/post
 function handleDeletionNotification(deletion) {
+    const allNotifications = document.querySelectorAll(".notification-item");
     allNotifications.forEach(notif => {
         const postId = notif.getAttribute("data-post-id");
         const notifContent = notif.querySelector(".notif-message").textContent;

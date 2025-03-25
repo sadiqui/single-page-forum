@@ -41,6 +41,7 @@
 .notification-item {
     display: flex;
     align-items: center;
+    border-radius: 5px;
     padding: 10px;
     border-bottom: 1px solid var(--border-white);
     transition: background 0.2s ease-in-out, opacity 0.3s ease-in-out;

@@ -1,7 +1,7 @@
 let notifOffset = 0; // Offset for pagination
 let notifLoading = false; // Prevents multiple fetches
 const dynamicContent = document.getElementById("content");
-const allNotifications = document.querySelectorAll(".notification-item");
+// A global variable for all-notifications may lead to issues
 
 /*************************************
 *   Update UI on tab content' load   *
@@ -112,8 +112,9 @@ function removeClearAllButton() {
 async function clearAllNotifications() {
     try {
         await fetch(`/api/delete-all-notifications`, { method: "DELETE" });
-
+        
         // Fade out all notifications
+        const allNotifications = document.querySelectorAll(".notification-item");
         allNotifications.forEach(notif => {
             notif.style.opacity = "0";
             setTimeout(() => notif.remove(), 300);
@@ -243,6 +244,7 @@ function removeNotificationBadge() {
 
 // Check if all currently visible notifications have been read
 function checkIfAllNotificationsRead() {
+    const allNotifications = document.querySelectorAll(".notification-item");
     let allRead = true;
 
     allNotifications.forEach(notif => {
@@ -255,6 +257,7 @@ function checkIfAllNotificationsRead() {
 }
 
 function checkEmptyNotifications() {
+    const allNotifications = document.querySelectorAll(".notification-item");
     if (allNotifications.length === 0) {
         removeNotificationBadge();
         noNotification();
