@@ -191,6 +191,7 @@ function LoadTabContent(tab) {
             window.removeEventListener('scroll', handleScroll);
             window.removeEventListener('scroll', handleActivityScroll);
             loadLastConversation();
+            setTimeout(() => { setupTypingIndicator(); }, 700);
         }
 
         // Animate opacity from 0 to 1 smoothly

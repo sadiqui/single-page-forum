@@ -69,3 +69,9 @@ type Message struct {
 	Content   string    `json:"content"`
 	CreatedAt time.Time `json:"created_at"`
 }
+
+type TypingEvent struct {
+	Sender   string `json:"sender"`
+	Receiver string `json:"receiver"`
+	IsTyping bool   `json:"isTyping"`
+}

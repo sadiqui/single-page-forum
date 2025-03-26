@@ -6,6 +6,11 @@ function connectMessagesWS() {
     ws.onmessage = (event) => {
         try {
             const msg = JSON.parse(event.data);
+            // Check if it's a typing event
+            if (msg.isTyping !== undefined) {
+                handleTypingIndicator(event);
+                return;
+            }
             // Append the received message to the chat UI
             appendMessage(msg.sender, msg.content);
             updateOnlineUsers()

@@ -43,11 +43,19 @@ func MessageWebSocket(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 	}()
 
-	// Keep WebSocket open and listen for messages (optional)
+	// Keep WebSocket open and listen for messages
 	for {
-		_, _, err := conn.ReadMessage()
+		_, message, err := conn.ReadMessage()
 		if err != nil {
 			break
+		}
+
+		var event map[string]interface{}
+		json.Unmarshal(message, &event)
+
+		if event["type"] == "typing" {
+			receiver, _ := GetUserByUsername(event["receiver"].(string))
+			BroadcastTyping(user.ID, receiver.ID, event["isTyping"].(bool))
 		}
 	}
 }
@@ -65,6 +73,24 @@ func BroadcastMessage(senderID int, receiverID int, content string) {
 		}
 
 		msgJSON, _ := json.Marshal(msg)
+		receiverConn.WriteMessage(websocket.TextMessage, msgJSON)
+	}
+}
+
+// BroadcastTyping sends a typing notification to the receiver
+func BroadcastTyping(senderID int, receiverID int, isTyping bool) {
+	connMutex.Lock()
+	receiverConn, online := connections[receiverID]
+	senderUsername := GetUsername(senderID)
+	connMutex.Unlock()
+
+	if online {
+		typingEvent := TypingEvent{
+			Sender:   senderUsername,
+			IsTyping: isTyping,
+		}
+
+		msgJSON, _ := json.Marshal(typingEvent)
 		receiverConn.WriteMessage(websocket.TextMessage, msgJSON)
 	}
 }
