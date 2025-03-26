@@ -1,15 +1,15 @@
-let currentHistoryTab = "";
+let currentActivityTab = "";
 let activityOffset = 0;
 // Loading flag to prevent overlapping fetches (throttle)
-let historyisLoading = false;
-let endHistoryFetch = false;
+let activityIsLoading = false;
+let endActivityFetch = false;
 
-function historyRenderer(username) {
+function activityRenderer(username) {
     const dynamicContent = document.getElementById("content");
     dynamicContent.innerHTML = "";
     dynamicContent.innerHTML = `
         <div class="content-section">
-            <div class="history-card">
+            <div class="activity-card">
                 <div class="profile-image">
                     <img src="../uploads/${ProfilePic}"
                         alt="Profile Picture" />
@@ -26,43 +26,57 @@ function historyRenderer(username) {
                         />
                 </div>
                 <div class="profileUsername username">${username}</div>
-                <nav class="history-tab-bar">
-                    <button class="history-tab-btn active" data-tab="liked">
+                <nav class="activity-tab-bar">
+                    <button class="activity-tab-btn active" data-tab="liked">
                         <img src="../img/liked.svg" alt="liked">
-                        <span class="history-tab-txt">Liked</span>
+                        <span class="activity-tab-txt">Liked</span>
                     </button>
-                    <button class="history-tab-btn" data-tab="disliked">
+                    <button class="activity-tab-btn" data-tab="disliked">
                         <img src="../img/disliked.svg" alt="disliked">
-                        <span class="history-tab-txt">Disliked</span>
+                        <span class="activity-tab-txt">Disliked</span>
                     </button>
-                    <button class="history-tab-btn" data-tab="posts">
+                    <button class="activity-tab-btn" data-tab="posts">
                         <img src="../img/posts.svg" alt="Posts">
-                        <span class="history-tab-txt">My Posts</span>
+                        <span class="activity-tab-txt">My Posts</span>
                     </button>
-                    <button class="history-tab-btn" data-tab="comments">
+                    <button class="activity-tab-btn" data-tab="comments">
                         <img src="../img/comments.svg" alt="comments">
-                        <span class="history-tab-txt">Comments</span>
+                        <span class="activity-tab-txt">Comments</span>
                     </button>
                 </nav>
                 <div id="activityDynamicContent"></div>
             </div>
         </div>
     `;
-    SetupHistoryTabListeners();
+    SetupActivityTabListeners();
     SetupImageUpdate();
+
+    // Retrieve and activate the last used tab
+    const savedTab = localStorage.getItem('currentActivityTab') || 'liked';
+    const tabToActivate = document.querySelector(`.activity-tab-btn[data-tab="${savedTab}"]`);
+
+    if (tabToActivate) {
+        document.querySelector(`.activity-tab-btn[data-tab="liked"]`).classList.remove('active');
+        tabToActivate.classList.add('active');
+        currentActivityTab = savedTab;
+
+        // Trigger the tab loading
+        conditionalTabs(0);
+    }
+
     // Listen for scroll => infinite loading
     if (tabName === "activity") {
-        window.addEventListener("scroll", handleHistoryScroll, { passive: true });
+        window.addEventListener("scroll", handleActivityScroll, { passive: true });
     }
 }
 
-// Handles History tabs clicks.
-function SetupHistoryTabListeners() {
-    const tabButtons = document.querySelectorAll(".history-tab-btn");
+// Handles Activity tabs clicks.
+function SetupActivityTabListeners() {
+    const tabButtons = document.querySelectorAll(".activity-tab-btn");
 
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
-            endHistoryFetch = false;
+            endActivityFetch = false;
             const scrollPos = window.scrollY; // Save current click scroll position
 
             // Remove active class from all buttons
@@ -72,19 +86,23 @@ function SetupHistoryTabListeners() {
             this.classList.add("active");
 
             // Get the tab name
-            currentHistoryTab = this.getAttribute("data-tab");
+            currentActivityTab = this.getAttribute("data-tab");
+
+            // Save the current tab to localStorage
+            localStorage.setItem('currentActivityTab', currentActivityTab);
+
             activityOffset = 0;
-            historyisLoading = false;
+            activityIsLoading = false;
 
             conditionalTabs(scrollPos)
         });
     });
 
     // By default, trigger the "liked" button
-    const defaultInfoBtn = document.querySelector('.history-tab-btn[data-tab="liked"]');
-    if (defaultInfoBtn) {
-        defaultInfoBtn.click();
-    }
+    // const defaultInfoBtn = document.querySelector('.activity-tab-btn[data-tab="liked"]');
+    // if (defaultInfoBtn) {
+    //     defaultInfoBtn.click();
+    // }
 }
 
 // Helper function, render according tab
@@ -106,8 +124,8 @@ function conditionalTabs(scrollPos) {
             comments: () => fetchCommentedPosts(activityOffset),
         };
 
-        if (actions[currentHistoryTab]) {
-            actions[currentHistoryTab]().then(() => {
+        if (actions[currentActivityTab]) {
+            actions[currentActivityTab]().then(() => {
                 setTimeout(() => {
                     window.scrollTo({ top: scrollPos, behavior: "smooth" });
 
@@ -128,12 +146,11 @@ function conditionalTabs(scrollPos) {
     }, 100); // Matches fade-out duration
 }
 
-
 /* -------------------------------
     FETCH LIKED/Disliked POSTS
 ----------------------------------*/
 async function fetchLikedPosts(activityOffset, reaction) {
-    if (endHistoryFetch) return
+    if (endActivityFetch) return
     const dynamicContent = document.getElementById("activityDynamicContent");
     try {
         const res = await fetch(`/api/user-liked-posts?offset=${activityOffset}&reaction=${reaction}`);
@@ -148,7 +165,7 @@ async function fetchLikedPosts(activityOffset, reaction) {
             return
         }
         if (!posts || posts.length == 0) {
-            endHistoryFetch = true
+            endActivityFetch = true
             return
         }
 
@@ -163,7 +180,7 @@ async function fetchLikedPosts(activityOffset, reaction) {
    FETCH Commented POSTS
 ---------------------------*/
 async function fetchCommentedPosts(activityOffset) {
-    if (endHistoryFetch) return
+    if (endActivityFetch) return
     const dynamicContent = document.getElementById("activityDynamicContent");
 
     try {
@@ -179,7 +196,7 @@ async function fetchCommentedPosts(activityOffset) {
             return
         }
         if (!posts || posts.length == 0) {
-            endHistoryFetch = true
+            endActivityFetch = true
             return
         }
         RenderPosts(posts, activityOffset, 100);
@@ -192,10 +209,10 @@ async function fetchCommentedPosts(activityOffset) {
 /* -------------------
    SCROLL HANDLER
 --------------------*/
-function handleHistoryScroll() {
+function handleActivityScroll() {
 
     // Already loading => skip
-    if (historyisLoading) return;
+    if (activityIsLoading) return;
 
     const windowHeight = window.innerHeight;
     const scrollY = window.scrollY;
@@ -203,39 +220,39 @@ function handleHistoryScroll() {
 
     // If close to bottom, fetch more
     if (scrollY + windowHeight >= docHeight - 400) {
-        historyisLoading = true;
+        activityIsLoading = true;
 
-        if (currentHistoryTab === "posts") {
+        if (currentActivityTab === "posts") {
             fetchUserPosts(activityOffset, "activityDynamicContent")
                 .then(() => {
-                    activityOffset += HistoryLimit; // increment offset
+                    activityOffset += ActivityLimit; // increment offset
                 })
                 .finally(() => {
-                    historyisLoading = false;
+                    activityIsLoading = false;
                 });
-        } else if (currentHistoryTab === "liked") {
+        } else if (currentActivityTab === "liked") {
             fetchLikedPosts(activityOffset, "like")
                 .then(() => {
-                    activityOffset += HistoryLimit;
+                    activityOffset += ActivityLimit;
                 })
                 .finally(() => {
-                    historyisLoading = false;
+                    activityIsLoading = false;
                 });
-        } else if (currentHistoryTab === "disliked") {
+        } else if (currentActivityTab === "disliked") {
             fetchLikedPosts(activityOffset, "dislike")
                 .then(() => {
-                    activityOffset += HistoryLimit;
+                    activityOffset += ActivityLimit;
                 })
                 .finally(() => {
-                    historyisLoading = false;
+                    activityIsLoading = false;
                 });
-        } else if (currentHistoryTab === "comments") {
+        } else if (currentActivityTab === "comments") {
             fetchCommentedPosts(activityOffset)
                 .then(() => {
-                    activityOffset += HistoryLimit;
+                    activityOffset += ActivityLimit;
                 })
                 .finally(() => {
-                    historyisLoading = false;
+                    activityIsLoading = false;
                 });
         }
     }

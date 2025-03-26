@@ -1,5 +1,5 @@
 let HomeLimit = 10; // Posts on scroll load
-let HistoryLimit = 6;
+let ActivityLimit = 6;
 let NotifLimit = 15;
 let Username = "";
 let ProfilePic = "";

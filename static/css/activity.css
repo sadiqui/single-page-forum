@@ -16,7 +16,7 @@
 /****************************************************
                 * history CARD 
 ****************************************************/
-.history-card {
+.activity-card {
     position: relative;
     background: var(--white);
     border-radius: 8px;
@@ -32,7 +32,7 @@
 }
 
 @media (max-width: 600px) {
-    .history-card {
+    .activity-card {
         padding: 1rem;
     }
 }
@@ -103,7 +103,7 @@
 
 /******************** history Tabs **************************/
 /* ======= history Tab Bar ======= */
-.history-tab-bar {
+.activity-tab-bar {
     position: relative;
     left: 50%;
     transform: translateX(-50%);
@@ -122,7 +122,7 @@
 }
 
 /* ======= history Tab Buttons ======= */
-.history-tab-btn {
+.activity-tab-btn {
     background: none;
     border: none;
     display: flex;
@@ -134,12 +134,12 @@
     transition: all 0.3s ease;
 }
 
-.history-tab-txt {
+.activity-tab-txt {
     font-family: "Zain";
     font-size: 18px;
 }
 
-.history-tab-btn img {
+.activity-tab-btn img {
     width: 20px;
     margin-bottom: 5px;
     filter: invert(53%) sepia(50%) saturate(1500%) hue-rotate(175deg);
@@ -147,14 +147,14 @@
 }
 
 /* Active Button */
-.history-tab-btn.active {
+.activity-tab-btn.active {
     background: var(--action-btn);
     border-radius: 6px;
     padding: 5px 20px;
     color: var(--content-grey);
 }
 
-.history-tab-btn.active img {
+.activity-tab-btn.active img {
     filter: invert(50%) brightness(50%);
 }
 
@@ -164,16 +164,16 @@
 }
 
 /* ======= Dark Mode Support ======= */
-:root.dark-mode .history-tab-bar {
+:root.dark-mode .activity-tab-bar {
     background: #3a3f4b;
     box-shadow: 0 4px 10px var(--notif-shadow);
 }
 
-:root.dark-mode .history-tab-btn {
+:root.dark-mode .activity-tab-btn {
     color: var(--light-grey);
 }
 
-:root.dark-mode .history-tab-btn.active {
+:root.dark-mode .activity-tab-btn.active {
     background: var(--action-btn);
     color: var(--white);
 }

@@ -64,21 +64,21 @@ async function AddReaction(ID, reactionType, postOrComm, type) {
 
         // Re-fetch the new counts + userReaction
         FetchReactions(ID, postOrComm, type)
-        if (currentHistoryTab == "liked") {
-            endHistoryFetch = false
-            historyOffset = 0;
-            fetchLikedPosts(historyOffset, "like")
+        if (currentActivityTab == "liked") {
+            endActivityFetch = false
+            activityOffset = 0;
+            fetchLikedPosts(activityOffset, "like")
                 .then(() => {
-                    historyOffset += HistoryLimit;
+                    activityOffset += ActivityLimit;
                 })
         }
         
-        if (currentHistoryTab == "disliked") {
-            endHistoryFetch = false
-            historyOffset = 0;
-            fetchLikedPosts(historyOffset, "dislike")
+        if (currentActivityTab == "disliked") {
+            endActivityFetch = false
+            activityOffset = 0;
+            fetchLikedPosts(activityOffset, "dislike")
                 .then(() => {
-                    historyOffset += HistoryLimit;
+                    activityOffset += ActivityLimit;
                 })
         }
         // Set to refresh when back to profile/liked tab if there is a reaction

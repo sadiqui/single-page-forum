@@ -52,12 +52,12 @@ async function HandleNewPost(e, categories, clearTags) {
             document.querySelector(".upload-text").textContent = "Upload Image (optional)";
             clearTags;
 
-            if (window.location.pathname === "/" && currentHistoryTab == "posts") {
+            if (window.location.pathname === "/" && currentActivityTab == "posts") {
                 activityOffset = 0;
-                endHistoryFetch = false;
+                endActivityFetch = false;
                 fetchUserPosts(activityOffset, "activityDynamicContent")
                     .then(() => {
-                        activityOffset += HistoryLimit;
+                        activityOffset += ActivityLimit;
                     })
             }
             if (window.location.pathname === "/profile" && currentProfileTab == "profile-posts") {

@@ -64,7 +64,7 @@ async function Routing() {
         window.removeEventListener('scroll', handleScroll);
     }
     if (path === "/post" || path === "/profile") {
-        window.removeEventListener('scroll', handleHistoryScroll);
+        window.removeEventListener('scroll', handleActivityScroll);
     }
     if (path === "/") {
         const tabBar = document.getElementById("tabBar");
@@ -75,7 +75,7 @@ async function Routing() {
         tabName = savedTab;
         SetupTabListeners();
     } else if (path === "/post") {
-        currentHistoryTab = "";
+        currentActivityTab = "";
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("post_id");
         if (postId) {
@@ -89,7 +89,7 @@ async function Routing() {
             LoadNotFoundPage();
         }
     } else if (path === "/profile") {
-        currentHistoryTab = "";
+        currentActivityTab = "";
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get("user");
 
@@ -174,22 +174,22 @@ function LoadTabContent(tab) {
     setTimeout(() => {
         // Load new content based on tab
         if (tab === "home") {
-            window.removeEventListener('scroll', handleHistoryScroll);
-            currentHistoryTab = "";
+            window.removeEventListener('scroll', handleActivityScroll);
+            currentActivityTab = "";
             clearTagFilter();
             homeRenderer();
             FilterCategories();
         } else if (tab === "activity") {
             window.removeEventListener('scroll', handleScroll);
-            historyRenderer(Username);
+            activityRenderer(Username);
         } else if (tab === "notifs") {
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', handleHistoryScroll);
+            window.removeEventListener('scroll', handleActivityScroll);
             notifOffset = 0;
             notifsRenderer();
         } else if (tab === "messages") {
             window.removeEventListener('scroll', handleScroll);
-            window.removeEventListener('scroll', handleHistoryScroll);
+            window.removeEventListener('scroll', handleActivityScroll);
             loadLastConversation();
         }
 
