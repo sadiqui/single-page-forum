@@ -97,6 +97,33 @@ async function LoadProfilePage(username) {
     }
 }
 
+// Centralized tab rendering logic
+function renderProfileTabs(profile, tabName) {
+    const dynamicContent = document.getElementById("profileDynamicContent");
+    profileOffset = 0;
+
+    const tabContentMap = {
+        "about": () => `
+            <div class="about-section">
+                <p><strong>First Name:</strong> ${profile.first_name || "N/A"}</p>
+                <p><strong>Last Name:</strong> ${profile.last_name || "N/A"}</p>
+                <p><strong>Gender:</strong> ${profile.gender || "N/A"}</p>
+                <p><strong>Age:</strong> ${profile.age || "N/A"}</p>
+            </div>
+        `,
+        "profile-posts": () => {
+            profileIsLoading = false;
+            dynamicContent.innerHTML = `<p>Loading ${profile.username}'s posts...</p>`;
+            fetchUserPosts(profileOffset, "profileDynamicContent");
+            return ""; // No static content for posts
+        }
+    };
+
+    // Use the mapping or default to empty string
+    const contentRenderer = tabContentMap[tabName] || (() => "");
+    dynamicContent.innerHTML = contentRenderer();
+}
+
 // Render the profile page dynamically
 function RenderProfile(profile) {
     const dynamicContent = document.getElementById("content");
@@ -129,48 +156,47 @@ function RenderProfile(profile) {
 
     // Setup tab listeners
     SetupProfileTabListeners(profile);
-}
 
+    // Retrieve and activate the last used tab
+    const savedTab = localStorage.getItem('currentProfileTab') || 'about';
+    const tabToActivate = document.querySelector(`.profile-tab-btn[data-tab="${savedTab}"]`);
+
+    if (tabToActivate) {
+        document.querySelector(`.profile-tab-btn[data-tab="about"]`).classList.remove('active');
+        tabToActivate.classList.add('active');
+        currentProfileTab = savedTab;
+
+        // Trigger the tab loading
+        renderProfileTabs(profile, savedTab);
+    }
+}
 
 // Setup event listeners for profile tabs
 function SetupProfileTabListeners(profile) {
     const tabButtons = document.querySelectorAll(".profile-tab-btn");
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
-            endProfileFetch = false
+            endProfileFetch = false;
+
             // remove active from all
             tabButtons.forEach(btn => btn.classList.remove("active"));
             this.classList.add("active");
 
             currentProfileTab = this.getAttribute("data-tab");
-            const dynamicContent = document.getElementById("profileDynamicContent");
 
-            if (currentProfileTab === "about") {
-                // reset offset, stop loading
-                profileOffset = 0;
-                dynamicContent.innerHTML = `
-                    <div class="about-section">
-                        <p><strong>First Name:</strong> ${profile.first_name || "N/A"}</p>
-                        <p><strong>Last Name:</strong> ${profile.last_name || "N/A"}</p>
-                        <p><strong>Gender:</strong> ${profile.gender || "N/A"}</p>
-                        <p><strong>Age:</strong> ${profile.age || "N/A"}</p>
-                    </div>
-                `;
-            } else if (currentProfileTab === "profile-posts") {
-                profileOffset = 0;
-                profileIsLoading = false;
-                dynamicContent.innerHTML = `<p>Loading ${profile.username}'s posts...</p>`;
+            // Save the current tab to localStorage
+            localStorage.setItem('currentProfileTab', currentProfileTab);
 
-                fetchUserPosts(profileOffset, "profileDynamicContent");
-            }
+            // Render content for the selected tab
+            renderProfileTabs(profile, currentProfileTab);
         });
     });
 
     // Default tab => about
-    const defaultTab = document.querySelector('.profile-tab-btn[data-tab="about"]');
-    if (defaultTab) {
-        defaultTab.click();
-    }
+    // const defaultTab = document.querySelector('.profile-tab-btn[data-tab="about"]');
+    // if (defaultTab) {
+    //     defaultTab.click();
+    // }
 }
 
 // Fetch user posts for both

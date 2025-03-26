@@ -14,7 +14,7 @@
 }
 
 /****************************************************
-                * history CARD 
+                * Activity Card 
 ****************************************************/
 .activity-card {
     position: relative;
@@ -95,14 +95,14 @@
 
 /****** Align post content to left 
 (remove center behaviour of container) ******/
-#historyDynamicContent {
+#activityDynamicContent {
     text-align: left;
     color: var(--dark-grey);
     transition: opacity 0.1s ease-out, transform 0.1s ease-out;
 }
 
-/******************** history Tabs **************************/
-/* ======= history Tab Bar ======= */
+/******************** activity Tabs **************************/
+/* ======= activity Tab Bar ======= */
 .activity-tab-bar {
     position: relative;
     left: 50%;
@@ -121,7 +121,7 @@
     margin-bottom: 50px;
 }
 
-/* ======= history Tab Buttons ======= */
+/* ======= activity Tab Buttons ======= */
 .activity-tab-btn {
     background: none;
     border: none;
@@ -192,8 +192,8 @@
     scrollbar-width: thin;
 }
 
-/******************** Modify history Image ********************/
-/* Container with dotted border around the history pic */
+/******************** Modify activity Image ********************/
+/* Container with dotted border around the activity pic */
 .profile-image {
     position: relative;
     width: 120px;

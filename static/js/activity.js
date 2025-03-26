@@ -97,12 +97,6 @@ function SetupActivityTabListeners() {
             conditionalTabs(scrollPos)
         });
     });
-
-    // By default, trigger the "liked" button
-    // const defaultInfoBtn = document.querySelector('.activity-tab-btn[data-tab="liked"]');
-    // if (defaultInfoBtn) {
-    //     defaultInfoBtn.click();
-    // }
 }
 
 // Helper function, render according tab
