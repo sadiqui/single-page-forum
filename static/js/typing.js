@@ -1,5 +1,5 @@
 let typingTimer;
-const TYPING_TIMEOUT = 1500; // 1.5 seconds of inactivity marks as stopped typing
+const TYPING_TIMEOUT = 70; // 70 ms of inactivity marks as stopped typing
 
 function setupTypingIndicator() {
     const chatInput = document.getElementById("chatInput");

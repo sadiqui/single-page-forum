@@ -58,11 +58,15 @@ async function loadMessages(selectedUsername, profilePic) {
             }
         }
     });
+
     // Adjust the textarea height automatically
     chatInput.addEventListener("input", () => {
         chatInput.style.height = "auto"; // Reset height
         chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Limit max height
     });
+
+    // Launch typing in progress engine
+    setTimeout(() => { setupTypingIndicator(); }, 700);
 }
 
 async function fetchMoreMessages(selectedUsername, prepend = false) {
@@ -111,7 +115,7 @@ async function fetchMoreMessages(selectedUsername, prepend = false) {
             const msgUsername = document.createElement("div");
             msgUsername.classList.add("msg-username", msg.sender === Username ? "sender" : "receiver");
             msgUsername.innerHTML = msg.sender === Username ? Username : msg.sender;
-            
+
             messageElement.innerHTML = `
                 <p>${msg.content}</p>
                 <span class="message-time">${formatTime(msg.created_at)}</span>
@@ -185,7 +189,7 @@ async function sendMessage(receiver) {
         const msgUsername = document.createElement("div");
         msgUsername.className = "msg-username sender new-sent";
         msgUsername.innerHTML = `${Username}`
-        
+
         messageElement.className = "message sent";
         messageElement.innerHTML = `
             <p>${messageContent}</p>
