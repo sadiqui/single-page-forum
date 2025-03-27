@@ -65,8 +65,8 @@ async function loadMessages(selectedUsername, profilePic) {
         chatInput.style.height = Math.min(chatInput.scrollHeight, 200) + "px"; // Limit max height
     });
 
-    // Launch typing in progress engine
-    setTimeout(() => { setupTypingIndicator(); }, 700);
+    // Setup typing indicator
+    setTimeout(() => { setupChatTypingIndicator(); }, 700);
 }
 
 async function fetchMoreMessages(selectedUsername, prepend = false) {

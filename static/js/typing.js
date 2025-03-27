@@ -1,57 +1,69 @@
 let typingTimer;
 const TYPING_TIMEOUT = 70; // 70 ms of inactivity marks as stopped typing
 
-function setupTypingIndicator() {
-    const chatInput = document.getElementById("chatInput");
-    const chatContainer = document.getElementById("chatContainer");
-    
-    if (!chatInput || !chatContainer) return;
+function setupTypingIndicator(context = 'chat') {
+    // Different selectors for chat and online users list
+    const selectors = {
+        'chat': {
+            container: () => document.getElementById('chatContainer'),
+            insertionPoint: () => document.getElementById('chatInputContainer'),
+            createIndicator: () => {
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator';
+                typingIndicator.innerHTML = `
+                    <div class="typing-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                `;
+                return typingIndicator;
+            },
+            activeUser: () => {
+                const container = document.getElementById('chatContainer');
+                return container ? container.getAttribute('data-username') : null;
+            }
+        },
+        'online-users': {
+            container: () => document.getElementById('onlineUsersContainer'),
+            insertionPoint: () => document.getElementById('onlineUsers'),
+            createIndicator: () => {
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'typing-indicator online-users-typing';
+                typingIndicator.innerHTML = `
+                    <div class="typing-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                `;
+                return typingIndicator;
+            },
+            activeUser: () => null // Always show for users list
+        }
+    };
 
-    // Check if typing indicator already exists
-    let typingIndicator = document.getElementById("typing-indicator");
+    const contextConfig = selectors[context];
 
-    // If not exists, create it
+    // If container doesn't exist, exit
+    const container = contextConfig.container();
+    if (!container) return null;
+
+    // Create typing indicator if it doesn't exist
+    let typingIndicator = container.querySelector('.typing-indicator');
     if (!typingIndicator) {
-        typingIndicator = document.createElement("div");
-        typingIndicator.id = "typing-indicator";
-        typingIndicator.classList.add("typing-indicator");
-
-        // Find the chat input container and insert before it
-        const chatInputContainer = document.getElementById("chatInputContainer");
-        if (chatInputContainer) {
-            chatContainer.insertBefore(typingIndicator, chatInputContainer);
-        } else {
-            // Fallback: append to chat container
-            chatContainer.appendChild(typingIndicator);
+        typingIndicator = contextConfig.createIndicator();
+        const insertionPoint = contextConfig.insertionPoint();
+        if (insertionPoint) {
+            if (context === 'chat') {
+                insertionPoint.parentNode.insertBefore(typingIndicator, insertionPoint);
+            } else {
+                insertionPoint.appendChild(typingIndicator);
+            }
         }
     }
 
-    chatInput.addEventListener("input", () => {
-        const receiver = chatContainer.getAttribute("data-username");
-
-        // Clear previous timer
-        if (typingTimer) {
-            clearTimeout(typingTimer);
-        }
-
-        // Send typing start
-        sendTypingStatus(receiver, true);
-
-        // Set a timer to stop typing after inactivity
-        typingTimer = setTimeout(() => {
-            sendTypingStatus(receiver, false);
-        }, TYPING_TIMEOUT);
-    });
-
-    // Handle potential focus/blur scenarios
-    chatInput.addEventListener("blur", () => {
-        const receiver = chatContainer.getAttribute("data-username");
-        sendTypingStatus(receiver, false);
-    });
-
-    // console.log("Chat Container:", chatContainer);
-    // console.log("Chat Input:", chatInput);
-    // console.log("Chat Input Container:", document.getElementById("chatInputContainer"));
+    return typingIndicator;
 }
 
 function sendTypingStatus(receiver, isTyping) {
@@ -67,32 +79,87 @@ function sendTypingStatus(receiver, isTyping) {
 }
 
 function handleTypingIndicator(event) {
-    const typingData = JSON.parse(event.data);
+    const msg = JSON.parse(event.data);
 
-    // Only process typing events
-    if (!typingData.isTyping && !typingData.sender) return;
+    // Chat context typing
+    const chatContainer = document.getElementById('chatContainer');
+    const chatTypingIndicator = document.querySelector('.typing-indicator:not(.online-users-typing)');
 
-    const typingIndicator = document.getElementById("typing-indicator");
-    const chatContainer = document.getElementById("chatContainer");
-
-    if (!typingIndicator || !chatContainer) return;
-
-    const currentChatUsername = chatContainer.getAttribute("data-username");
-
-    // Only show typing indicator if sender matches current chat
-    if (typingData.sender !== currentChatUsername) return;
-
-    if (typingData.isTyping) {
-        typingIndicator.innerHTML = `
-            <span class="typing-text">${typingData.sender} is typing</span>
-            <div class="typing-dots">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-            </div>
-        `;
-        typingIndicator.classList.add("active");
-    } else {
-        typingIndicator.classList.remove("active");
+    
+    if (chatContainer && chatTypingIndicator) { // debuggign & testing zone [TO DO]
+        const currentChatUsername = chatContainer.getAttribute('data-username');
+        // Only show typing indicator if sender matches current chat
+        if (msg.sender === currentChatUsername) return; // false
+        console.log(msg);
+        if (msg.sender === currentChatUsername) {
+            chatTypingIndicator.classList.toggle('active', msg.isTyping);
+            console.log('cnd');
+        }
     }
+
+    // Online users context typing
+    const onlineUsersTypingIndicator = document.querySelector('.typing-indicator.online-users-typing');
+    const onlineUserElements = document.querySelectorAll('.online-user');
+
+    if (onlineUsersTypingIndicator && onlineUserElements.length > 0) {
+        onlineUserElements.forEach(userElement => {
+            const usernameSpan = userElement.querySelector('.online-user-name');
+            if (usernameSpan && usernameSpan.textContent === msg.sender) {
+                userElement.classList.toggle('typing', msg.isTyping);
+            }
+        });
+    }
+}
+
+function setupChatTypingIndicator() {
+    const typingIndicator = setupTypingIndicator('chat');
+    const chatInput = document.getElementById('chatInput');
+    const receiver = document.getElementById('chatContainer').getAttribute('data-username');
+    let typingTimer;
+
+    // Clear any existing timer and manage typing state
+    function manageTypingState(isTyping) {
+        // Clear any existing timer
+        if (typingTimer) {
+            clearTimeout(typingTimer);
+        }
+
+        // Update typing indicator visibility
+        if (typingIndicator) typingIndicator.classList.toggle('active', isTyping);
+
+        // Send typing status
+        ws.send(JSON.stringify({
+            type: 'typing',
+            receiver: receiver,
+            isTyping: isTyping
+        }));
+
+        // If typing, set a timeout to stop typing after inactivity
+        if (isTyping) {
+            typingTimer = setTimeout(() => {
+                if (typingIndicator) {
+                    typingIndicator.classList.remove('active');
+                }
+                ws.send(JSON.stringify({
+                    type: 'typing',
+                    receiver: receiver,
+                    isTyping: false
+                }));
+            }, TYPING_TIMEOUT);
+        }
+    }
+
+    chatInput.addEventListener('input', () => {
+        const isTyping = chatInput.value.trim().length > 0;
+        manageTypingState(isTyping);
+    });
+
+    // Handle other potential typing stop scenarios
+    chatInput.addEventListener('blur', () => {
+        manageTypingState(false);
+    });
+}
+
+function setupOnlineUsersTypingIndicator() {
+    setupTypingIndicator('online-users');
 }

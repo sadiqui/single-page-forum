@@ -71,6 +71,10 @@ function RenderOnlineUsers(users) {
     });
 
     onlineUsersContainer.appendChild(listContainer);
+
+    // Setup typing indicator
+    setTimeout(() => { setupOnlineUsersTypingIndicator(); }, 700);
+
 }
 
 // Show online users container
@@ -79,7 +83,7 @@ function showOnlineUsers() {
     if (!document.getElementById("onlineUsersContainer")) {
         const onlineUsersContainer = document.createElement("div");
         onlineUsersContainer.id = "onlineUsersContainer";
-        onlineUsersContainer.innerHTML = `<div id="onlineUsers" class="online-users"><span class="loading">Loading...</span></div>`;
+        onlineUsersContainer.innerHTML = `<div id="onlineUsers" class="online-users"><span class="loading"><br>Loading...</span></div>`;
 
         document.body.insertBefore(onlineUsersContainer, document.body.firstChild);
     }
