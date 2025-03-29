@@ -390,12 +390,12 @@
 }
 
 .online-user.typing .online-user-name {
-    color: var(--primary-color);
+    color: var(--title-color);
     font-style: italic;
 }
 
 .typing-indicator.online-users-typing {
-    position: absolute;
+    position: relative;
     bottom: -20px;
     left: 50%;
     transform: translateX(-50%);

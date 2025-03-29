@@ -11,6 +11,7 @@ function setupTypingIndicator(context = 'chat') {
                 const typingIndicator = document.createElement('div');
                 typingIndicator.className = 'typing-indicator';
                 typingIndicator.innerHTML = `
+                    <span class="typing-text">${container.getAttribute('data-username')} is typing</span>
                     <div class="typing-dots">
                         <div class="dot"></div>
                         <div class="dot"></div>
@@ -44,8 +45,6 @@ function setupTypingIndicator(context = 'chat') {
     };
 
     const contextConfig = selectors[context];
-
-    // If container doesn't exist, exit
     const container = contextConfig.container();
     if (!container) return null;
 
@@ -78,6 +77,7 @@ function sendTypingStatus(receiver, isTyping) {
     ws.send(JSON.stringify(typingEvent));
 }
 
+// This is the function that handles WebSocket messages on the receiver side
 function handleTypingIndicator(event) {
     const msg = JSON.parse(event.data);
 
@@ -85,15 +85,10 @@ function handleTypingIndicator(event) {
     const chatContainer = document.getElementById('chatContainer');
     const chatTypingIndicator = document.querySelector('.typing-indicator:not(.online-users-typing)');
 
-    
-    if (chatContainer && chatTypingIndicator) { // debuggign & testing zone [TO DO]
+    if (chatContainer && chatTypingIndicator) {
         const currentChatUsername = chatContainer.getAttribute('data-username');
-        // Only show typing indicator if sender matches current chat
-        if (msg.sender === currentChatUsername) return; // false
-        console.log(msg);
         if (msg.sender === currentChatUsername) {
-            chatTypingIndicator.classList.toggle('active', msg.isTyping);
-            console.log('cnd');
+            chatTypingIndicator.classList.toggle('active', msg.isTyping); // Chat typing indicator
         }
     }
 
@@ -104,47 +99,50 @@ function handleTypingIndicator(event) {
     if (onlineUsersTypingIndicator && onlineUserElements.length > 0) {
         onlineUserElements.forEach(userElement => {
             const usernameSpan = userElement.querySelector('.online-user-name');
-            if (usernameSpan && usernameSpan.textContent === msg.sender) {
-                userElement.classList.toggle('typing', msg.isTyping);
+            if (usernameSpan && usernameSpan.textContent.includes(msg.sender)) { // Toggle typing class
+                onlineUsersTypingIndicator.classList.toggle('active', msg.isTyping); // Users list dots
+                userElement.classList.toggle('typing', msg.isTyping); // Sender's username highlight
+                if (msg.isTyping) { // Update the text based on typing status
+                    usernameSpan.textContent = `${msg.sender} is typing`;
+                } else { // Reset to just the username when typing stops
+                    usernameSpan.textContent = msg.sender;
+                }
             }
         });
     }
 }
 
 function setupChatTypingIndicator() {
-    const typingIndicator = setupTypingIndicator('chat');
+    // Set up the chat typing indicator (we need this for proper DOM setup)
+    setupTypingIndicator('chat');
+
     const chatInput = document.getElementById('chatInput');
     const receiver = document.getElementById('chatContainer').getAttribute('data-username');
     let typingTimer;
 
     // Clear any existing timer and manage typing state
     function manageTypingState(isTyping) {
-        // Clear any existing timer
-        if (typingTimer) {
-            clearTimeout(typingTimer);
-        }
-
-        // Update typing indicator visibility
-        if (typingIndicator) typingIndicator.classList.toggle('active', isTyping);
+        if (typingTimer) clearTimeout(typingTimer); // Clear any existing timer
 
         // Send typing status
-        ws.send(JSON.stringify({
-            type: 'typing',
-            receiver: receiver,
-            isTyping: isTyping
-        }));
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify({
+                type: 'typing',
+                receiver: receiver,
+                isTyping: isTyping
+            }));
+        }
 
         // If typing, set a timeout to stop typing after inactivity
         if (isTyping) {
             typingTimer = setTimeout(() => {
-                if (typingIndicator) {
-                    typingIndicator.classList.remove('active');
+                if (ws && ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({
+                        type: 'typing',
+                        receiver: receiver,
+                        isTyping: false
+                    }));
                 }
-                ws.send(JSON.stringify({
-                    type: 'typing',
-                    receiver: receiver,
-                    isTyping: false
-                }));
             }, TYPING_TIMEOUT);
         }
     }
