@@ -60,6 +60,8 @@ function RenderOnlineUsers(users) {
                 document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
                 changeTab.classList.add("active");
                 tabName = "messages";
+                // Update unified tab state
+                saveTabState('main', 'messages');
                 window.removeEventListener('scroll', handleScroll);
                 window.removeEventListener('scroll', handleActivityScroll);
                 tagFilterSection.style.display = "none";

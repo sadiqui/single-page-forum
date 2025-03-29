@@ -113,8 +113,8 @@ async function Routing() {
 function SetupTabListeners() {
     const tabButtons = document.querySelectorAll(".tab-btn");
 
-    // Check if there's a saved tab in localStorage
-    const savedTab = localStorage.getItem('currentTab') || 'home';
+    // Get the saved tab for main section
+    const savedTab = getTabForSection('main');
 
     // Set the saved tab or default to home
     const tabToActivate = document.querySelector(`.tab-btn[data-tab="${savedTab}"]`) ||
@@ -136,19 +136,13 @@ function SetupTabListeners() {
 
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
-            // Remove active class from all buttons
+            // CSS
             tabButtons.forEach(btn => btn.classList.remove("active"));
-
-            // Add active class to clicked button
             this.classList.add("active");
-
-            // Get the tab name
+            // LocalStorage
             tabName = this.getAttribute("data-tab");
-
-            // Save the current tab to localStorage
-            localStorage.setItem('currentTab', tabName);
-
-            // Call function to change content
+            saveTabState('main', tabName);
+            // User interface
             LoadTabContent(tabName);
         });
     });

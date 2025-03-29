@@ -158,7 +158,7 @@ function RenderProfile(profile) {
     SetupProfileTabListeners(profile);
 
     // Retrieve and activate the last used tab
-    const savedTab = localStorage.getItem('currentProfileTab') || 'about';
+    const savedTab = getTabForSection('profile');
     const tabToActivate = document.querySelector(`.profile-tab-btn[data-tab="${savedTab}"]`);
 
     if (tabToActivate) {
@@ -184,19 +184,13 @@ function SetupProfileTabListeners(profile) {
 
             currentProfileTab = this.getAttribute("data-tab");
 
-            // Save the current tab to localStorage
-            localStorage.setItem('currentProfileTab', currentProfileTab);
+            // Save to unified storage
+            saveTabState('profile', currentProfileTab);
 
             // Render content for the selected tab
             renderProfileTabs(profile, currentProfileTab);
         });
     });
-
-    // Default tab => about
-    // const defaultTab = document.querySelector('.profile-tab-btn[data-tab="about"]');
-    // if (defaultTab) {
-    //     defaultTab.click();
-    // }
 }
 
 // Fetch user posts for both

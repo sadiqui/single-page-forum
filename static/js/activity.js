@@ -52,7 +52,7 @@ function activityRenderer(username) {
     SetupImageUpdate();
 
     // Retrieve and activate the last used tab
-    const savedTab = localStorage.getItem('currentActivityTab') || 'liked';
+    const savedTab = getTabForSection('activity');
     const tabToActivate = document.querySelector(`.activity-tab-btn[data-tab="${savedTab}"]`);
 
     if (tabToActivate) {
@@ -60,8 +60,7 @@ function activityRenderer(username) {
         tabToActivate.classList.add('active');
         currentActivityTab = savedTab;
 
-        // Trigger the tab loading
-        conditionalTabs(0);
+        conditionalTabs(0); // Trigger the tab loading
     }
 
     // Listen for scroll => infinite loading
@@ -88,8 +87,8 @@ function SetupActivityTabListeners() {
             // Get the tab name
             currentActivityTab = this.getAttribute("data-tab");
 
-            // Save the current tab to localStorage
-            localStorage.setItem('currentActivityTab', currentActivityTab);
+            // Save to unified storage
+            saveTabState('activity', currentActivityTab);
 
             activityOffset = 0;
             activityIsLoading = false;

@@ -36,7 +36,7 @@ function ShowLoggedInNav(username, profilePicture) {
     })
     
     document.querySelector(".logo-link").addEventListener("click", (e) => {
-        localStorage.removeItem('currentTab');
+        saveTabState('main', 'home');
         history.pushState(null, "", "/");
         Routing();
     })
