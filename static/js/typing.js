@@ -2,15 +2,18 @@ let typingTimer;
 const TYPING_TIMEOUT = 700; // 700 ms of inactivity marks as stopped typing
 
 function setupTypingIndicator(context = 'chat') {
-    // Different selectors for chat and online users list
+    // Decide which class name to use based on the context
+    const className = context === 'chat' ? 'typing-indicator' : 'online-users-typing';
+
+    // Decide how we will create and insert the indicator
     const selectors = {
         'chat': {
             container: () => document.getElementById('chatContainer'),
             insertionPoint: () => document.getElementById('chatInputContainer'),
-            createIndicator: () => {
-                const typingIndicator = document.createElement('div');
-                typingIndicator.className = 'typing-indicator';
-                typingIndicator.innerHTML = `
+            fillIndicator: (el) => {
+                const container = document.getElementById('chatContainer');
+                if (!container) return;
+                el.innerHTML = `
                     <span class="typing-text">${container.getAttribute('data-username')} is typing</span>
                     <div class="typing-dots">
                         <div class="dot"></div>
@@ -18,41 +21,34 @@ function setupTypingIndicator(context = 'chat') {
                         <div class="dot"></div>
                     </div>
                 `;
-                return typingIndicator;
-            },
-            activeUser: () => {
-                const container = document.getElementById('chatContainer');
-                return container ? container.getAttribute('data-username') : null;
             }
         },
         'online-users': {
             container: () => document.getElementById('onlineUsersContainer'),
             insertionPoint: () => document.getElementById('onlineUsers'),
-            createIndicator: () => {
-                const typingIndicator = document.createElement('div');
-                typingIndicator.className = 'typing-indicator online-users-typing';
-                typingIndicator.innerHTML = `
-                    <div class="typing-dots">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
-                `;
-                return typingIndicator;
-            },
-            activeUser: () => null // Always show for users list
+            fillIndicator: () => {
+                // For online-users we don't need innerHTML
+            }
         }
     };
 
-    const contextConfig = selectors[context];
-    const container = contextConfig.container();
+    const config = selectors[context];
+    const container = config.container();
     if (!container) return null;
 
-    // Create typing indicator if it doesn't exist
-    let typingIndicator = container.querySelector('.typing-indicator');
+    // Check if the indicator already exists using the context-specific class
+    let typingIndicator = container.querySelector(`.${className}`);
+
+    // If it doesn't exist, create it and insert it
     if (!typingIndicator) {
-        typingIndicator = contextConfig.createIndicator();
-        const insertionPoint = contextConfig.insertionPoint();
+        typingIndicator = document.createElement('div');
+        typingIndicator.className = className;
+        
+        // Fill in the indicator's content if necessary
+        config.fillIndicator(typingIndicator);
+
+        // Insert it either before chat input or at the end of online users list
+        const insertionPoint = config.insertionPoint();
         if (insertionPoint) {
             if (context === 'chat') {
                 insertionPoint.parentNode.insertBefore(typingIndicator, insertionPoint);
@@ -93,7 +89,7 @@ function handleTypingIndicator(event) {
     }
 
     // Online users context typing
-    const onlineUsersTypingIndicator = document.querySelector('.typing-indicator.online-users-typing');
+    const onlineUsersTypingIndicator = document.querySelector('.online-users-typing');
     const onlineUserElements = document.querySelectorAll('.online-user');
 
     if (onlineUsersTypingIndicator && onlineUserElements.length > 0) {
