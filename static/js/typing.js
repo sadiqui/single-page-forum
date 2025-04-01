@@ -1,5 +1,5 @@
 let typingTimer;
-const TYPING_TIMEOUT = 70; // 70 ms of inactivity marks as stopped typing
+const TYPING_TIMEOUT = 700; // 700 ms of inactivity marks as stopped typing
 
 function setupTypingIndicator(context = 'chat') {
     // Different selectors for chat and online users list

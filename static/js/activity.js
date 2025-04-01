@@ -74,8 +74,9 @@ function SetupActivityTabListeners() {
     const tabButtons = document.querySelectorAll(".activity-tab-btn");
 
     tabButtons.forEach(button => {
-        button.addEventListener("click", function () {
+        button.addEventListener("click", function () {            
             endActivityFetch = false;
+            endProfileFetch = false;
             const scrollPos = window.scrollY; // Save current click scroll position
 
             // Remove active class from all buttons

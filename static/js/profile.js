@@ -177,6 +177,7 @@ function SetupProfileTabListeners(profile) {
     tabButtons.forEach(button => {
         button.addEventListener("click", function () {
             endProfileFetch = false;
+            endActivityFetch = false;
 
             // remove active from all
             tabButtons.forEach(btn => btn.classList.remove("active"));
@@ -195,10 +196,10 @@ function SetupProfileTabListeners(profile) {
 
 // Fetch user posts for both
 // profile and activity tab.
-async function fetchUserPosts(offset, content) {
+async function fetchUserPosts(offset, content) {    
     // profileDynamicContent
     const dynamicContent = document.getElementById(content);
-    if (!dynamicContent || endProfileFetch) return;
+    if (!dynamicContent || endProfileFetch || endActivityFetch) return;
 
     try {
         const query = `/api/get-user-posts?offset=${offset}`;

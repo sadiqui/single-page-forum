@@ -90,6 +90,8 @@ async function Routing() {
         }
     } else if (path === "/profile") {
         currentActivityTab = "";
+        endProfileFetch = false;
+        endActivityFetch = false;
         const urlParams = new URLSearchParams(window.location.search);
         const username = urlParams.get("user");
 
@@ -174,6 +176,8 @@ function LoadTabContent(tab) {
             homeRenderer();
             FilterCategories();
         } else if (tab === "activity") {
+            endActivityFetch = false; 
+            endProfileFetch = false;      
             window.removeEventListener('scroll', handleScroll);
             activityRenderer(Username);
         } else if (tab === "notifs") {
