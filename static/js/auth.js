@@ -76,9 +76,7 @@ async function HandleLogout() {
             console.log(errData.msg);
             PopError("Something went wrong.")
         } else {
-            window.location.href = "/";
-            // history.pushState(null, "", `/`);
-            // Routing()           
+            window.location.href = "/";        
         }
     } catch (err) {
         console.log(err);

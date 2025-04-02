@@ -121,24 +121,12 @@ function setupChatTypingIndicator() {
         if (typingTimer) clearTimeout(typingTimer); // Clear any existing timer
 
         // Send typing status
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({
-                type: 'typing',
-                receiver: receiver,
-                isTyping: isTyping
-            }));
-        }
+        sendTypingStatus(receiver, isTyping)
 
         // If typing, set a timeout to stop typing after inactivity
         if (isTyping) {
             typingTimer = setTimeout(() => {
-                if (ws && ws.readyState === WebSocket.OPEN) {
-                    ws.send(JSON.stringify({
-                        type: 'typing',
-                        receiver: receiver,
-                        isTyping: false
-                    }));
-                }
+                sendTypingStatus(receiver, false)
             }, TYPING_TIMEOUT);
         }
     }
