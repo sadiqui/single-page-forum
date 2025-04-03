@@ -177,7 +177,8 @@ function LoadTabContent(tab) {
             FilterCategories();
         } else if (tab === "activity") {
             endActivityFetch = false; 
-            endProfileFetch = false;      
+            endProfileFetch = false; 
+            activityOffset = 0;
             window.removeEventListener('scroll', handleScroll);
             activityRenderer(Username);
         } else if (tab === "notifs") {

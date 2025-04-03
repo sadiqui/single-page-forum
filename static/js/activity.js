@@ -102,7 +102,6 @@ function SetupActivityTabListeners() {
 // Helper function, render according tab
 function conditionalTabs(scrollPos) {
     const dynamicContent = document.getElementById("activityDynamicContent"); // Adjust based on your actual container
-
     if (!dynamicContent) return; // Prevent errors if the element is missing
 
     // Fade out current content
@@ -144,17 +143,21 @@ function conditionalTabs(scrollPos) {
     FETCH LIKED/Disliked POSTS
 ----------------------------------*/
 async function fetchLikedPosts(activityOffset, reaction) {
+    
     if (endActivityFetch) return
     const dynamicContent = document.getElementById("activityDynamicContent");
+    if (!dynamicContent) return
+    
     try {
         const res = await fetch(`/api/user-liked-posts?offset=${activityOffset}&reaction=${reaction}`);
         if (!res.ok) return;
-
+        
         const posts = await res.json();
+        
         if ((!posts || posts.length == 0) && activityOffset == 0) {
             dynamicContent.innerHTML = `<div id="emptyTabimg">
             <img src="../img/empty-chat.png" alt="No posts">
-                <p>No ${reaction}d posts!</p>
+            <p>No ${reaction}d posts!</p>
             </div>`
             return
         }
@@ -176,7 +179,7 @@ async function fetchLikedPosts(activityOffset, reaction) {
 async function fetchCommentedPosts(activityOffset) {
     if (endActivityFetch) return
     const dynamicContent = document.getElementById("activityDynamicContent");
-
+    if (!dynamicContent) return
     try {
         const res = await fetch(`/api/user-commented-posts?offset=${activityOffset}`);
         if (!res.ok) return;
