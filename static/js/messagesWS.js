@@ -8,7 +8,7 @@ function connectMessagesWS() {
             const msg = JSON.parse(event.data);
             // Check if it's a typing event
             if (msg.isTyping !== undefined) {
-                handleTypingIndicator(event);
+                handleTypingIndicator(msg);
                 return;
             }
             // Append the received message to the chat UI

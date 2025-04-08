@@ -73,10 +73,6 @@ function RenderOnlineUsers(users) {
     });
 
     onlineUsersContainer.appendChild(listContainer);
-
-    // Setup typing indicator
-    setTimeout(() => { setupOnlineUsersTypingIndicator(); }, 700);
-
 }
 
 // Show online users container

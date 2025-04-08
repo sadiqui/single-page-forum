@@ -393,11 +393,3 @@
     color: var(--title-color);
     font-style: italic;
 }
-
-.typing-indicator.online-users-typing {
-    position: relative;
-    bottom: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10;
-}
