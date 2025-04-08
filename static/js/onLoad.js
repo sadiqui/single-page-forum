@@ -176,8 +176,8 @@ function LoadTabContent(tab) {
             homeRenderer();
             FilterCategories();
         } else if (tab === "activity") {
-            endActivityFetch = false; 
-            endProfileFetch = false; 
+            endActivityFetch = false;
+            endProfileFetch = false;
             activityOffset = 0;
             window.removeEventListener('scroll', handleScroll);
             activityRenderer(Username);
@@ -207,8 +207,11 @@ function LoadTabContent(tab) {
     }, 100); // fade out
 }
 
-// Re-check authentication on navigation
-window.addEventListener("popstate", async () => { CheckSession(); });
+// Re-check authentication and re-attach listeners on navigation
+window.addEventListener("popstate", async () => {    
+    await CheckSession();
+    NavBarListener();
+});
 
 // Serve single post when clicking his title, without refresh
 document.addEventListener("click", (event) => {
