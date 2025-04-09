@@ -1,6 +1,6 @@
-let typingTimer;
 const TYPING_TIMEOUT = 700; // 700 ms of inactivity marks as stopped typing
 
+// Creates and inserts the indicator, if it doesn't exist
 function setupIndicator() {
     const container = document.getElementById('chatContainer');
     const insertionPoint = document.getElementById('chatInputContainer');
@@ -25,6 +25,7 @@ function setupIndicator() {
     insertionPoint.parentNode?.insertBefore(typingIndicator, insertionPoint);
 }
 
+// Send typing status to MessageWebSocket() in messagesWS.go
 function sendTypingStatus(receiver, isTyping) {
     if (!ws || ws.readyState !== WebSocket.OPEN) return;
 
@@ -45,13 +46,12 @@ function handleTypingIndicator(msg) {
 
     if (chatContainer && chatTypingIndicator) {
         const currentChatUsername = chatContainer.getAttribute('data-username');
-        if (msg.sender === currentChatUsername) {
-            chatTypingIndicator.classList.toggle('active', msg.isTyping); // Chat typing indicator
+        if (msg.sender === currentChatUsername) { // From the receiver's perspective
+            chatTypingIndicator.classList.toggle('active', msg.isTyping); // Show typing indicator in chat
         }
     }
 
-    // Online users context typing
-    const onlineUserElements = document.querySelectorAll('.online-user');
+    const onlineUserElements = document.querySelectorAll('.online-user'); // Online users context typing
 
     if (onlineUserElements.length > 0) {
         onlineUserElements.forEach(userElement => {
@@ -72,31 +72,29 @@ function setupChatTypingIndicator() {
     // Set up the chat typing indicator (we need this for proper DOM setup)
     setupIndicator();
 
-    const chatInput = document.getElementById('chatInput');
     const receiver = document.getElementById('chatContainer').getAttribute('data-username');
+    const chatInput = document.getElementById('chatInput');
     let typingTimer;
 
     // Clear any existing timer and manage typing state
     function manageTypingState(isTyping) {
         if (typingTimer) clearTimeout(typingTimer); // Clear any existing timer
+        sendTypingStatus(receiver, isTyping); // Send typing status
 
-        // Send typing status
-        sendTypingStatus(receiver, isTyping)
-
-        // If typing, set a timeout to stop typing after inactivity
+        // If typing, prevent indefinite activation
+        // Timer is reset periodically while typing
         if (isTyping) {
             typingTimer = setTimeout(() => {
-                sendTypingStatus(receiver, false)
+                sendTypingStatus(receiver, false);
             }, TYPING_TIMEOUT);
         }
     }
 
     chatInput.addEventListener('input', () => {
-        manageTypingState(chatInput.value.trim().length > 0);
+        manageTypingState(chatInput.value.trim().length > 0); // Check text
     });
 
-    // Handle other potential typing stop scenarios (input loses focus, etc.)
-    chatInput.addEventListener('blur', () => {
-        manageTypingState(false);
+    chatInput.addEventListener('blur', () => { // Input field is no longer active
+        manageTypingState(false); // Sign typing indicator as inactive
     });
 }

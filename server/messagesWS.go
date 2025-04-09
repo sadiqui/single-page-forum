@@ -43,19 +43,26 @@ func MessageWebSocket(w http.ResponseWriter, r *http.Request) {
 		conn.Close()
 	}()
 
-	// Keep WebSocket open and listen for messages
+	// Keep WebSocket open and (only) listen for typing events
+	// (Regural chat messages are sent to /api/send-message)
 	for {
+		// From sendTypingStatus() in typing.js
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			break
 		}
 
-		var event map[string]interface{}
+		var event map[string]interface{} // Values could be of any type
 		json.Unmarshal(message, &event)
 
 		if event["type"] == "typing" {
-			receiver, _ := GetUserByUsername(event["receiver"].(string))
-			BroadcastTyping(user.ID, receiver.ID, event["isTyping"].(bool))
+			// Safety check for type assertions
+			receiverName, okStr := event["receiver"].(string)
+			isTypingVal, okBool := event["isTyping"].(bool)
+			if okStr && okBool {
+				receiver, _ := GetUserByUsername(receiverName)
+				BroadcastTyping(user.ID, receiver.ID, isTypingVal)
+			}
 		}
 	}
 }
@@ -72,8 +79,8 @@ func BroadcastMessage(senderID int, receiverID int, content string) {
 			"content": content,
 		}
 
-		msgJSON, _ := json.Marshal(msg)
-		receiverConn.WriteMessage(websocket.TextMessage, msgJSON)
+		msgJSON, _ := json.Marshal(msg)                           // Broadcast to the receiver
+		receiverConn.WriteMessage(websocket.TextMessage, msgJSON) // Write to connectMessagesWS()
 	}
 }
 
@@ -90,12 +97,12 @@ func BroadcastTyping(senderID int, receiverID int, isTyping bool) {
 			IsTyping: isTyping,
 		}
 
-		msgJSON, _ := json.Marshal(typingEvent)
-		receiverConn.WriteMessage(websocket.TextMessage, msgJSON)
+		msgJSON, _ := json.Marshal(typingEvent)                   // Broadcast to the receiver
+		receiverConn.WriteMessage(websocket.TextMessage, msgJSON) // Write to connectMessagesWS()
 	}
 }
 
-// Modify SendMessage to use WebSocket
+// Uses WebSocket for real-time messaging
 func SendMessage(w http.ResponseWriter, r *http.Request) {
 	user, err := GetUser(r)
 	if err != nil {

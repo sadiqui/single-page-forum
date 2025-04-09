@@ -4,6 +4,7 @@ let allLoaded = false;
 let isLoadingMore = false;
 let globalLastDate = null; // Tracks last date we inserted a separator
 
+// Called to load conversation messages
 async function loadMessages(selectedUsername, profilePic) {
     const dynamicContent = document.getElementById("content");
 
@@ -50,9 +51,8 @@ async function loadMessages(selectedUsername, profilePic) {
         if (event.key === "Enter") {
             chatInput.style.height = "auto";
             if (isMobile() || event.shiftKey) {
-                // do nothing keep default behaviour
-            } else {
-                // Desktop Enter
+                // do nothing, keep default behaviour
+            } else { // Desktop Enter
                 event.preventDefault();
                 sendMessage(selectedUsername);
             }
@@ -156,7 +156,7 @@ async function sendMessage(receiver) {
         return;
     }
 
-    // Remove "Start the conversation" message if it exists
+    // Remove "Start the conversation" message before sending (first) message
     const startConversation = chatMessages.querySelector(".no-messages");
     if (startConversation) startConversation.remove();
 

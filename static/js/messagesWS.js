@@ -3,6 +3,8 @@ function connectMessagesWS() {
     const wsUrl = `${protocol}://${window.location.host}/ws/messages`;
     ws = new WebSocket(wsUrl);
 
+    // Receive broadcasted message
+    // or typing from messagesWS.go
     ws.onmessage = (event) => {
         try {
             const msg = JSON.parse(event.data);

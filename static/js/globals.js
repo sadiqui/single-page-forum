@@ -4,6 +4,7 @@ let NotifLimit = 15;
 let Username = "";
 let ProfilePic = "";
 let tabName = "home";
+let ws; // For WebSocket instance
 
 const Nav = `
 <nav class="navbar">
@@ -279,35 +280,35 @@ const NewPostForm = `
 `
 
 const tabBarHTML = `
-    <nav class="tab-bar">
-        <button class="tab-btn active" data-tab="home">
-            <img src="../img/home.svg" alt="Home">
-            <span class="tab-txt">Home</span>
-        </button>
-        <button class="tab-btn" data-tab="notifs">
-            <img src="../img/notifs.png" alt="Notifs">
-            <span class="tab-txt">Notifs</span>
-        </button>
-        <button class="tab-btn" data-tab="messages">
-            <img src="../img/messages.png" alt="Messages">
-            <span class="tab-txt">Messages</span>
-        </button>
-        <button class="tab-btn" data-tab="activity">
-            <img src="../img/activity.svg" alt="Activity">
-            <span class="tab-txt">Activity</span>
-        </button>
-    </nav>
+<nav class="tab-bar">
+    <button class="tab-btn active" data-tab="home">
+        <img src="../img/home.svg" alt="Home">
+        <span class="tab-txt">Home</span>
+    </button>
+    <button class="tab-btn" data-tab="notifs">
+        <img src="../img/notifs.png" alt="Notifs">
+        <span class="tab-txt">Notifs</span>
+    </button>
+    <button class="tab-btn" data-tab="messages">
+        <img src="../img/messages.png" alt="Messages">
+        <span class="tab-txt">Messages</span>
+    </button>
+    <button class="tab-btn" data-tab="activity">
+        <img src="../img/activity.svg" alt="Activity">
+        <span class="tab-txt">Activity</span>
+    </button>
+</nav>
 `;
 
 const Filter = `
-        <!-- Tag Filter Section -->
-        <section id="tagFilterSection">
-            <h3>Filter by tags</h3>
-            <div id="tagFilterContainer">
-                <div id="selectedTags" class="selected-tags"></div>
-                <input type="text" id="tagFilterInput" class="tag-filter-input"
-                    placeholder="Type a tag..." />
-                <div id="tagSuggestions" class="tag-suggestions hidden"></div>
-            </div>
-        </section> 
+<!-- Tag Filter Section -->
+<section id="tagFilterSection">
+    <h3>Filter by tags</h3>
+    <div id="tagFilterContainer">
+        <div id="selectedTags" class="selected-tags"></div>
+        <input type="text" id="tagFilterInput" class="tag-filter-input"
+            placeholder="Type a tag..." />
+        <div id="tagSuggestions" class="tag-suggestions hidden"></div>
+    </div>
+</section> 
 `
