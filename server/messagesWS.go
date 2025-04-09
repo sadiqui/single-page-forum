@@ -13,8 +13,8 @@ import (
 
 // Stores active WebSocket connections per user
 var (
-	connections = make(map[int]*websocket.Conn) // userID -> WebSocket
-	connMutex   sync.Mutex                      // Prevent race conditions
+	connections = make(map[int]map[*websocket.Conn]bool) // userID -> map of WebSockets
+	connMutex   sync.Mutex                               // Prevent race conditions
 )
 
 // WebSocket endpoint for real-time messaging
@@ -33,18 +33,27 @@ func MessageWebSocket(w http.ResponseWriter, r *http.Request) {
 
 	// Store the connection
 	connMutex.Lock()
-	connections[user.ID] = conn
+	// Initialize the map if this is the first connection for this user
+	if _, exists := connections[user.ID]; !exists {
+		connections[user.ID] = make(map[*websocket.Conn]bool)
+	}
+	connections[user.ID][conn] = true
 	connMutex.Unlock()
 
 	defer func() {
 		connMutex.Lock()
-		delete(connections, user.ID)
+		// Remove this specific connection
+		delete(connections[user.ID], conn)
+		// If this was the user's last connection, clean up the user entry
+		if len(connections[user.ID]) == 0 {
+			delete(connections, user.ID)
+		}
 		connMutex.Unlock()
 		conn.Close()
 	}()
 
 	// Keep WebSocket open and (only) listen for typing events
-	// (Regural chat messages are sent to /api/send-message)
+	// (Regular chat messages are sent to /api/send-message)
 	for {
 		// From sendTypingStatus() in typing.js
 		_, message, err := conn.ReadMessage()
@@ -70,7 +79,7 @@ func MessageWebSocket(w http.ResponseWriter, r *http.Request) {
 // Broadcast message to the receiver if they're online
 func BroadcastMessage(senderID int, receiverID int, content string) {
 	connMutex.Lock()
-	receiverConn, online := connections[receiverID]
+	receiverConns, online := connections[receiverID]
 	connMutex.Unlock()
 
 	if online {
@@ -79,15 +88,19 @@ func BroadcastMessage(senderID int, receiverID int, content string) {
 			"content": content,
 		}
 
-		msgJSON, _ := json.Marshal(msg)                           // Broadcast to the receiver
-		receiverConn.WriteMessage(websocket.TextMessage, msgJSON) // Write to connectMessagesWS()
+		msgJSON, _ := json.Marshal(msg)
+
+		// Broadcast to all connections of the receiver
+		for conn := range receiverConns {
+			conn.WriteMessage(websocket.TextMessage, msgJSON) // Write to connectMessagesWS()
+		}
 	}
 }
 
 // BroadcastTyping sends a typing notification to the receiver
 func BroadcastTyping(senderID int, receiverID int, isTyping bool) {
 	connMutex.Lock()
-	receiverConn, online := connections[receiverID]
+	receiverConns, online := connections[receiverID]
 	senderUsername := GetUsername(senderID)
 	connMutex.Unlock()
 
@@ -97,8 +110,12 @@ func BroadcastTyping(senderID int, receiverID int, isTyping bool) {
 			IsTyping: isTyping,
 		}
 
-		msgJSON, _ := json.Marshal(typingEvent)                   // Broadcast to the receiver
-		receiverConn.WriteMessage(websocket.TextMessage, msgJSON) // Write to connectMessagesWS()
+		msgJSON, _ := json.Marshal(typingEvent)
+
+		// Broadcast to all connections of the receiver
+		for conn := range receiverConns {
+			conn.WriteMessage(websocket.TextMessage, msgJSON) // Write to connectMessagesWS()
+		}
 	}
 }
 

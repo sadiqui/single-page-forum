@@ -21,10 +21,10 @@ type UpdateUsersRequest struct {
 	Users []OnlineUserInfo `json:"users"`
 }
 
-// Track online users
+// Track online users - modified to support multiple connections per user
 var (
-	onlineUsers = make(map[int]*websocket.Conn) // Stores active user connections
-	mu          sync.Mutex                      // Mutex to prevent race conditions
+	onlineUsers = make(map[int]map[*websocket.Conn]bool) // userID -> map of WebSockets
+	mu          sync.Mutex                               // Mutex to prevent race conditions
 )
 
 // Handle WebSocket connections for online users
@@ -45,7 +45,11 @@ func OnlineUsersWS(w http.ResponseWriter, r *http.Request) {
 
 	// Add user to online users map
 	mu.Lock()
-	onlineUsers[user.ID] = conn
+	// Initialize the map if this is the first connection for this user
+	if _, exists := onlineUsers[user.ID]; !exists {
+		onlineUsers[user.ID] = make(map[*websocket.Conn]bool)
+	}
+	onlineUsers[user.ID][conn] = true
 	mu.Unlock()
 
 	// Broadcast updated list to all clients
@@ -55,12 +59,19 @@ func OnlineUsersWS(w http.ResponseWriter, r *http.Request) {
 	for {
 		_, _, err := conn.ReadMessage()
 		if err != nil {
-			// Remove user on disconnect
+			// Remove this specific connection
 			mu.Lock()
-			delete(onlineUsers, user.ID)
-			mu.Unlock()
+			delete(onlineUsers[user.ID], conn)
+			// If this was the user's last connection, clean up the user entry
+			if len(onlineUsers[user.ID]) == 0 {
+				delete(onlineUsers, user.ID)
+				// Only broadcast when the user's last connection is closed
+				mu.Unlock()
+				BroadcastOnlineUsers()
+			} else {
+				mu.Unlock()
+			}
 			conn.Close()
-			BroadcastOnlineUsers()
 			break
 		}
 	}
@@ -71,9 +82,11 @@ func BroadcastOnlineUsers() {
 	mu.Lock()
 	defer mu.Unlock()
 
-	// For each connected user, build a sorted list of online users (excluding themselves)
-	for recipientID, conn := range onlineUsers {
+	// For each connected user, build a list of online users (excluding themselves)
+	for recipientID, recipientConns := range onlineUsers {
 		var users []OnlineUserInfo
+
+		// Get the list of online users
 		for userID := range onlineUsers {
 			if userID == recipientID {
 				continue
@@ -95,7 +108,11 @@ func BroadcastOnlineUsers() {
 		if err != nil {
 			continue
 		}
-		conn.WriteMessage(websocket.TextMessage, data)
+
+		// Send to all connections of this user
+		for conn := range recipientConns {
+			conn.WriteMessage(websocket.TextMessage, data)
+		}
 	}
 }
 
